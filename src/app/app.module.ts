@@ -3,14 +3,18 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NgxCurrencyModule } from "ngx-currency";
+import { OrdenServiciosComponent } from './orden-servicios/orden-servicios.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    OrdenServiciosComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgxCurrencyModule
   ],
   providers: [],
   bootstrap: [AppComponent]
