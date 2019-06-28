@@ -1,0 +1,33 @@
+mat-card {
+    padding-top: 20px;
+    padding: 15px;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+h4 {
+    margin-top: 30px;
+}
+
+.main {
+    margin-top: 25px;
+}
+
+mat-radio-button {
+    margin-right: 15px;
+}
+
+#regimen {
+    margin-right: 25px;
+}
+
+mat-checkbox {
+    margin-right: 15px;
+}
+
+.iva {
+    margin-top: 17px !important;
+    margin-left: 20px !important;
+}
