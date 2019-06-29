@@ -16,6 +16,7 @@ export class OrdenServiciosComponent implements OnInit {
   pagoCECO: boolean
   pagoUnico: boolean;
   pagoVarios: boolean;
+  garantia: boolean;
 
 
   constructor(
@@ -74,7 +75,20 @@ export class OrdenServiciosComponent implements OnInit {
       ceco2: [''],
       porcentajeCeco2: [''],
       ceco3: [''],
-      porcentajeCeco3: ['']
+      porcentajeCeco3: [''],
+      garantia: [''],
+      porcentajeCumplimiento: [''],
+      mesesCumplimiento: [''],
+      porcentajeAnticipos: [''],
+      mesesAnticipos: [''],
+      porcentajeSalarios: [''],
+      mesesSalarios: [''],
+      porcentajeResponsabilidad: [''],
+      porcentajeCalidad: [''],
+      mesesCalidad1: [''],
+      mesesCalidad2: [''],
+      polizaVida: [''],
+      polizaVehiculos: ['']
     })
   }
 
@@ -94,6 +108,14 @@ export class OrdenServiciosComponent implements OnInit {
     else if($event.value === 'Varios') {
       this.pagoVarios = true;
       this.pagoUnico = false;
+    }
+  }
+
+  garantiaChange($event) {
+    if ($event.value === "true") {
+      this.garantia = true;
+    } else {
+      this.garantia = false;
     }
   }
 
@@ -140,6 +162,19 @@ export class OrdenServiciosComponent implements OnInit {
     let porcentajeCeco1 = this.generarOrdenServicios.get('porcentajeCeco1').value;
     let porcentajeCeco2 = this.generarOrdenServicios.get('porcentajeCeco2').value;
     let porcentajeCeco3 = this.generarOrdenServicios.get('porcentajeCeco3').value;
+    let garantia = this.generarOrdenServicios.get('garantia').value;
+    let porcentajeCumplimiento = this.generarOrdenServicios.get('porcentajeCumplimiento').value;
+    let mesesCumplimiento = this.generarOrdenServicios.get('mesesCumplimiento').value;
+    let porcentajeAnticipos = this.generarOrdenServicios.get('porcentajeAnticipos').value;
+    let mesesAnticipos = this.generarOrdenServicios.get('mesesAnticipos').value;
+    let porcentajeSalarios = this.generarOrdenServicios.get('porcentajeSalarios').value;
+    let mesesSalarios = this.generarOrdenServicios.get('mesesSalarios').value;
+    let porcentajeResponsabilidad = this.generarOrdenServicios.get('porcentajeResponsabilidad').value;
+    let porcentajeCalidad = this.generarOrdenServicios.get('porcentajeCalidad').value;
+    let mesesCalidad1 = this.generarOrdenServicios.get('mesesCalidad1').value;
+    let mesesCalidad2 = this.generarOrdenServicios.get('mesesCalidad2').value;
+    let polizaVida = this.generarOrdenServicios.get('polizaVida').value;
+    let polizaVehiculos = this.generarOrdenServicios.get('polizaVehiculos').value;
     
     console.log(this.generarOrdenServicios);
   }
