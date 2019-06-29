@@ -31,3 +31,10 @@ mat-checkbox {
     margin-top: 17px !important;
     margin-left: 20px !important;
 }
+
+.inputp {
+    width: 30px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
