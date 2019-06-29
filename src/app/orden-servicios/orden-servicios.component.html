@@ -359,45 +359,44 @@
                   </mat-form-field>
                 </div>
                 <div class="col-md-6">
-                    <mat-form-field>
-                      <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1">
-                    </mat-form-field>
-                  </div>
+                  <mat-form-field>
+                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1">
+                  </mat-form-field>
+                </div>
               </div>
               <div class="row">
-                  <div class="col-md-6">
-                    <mat-form-field>
-                      <input matInput placeholder="CECO 2" formControlName="ceco2">
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-6">
-                      <mat-form-field>
-                        <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco2">
-                      </mat-form-field>
-                    </div>
+                <div class="col-md-6">
+                  <mat-form-field>
+                    <input matInput placeholder="CECO 2" formControlName="ceco2">
+                  </mat-form-field>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                      <mat-form-field>
-                        <input matInput placeholder="CECO 3" formControlName="ceco3">
-                      </mat-form-field>
-                    </div>
-                    <div class="col-md-6">
-                        <mat-form-field>
-                          <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco3">
-                        </mat-form-field>
-                      </div>
-                  </div>
-                  <br>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <h6 class="text-center">
-                          NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA CONSULTORES INTERNACIONALES S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
-                      </h6>
-                    </div>
-                  </div>
+                <div class="col-md-6">
+                  <mat-form-field>
+                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco2">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field>
+                    <input matInput placeholder="CECO 3" formControlName="ceco3">
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field>
+                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco3">
+                  </mat-form-field>
+                </div>
+              </div>
             </ng-container>
-            
+            <br>
+            <div class="row">
+              <div class="col-md-12">
+                <h6 class="text-center">
+                    NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA CONSULTORES INTERNACIONALES S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
+                </h6>
+              </div>
+            </div>
         </mat-card>
       </mat-expansion-panel>
     </mat-accordion>
@@ -410,9 +409,58 @@
         </mat-expansion-panel-header>
         <mat-card>
           <h6 class="text-center">CALCULO DE PAGO PARA CUMPLIMIENTO DE PAGOS A LA SEGURIDAD SOCIAL Y PENSIONES (solo personas naturales)</h6>
+          <br>
           <div class="row">
-
+            <div class="col-md-4 offset-4" >
+              <label for="Regimen" id="regimen">GARANTÍAS Y SEGUROS</label>
+                <mat-radio-group formControlName="garantia" (change)="garantiaChange($event)">
+                  <mat-radio-button value="true">Sí</mat-radio-button>
+                  <mat-radio-button value="false">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
           </div>
+            <br>
+            <ng-container *ngIf="garantia">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="text-center"><b>Cumplimiento</b></h6>
+                <p><input type="text" class="inputp" formControlName="porcentajeCumplimiento"> % del valor del contrato, válido por la duración del mismo y  <input type="text" class="inputp" formControlName="mesesCumplimiento"> meses adicionales</p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-center"><b>Manejo de anticipos</b></h6>
+                <p><input type="text" class="inputp" formControlName="porcentajeAnticipos">% del valor del anticipo, válido por la duración del contrato y  <input type="text" class="inputp" formControlName="mesesAnticipos"> meses adicionales</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="text-center"><b>Pago de salarios</b></h6>
+                <p><input type="text" class="inputp" formControlName="porcentajeSalarios">% del valor del contrato, válido por la duración del mismo y  <input type="text" class="inputp" formControlName="mesesSalarios"> años adicionales</p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-center"><b>Responsabilidad civil extracontractual</b></h6>
+                <p><input type="text" class="inputp" formControlName="porcentajeResponsabilidad">% del valor del contrato, válido por la duración del contrato</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="text-center"><b>Calidad del servicio</b></h6>
+                <p><input type="text" class="inputp" formControlName="porcentajeCalidad">% del valor del contrato, válido por <input type="text" class="inputp" formControlName="mesesCalidad1"> meses a partir de la finalización del contrato y <input type="text" class="inputp" formControlName="mesesCalidad2"> meses más</p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-center"><b>Otros</b></h6>
+                <label for="Regimen" id="regimen">Póliza colectiva de vida y accidentes</label>
+                <mat-radio-group formControlName="polizaVida">
+                <mat-radio-button value="Sí">Sí</mat-radio-button>
+                <mat-radio-button value="No">No</mat-radio-button>
+              </mat-radio-group>
+              <label for="Regimen" id="regimen">Póliza de vehículos</label>
+              <mat-radio-group formControlName="polizaVehiculos">
+                <mat-radio-button value="Sí">Sí</mat-radio-button>
+                <mat-radio-button value="No">No</mat-radio-button>
+              </mat-radio-group>
+              </div>
+            </div>
+          </ng-container>
         </mat-card>
       </mat-expansion-panel>
     </mat-accordion>
