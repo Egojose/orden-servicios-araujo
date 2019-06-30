@@ -156,9 +156,9 @@ export class OrdenServiciosComponent implements OnInit {
     let Pago4 = this.generarOrdenServicios.get('Pago4').value;
     let Pago5 = this.generarOrdenServicios.get('Pago5').value;
     let Pago6 = this.generarOrdenServicios.get('Pago6').value;
-    let ceco1 = this.generarOrdenServicios.get('ceco1').value
-    let ceco2 = this.generarOrdenServicios.get('ceco2').value
-    let ceco3 = this.generarOrdenServicios.get('ceco3').value
+    let ceco1 = this.generarOrdenServicios.get('ceco1').value;
+    let ceco2 = this.generarOrdenServicios.get('ceco2').value;
+    let ceco3 = this.generarOrdenServicios.get('ceco3').value;
     let porcentajeCeco1 = this.generarOrdenServicios.get('porcentajeCeco1').value;
     let porcentajeCeco2 = this.generarOrdenServicios.get('porcentajeCeco2').value;
     let porcentajeCeco3 = this.generarOrdenServicios.get('porcentajeCeco3').value;
