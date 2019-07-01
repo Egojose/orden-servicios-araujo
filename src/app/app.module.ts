@@ -10,7 +10,7 @@ import { MatExpansionModule, MatFormFieldModule, MatInputModule, MatCardModule, 
 import { SPServicio } from './servicios/sp-servicio';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
+import { ToastrModule } from 'ng6-toastr-notifications';
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +35,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatTableModule, 
     MatPaginatorModule, 
     MatToolbarModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     SPServicio,
