@@ -27,6 +27,7 @@
     "@pnp/odata": "^1.3.3",
     "@pnp/sp": "^1.3.3",
     "core-js": "^2.5.4",
+    "ng6-toastr-notifications": "^1.0.4",
     "ngx-bootstrap": "^5.0.0",
     "ngx-currency": "^2.0.0",
     "rxjs": "~6.3.3",
