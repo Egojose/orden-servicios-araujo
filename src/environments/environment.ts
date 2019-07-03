@@ -8,7 +8,9 @@ export const environment = {
   urlWeb: 'https://aribasas.sharepoint.com/sites/Intranet/Servicios',
   urlWebGH: 'https://aribasas.sharepoint.com/sites/Intranet/Gestion-humana',
   urlReltativa: 'sites/Intranet/Servicios',
-  listaOrdenes: 'OrdenServicios'
+  listaOrdenes: 'OrdenServicios',
+  listaConfiguracion: 'ConfiguracionOrdenServicio',
+  listaUnegocios: 'UnidadNegocios'
 };
 
 /*
