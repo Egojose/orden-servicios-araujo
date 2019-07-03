@@ -2,6 +2,11 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { BsModalService, BsModalRef } from "ngx-bootstrap/modal";
 import { FormGroup, FormBuilder, Validators, NgForm } from "@angular/forms";
 import { SPServicio } from "../servicios/sp-servicio";
+import { Unegocios } from '../dominio/unegocios';
+import { Configuracion } from '../dominio/configuracion';
+import { Config } from 'protractor';
+import { ToastrManager } from 'ng6-toastr-notifications';
+
 
 @Component({
   selector: 'app-orden-servicios',
@@ -17,22 +22,29 @@ export class OrdenServiciosComponent implements OnInit {
   pagoUnico: boolean;
   pagoVarios: boolean;
   garantia: boolean;
+  unegocios: Unegocios[] = [];
+  config: Configuracion[] = [];
+  ivaCalculado: number;
+  total: number;
+  precio: number;
+  
+
 
 
   constructor(
-    private servicio: SPServicio,
-    private fb: FormBuilder
-  ) { }
+    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager) { }
 
   ngOnInit() {
     this.pagoUnico = false;
     this.pagoVarios = false;
     this.pagoCECO = false;
     this.registrarControles();
+    this.obtenerConsecutivo();
   }
 
   private registrarControles() {
     this.generarOrdenServicios = this.fb.group({
+      nroOrden: [''],
       empresaSolicitante: ['', Validators.required],
       nitSolicitante: ['', Validators.required],
       ciudadSolicitante: ['', Validators.required],
@@ -50,8 +62,8 @@ export class OrdenServiciosComponent implements OnInit {
       direccionProveedor: ['', Validators.required],
       contactoProveedor: ['', Validators.required],
       regimen: ['', Validators.required],
-      rut: ['',Validators.required],
-      camara: ['', Validators.required],
+      rut: [''],
+      camara: [''],
       descripcionServicios: ['', Validators.required],
       cliente: ['', Validators.required],
       job: ['', Validators.required],
@@ -92,6 +104,48 @@ export class OrdenServiciosComponent implements OnInit {
     })
   }
 
+  obtenerUnegocios() {
+    this.servicio.obtenerUnegocio().subscribe(
+      (respuesta) => {
+        this.unegocios = Unegocios.fromJsonList(respuesta);
+      }
+    )
+  }
+  
+  obtenerConsecutivo() {
+    this.servicio.obtenerConsecutivo().subscribe(
+      (respuesta) => {
+       this.config = Configuracion.fromJsonList(respuesta);
+       console.log(this.config[0].consecutivo);
+       this.cargarNroOrden();
+       this. calcularIva();
+      }
+    )
+  }
+  cargarNroOrden() {
+    this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
+    this.obtenerUnegocios();
+  }
+
+  calcularIva() {
+    this.precio = this.generarOrdenServicios.get('precio').value;
+    let iva = this.config[0].iva;
+    let ivaPorcentaje = iva / 100
+    this.ivaCalculado = this.precio * ivaPorcentaje
+    this.generarOrdenServicios.controls['iva'].setValue(this.ivaCalculado);
+  }
+
+  calcularTotal() {
+    this.total = this.precio + this.ivaCalculado;
+    console.log(this.total);
+    this.generarOrdenServicios.get('total').setValue(this.total);
+  }
+
+  changePrecio($event) {
+    this.calcularTotal();
+  }
+
+
   pagoCECOchange($event) {
     if ($event.value === "true") {
       this.pagoCECO = true;
@@ -119,11 +173,30 @@ export class OrdenServiciosComponent implements OnInit {
     }
   }
 
+  changeFecha($event) {
+    let cambio = event.target;
+    if(cambio) {
+    this.calcularDias();
+    }
+  }
+
+  calcularDias() {
+    let arrayInicio = this.generarOrdenServicios.get('fechaInicio').value.split(' ');
+    let arrayFin = this.generarOrdenServicios.get('fechaFinal').value.split(' ');
+    let fecha1 = arrayInicio[2];
+    console.log(fecha1)
+    let fecha2 = arrayFin[2];
+    console.log(fecha2)
+    let calculo = fecha1 + fecha2
+    this.generarOrdenServicios.controls['totalDias'].setValue(calculo);
+  }
+
   onSubmit() {
+    let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
     let ciudadSolicitante = this.generarOrdenServicios.get('ciudadSolicitante').value;
-    let telSolicitante = this.generarOrdenServicios.get('telSolicitante').valid;
+    let telSolicitante = this.generarOrdenServicios.get('telSolicitante').value;
     let direccionSolicitante = this.generarOrdenServicios.get('direccionSolicitante').value;
     let contactoSolicitante = this.generarOrdenServicios.get('contactoSolicitante').value;
     let emailSolicitante = this.generarOrdenServicios.get('emailSolicitante').value;
@@ -137,6 +210,7 @@ export class OrdenServiciosComponent implements OnInit {
     let direccionProveedor = this.generarOrdenServicios.get('direccionProveedor').value;
     let contactoProveedor = this.generarOrdenServicios.get('contactoProveedor').value;
     let regimen = this.generarOrdenServicios.get('regimen').value;
+    let rut = this.generarOrdenServicios.get('rut').value;
     let camara = this.generarOrdenServicios.get('camara').value;
     let descripcionServicios = this.generarOrdenServicios.get('descripcionServicios').value;
     let cliente = this.generarOrdenServicios.get('cliente').value;
@@ -175,8 +249,148 @@ export class OrdenServiciosComponent implements OnInit {
     let mesesCalidad2 = this.generarOrdenServicios.get('mesesCalidad2').value;
     let polizaVida = this.generarOrdenServicios.get('polizaVida').value;
     let polizaVehiculos = this.generarOrdenServicios.get('polizaVehiculos').value;
+    let objOrden;
+
+    if(regimen === "") {
+      this.MensajeAdvertencia('debe seleccionar el regimen');
+      return false;
+    }
+
+    if(rut === "" && camara === "") {
+      this.MensajeAdvertencia('Debe seleccionar el RUT o la Cámara de comercio')
+      return false;
+    }
+
+    rut === "" ? rut = false : rut = rut;
+    camara === "" ? camara = false : camara = camara;
+    total === "" ? total = 0 : total = total; //pendiente para eliminar esta linea
+
     
-    console.log(this.generarOrdenServicios);
+ 
+    fechaPago === "" ? fechaPago = null : fechaPago = fechaPago;
+    Pago1 === "" ? Pago1 = null : Pago1 = Pago1;
+    Pago2 === "" ? Pago2 = null : Pago2 = Pago2;
+    Pago3 === "" ? Pago3 = null : Pago3 = Pago3;
+    Pago4 === "" ? Pago4 = null : Pago4 = Pago4;
+    Pago5 === "" ? Pago5 = null : Pago5 = Pago5;
+    Pago6 === "" ? Pago6 = null : Pago6 = Pago6;
+
+    porcentajeCeco1 === "" ? porcentajeCeco1 = 0 : porcentajeCeco1 = porcentajeCeco1;
+    porcentajeCeco2 === "" ? porcentajeCeco2 = 0 : porcentajeCeco2 = porcentajeCeco2;
+    porcentajeCeco3 === "" ? porcentajeCeco3 = 0 : porcentajeCeco3 = porcentajeCeco3;
+
+    let pCeco1 = parseInt(porcentajeCeco1, 10)
+    let pCeco2 = parseInt(porcentajeCeco2, 10)
+    let pCeco3 = parseInt(porcentajeCeco3, 10)
+
+    if(this.pagoCECO === true && pCeco1 + pCeco2 + pCeco3 !== 100) {
+      this.MensajeAdvertencia('La suma de todos los porcentajes debe se igual a 100%, por favor verifique');
+      return false;
+    }
+
+    garantia === 'true' ? garantia = true : garantia = false;
+    polizaVida === 'true' ? polizaVida = true : polizaVida = false;
+    polizaVehiculos === "true" ? polizaVehiculos = true : polizaVehiculos = false;
+    
+    objOrden = {
+      NroOrden: nroOrden,
+      Title: empresaSolicitante,
+      NitSolicitante: nitSolicitante,
+      CiudadSolicitante: ciudadSolicitante,
+      TelSolicitante: telSolicitante,
+      DireccionSolicitante: direccionSolicitante,
+      ContactoSolicitante: contactoSolicitante,
+      EmailContactoSolicitante: emailSolicitante,
+      UnidadNegocios: unidadNegocios,
+      NombreCECO: nombreCECO,
+      NumeroCECO: numeroCECO,
+      RazonSocial: razonSocial,
+      NitProveedor: nitProveedor,
+      CiudadProveedor: ciudadProveedor,
+      TelProveedor: telProveedor,
+      DireccionProveedor: direccionProveedor,
+      ContactoProveedor: contactoProveedor,
+      Regimen: regimen,
+      Rut: rut,
+      CamaraComercio: camara,
+      DescripcionServicio: descripcionServicios,
+      Cliente: cliente,
+      NroJob: job,
+      Precio: precio,
+      Iva: iva,
+      Total: total,
+      FechaInicio: fechaInicio,
+      FechaFin: fechaFinal,
+      TotalDias: totalDias,
+      ValorLetras: valorLetras,
+      FormaPago: formaPago,
+      FechaPago: fechaPago,
+      Fecha1erPago: Pago1,
+      Fecha2doPago: Pago2,
+      Fecha3erPago: Pago3,
+      Fecha4toPago: Pago4,
+      Fecha5toPago: Pago5,
+      Fecha6toPago: Pago6,
+      CECOResponsable1: ceco1,
+      CECOResponsable2: ceco2,
+      CECOResponsable3: ceco3,
+      PorcentajeCECO1: pCeco1,
+      PorcentajeCECO2: pCeco2,
+      PorcentajeCECO3: pCeco3,
+      PorcentajeCumplimiento: porcentajeCumplimiento,
+      MesesCumplimiento: mesesCumplimiento,
+      PorcentajePagoSalarios: porcentajeSalarios,
+      AniosPagoSalarios: mesesSalarios,
+      PorcentajeResponsabilidadCivil: porcentajeResponsabilidad,
+      PorcentajeManejoAnticipos: porcentajeAnticipos,
+      MesesManejoAnticipos: mesesAnticipos,
+      PorcentajeCalidadServicio: porcentajeCalidad,
+      ValidezCalidadServicio: mesesCalidad1,
+      ExtensionCalidadServicio: mesesCalidad2,
+      PolizaColectiva: polizaVida,
+      PolizaVehiculos: polizaVehiculos,
+      Garantia: garantia,
+      Estado: 'Pendiente de aprobación gerente unidad de negocios'
+    }
+    console.log(objOrden);
+
+    if(this.generarOrdenServicios.invalid) {
+      this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
+    }
+    else {
+
+      this.servicio.AgregarOrden(objOrden).then(
+        (result) => {
+          let id = 1
+          let objConfig = {
+            Consecutivo: nroOrden + 1
+          }
+          this.servicio.ActualizarNroOrden(id, objConfig);
+          this.MensajeExitoso('La orden se registró con éxito')
+        }
+      ).catch(
+        err => {
+          this.MensajeError('Error al registrar la orden')
+        }
+      )
+    }
   }
+
+  MensajeExitoso(mensaje: string) {
+    this.toastr.successToastr(mensaje, 'Confirmado!');
+  }
+
+  MensajeError(mensaje: string) {
+    this.toastr.errorToastr(mensaje, 'Oops!');
+  }
+
+  MensajeAdvertencia(mensaje: string) {
+    this.toastr.warningToastr(mensaje, 'Alert!');
+  }
+
+  MensajeInfo() {
+    this.toastr.infoToastr('This is info toast.', 'Info');
+  }
+
 
 }
