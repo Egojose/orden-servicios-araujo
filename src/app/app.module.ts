@@ -11,10 +11,12 @@ import { SPServicio } from './servicios/sp-servicio';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ToastrModule } from 'ng6-toastr-notifications';
+import { AprobarOrdenServicioComponent } from './aprobar-orden-servicio/aprobar-orden-servicio.component';
 @NgModule({
   declarations: [
     AppComponent,
-    OrdenServiciosComponent
+    OrdenServiciosComponent,
+    AprobarOrdenServicioComponent
   ],
   imports: [
     BrowserModule,
