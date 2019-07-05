@@ -97,4 +97,9 @@ export class SPServicio {
         let respuesta = from(this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaOrdenes).items.select("*").filter("NroOrden eq '" + nroOrden + "'").get());
         return respuesta;
     }
+
+    obtenerFirmas(idUsuario){
+        let respuesta = this.ObtenerConfiguracionConPostGH().web.lists.getByTitle(environment.ListaEmpleados).items.filter("usuarioId eq '"+idUsuario+"'").select("*","usuario/EMail").expand("usuario").get();
+        return respuesta;
+    }
 }
