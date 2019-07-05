@@ -4,8 +4,8 @@ import { FormGroup, FormBuilder, Validators, NgForm } from "@angular/forms";
 import { SPServicio } from "../servicios/sp-servicio";
 import { Unegocios } from '../dominio/unegocios';
 import { Configuracion } from '../dominio/configuracion';
-import { Config } from 'protractor';
 import { ToastrManager } from 'ng6-toastr-notifications';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -27,19 +27,18 @@ export class OrdenServiciosComponent implements OnInit {
   ivaCalculado: number;
   total: number;
   precio: number;
-  
-
 
 
   constructor(
-    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager) { }
+    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router) { }
 
   ngOnInit() {
+    this.registrarControles();
+    this.obtenerUnegocios();
+    this.obtenerConsecutivo();
     this.pagoUnico = false;
     this.pagoVarios = false;
     this.pagoCECO = false;
-    this.registrarControles();
-    this.obtenerConsecutivo();
   }
 
   private registrarControles() {
@@ -68,6 +67,7 @@ export class OrdenServiciosComponent implements OnInit {
       cliente: ['', Validators.required],
       job: ['', Validators.required],
       precio: ['', Validators.required],
+      tieneIva: [''],
       iva: [''],
       total: [''],
       valorLetras: ['', Validators.required],
@@ -82,6 +82,7 @@ export class OrdenServiciosComponent implements OnInit {
       Pago4: [''],
       Pago5: [''],
       Pago6: [''],
+      distPago: [''],
       ceco1: [''],
       porcentajeCeco1: [''],
       ceco2: [''],
@@ -116,38 +117,52 @@ export class OrdenServiciosComponent implements OnInit {
     this.servicio.obtenerConsecutivo().subscribe(
       (respuesta) => {
        this.config = Configuracion.fromJsonList(respuesta);
-       console.log(this.config[0].consecutivo);
-       this.cargarNroOrden();
-       this. calcularIva();
+       console.log(this.config)
       }
     )
   }
   cargarNroOrden() {
-    this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
-    this.obtenerUnegocios();
+    if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
+    }
+    else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados)
+    }
+  }
+
+  changeEmpresa($event) {
+    this.cargarNroOrden();
   }
 
   calcularIva() {
-    this.precio = this.generarOrdenServicios.get('precio').value;
+    let price = this.generarOrdenServicios.get('precio').value;
     let iva = this.config[0].iva;
     let ivaPorcentaje = iva / 100
-    this.ivaCalculado = this.precio * ivaPorcentaje
+    this.ivaCalculado = price * ivaPorcentaje
     this.generarOrdenServicios.controls['iva'].setValue(this.ivaCalculado);
   }
 
   calcularTotal() {
-    this.total = this.precio + this.ivaCalculado;
-    console.log(this.total);
-    this.generarOrdenServicios.get('total').setValue(this.total);
+    let price = parseInt(this.generarOrdenServicios.get('precio').value, 10);
+    let impuesto = parseInt(this.generarOrdenServicios.get('iva').value, 10);
+    this.total = price + impuesto;
+    this.generarOrdenServicios.controls['total'].setValue(this.total);
   }
 
   changePrecio($event) {
     this.calcularTotal();
+    
   }
 
+  changeIva($event) {
+    this. calcularIva();
+    // if($event.target.checked === false) {
+    //   this.generarOrdenServicios.controls['iva'].setValue(0);
+    // }
+  }
 
   pagoCECOchange($event) {
-    if ($event.value === "true") {
+    if ($event.value === 'true') {
       this.pagoCECO = true;
     } else {
       this.pagoCECO = false;
@@ -174,21 +189,20 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   changeFecha($event) {
-    let cambio = event.target;
-    if(cambio) {
     this.calcularDias();
-    }
   }
 
   calcularDias() {
     let arrayInicio = this.generarOrdenServicios.get('fechaInicio').value.split(' ');
     let arrayFin = this.generarOrdenServicios.get('fechaFinal').value.split(' ');
-    let fecha1 = arrayInicio[2];
-    console.log(fecha1)
-    let fecha2 = arrayFin[2];
-    console.log(fecha2)
+    let fecha1 = parseInt(arrayInicio[2], 10);
+    let fecha2 = parseInt(arrayFin[2], 10);
     let calculo = fecha1 + fecha2
     this.generarOrdenServicios.controls['totalDias'].setValue(calculo);
+  }
+
+  cancelar() {
+    this.router.navigate(['/'])
   }
 
   onSubmit() {
@@ -233,6 +247,7 @@ export class OrdenServiciosComponent implements OnInit {
     let ceco1 = this.generarOrdenServicios.get('ceco1').value;
     let ceco2 = this.generarOrdenServicios.get('ceco2').value;
     let ceco3 = this.generarOrdenServicios.get('ceco3').value;
+    let distPago = this.generarOrdenServicios.get('distPago').value;
     let porcentajeCeco1 = this.generarOrdenServicios.get('porcentajeCeco1').value;
     let porcentajeCeco2 = this.generarOrdenServicios.get('porcentajeCeco2').value;
     let porcentajeCeco3 = this.generarOrdenServicios.get('porcentajeCeco3').value;
@@ -249,6 +264,7 @@ export class OrdenServiciosComponent implements OnInit {
     let mesesCalidad2 = this.generarOrdenServicios.get('mesesCalidad2').value;
     let polizaVida = this.generarOrdenServicios.get('polizaVida').value;
     let polizaVehiculos = this.generarOrdenServicios.get('polizaVehiculos').value;
+    let tieneIva = this.generarOrdenServicios.get('tieneIva').value;
     let objOrden;
 
     if(regimen === "") {
@@ -261,11 +277,14 @@ export class OrdenServiciosComponent implements OnInit {
       return false;
     }
 
+    if(distPago === "") {
+      this.MensajeAdvertencia('Por favor especifique si si el pago se distribuye en 2 o más CECOs')
+    }
+
+    tieneIva === "" ? tieneIva = false : tieneIva = true;
     rut === "" ? rut = false : rut = rut;
     camara === "" ? camara = false : camara = camara;
-    total === "" ? total = 0 : total = total; //pendiente para eliminar esta linea
-
-    
+    distPago === 'true' ? distPago = true : distPago = false;
  
     fechaPago === "" ? fechaPago = null : fechaPago = fechaPago;
     Pago1 === "" ? Pago1 = null : Pago1 = Pago1;
@@ -279,9 +298,9 @@ export class OrdenServiciosComponent implements OnInit {
     porcentajeCeco2 === "" ? porcentajeCeco2 = 0 : porcentajeCeco2 = porcentajeCeco2;
     porcentajeCeco3 === "" ? porcentajeCeco3 = 0 : porcentajeCeco3 = porcentajeCeco3;
 
-    let pCeco1 = parseInt(porcentajeCeco1, 10)
-    let pCeco2 = parseInt(porcentajeCeco2, 10)
-    let pCeco3 = parseInt(porcentajeCeco3, 10)
+    let pCeco1 = parseInt(porcentajeCeco1, 10);
+    let pCeco2 = parseInt(porcentajeCeco2, 10);
+    let pCeco3 = parseInt(porcentajeCeco3, 10);
 
     if(this.pagoCECO === true && pCeco1 + pCeco2 + pCeco3 !== 100) {
       this.MensajeAdvertencia('La suma de todos los porcentajes debe se igual a 100%, por favor verifique');
@@ -317,6 +336,7 @@ export class OrdenServiciosComponent implements OnInit {
       Cliente: cliente,
       NroJob: job,
       Precio: precio,
+      TieneIva: tieneIva,
       Iva: iva,
       Total: total,
       FechaInicio: fechaInicio,
@@ -331,6 +351,7 @@ export class OrdenServiciosComponent implements OnInit {
       Fecha4toPago: Pago4,
       Fecha5toPago: Pago5,
       Fecha6toPago: Pago6,
+      DistribucionPago: distPago,
       CECOResponsable1: ceco1,
       CECOResponsable2: ceco2,
       CECOResponsable3: ceco3,
@@ -358,15 +379,45 @@ export class OrdenServiciosComponent implements OnInit {
       this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
     }
     else {
-
       this.servicio.AgregarOrden(objOrden).then(
         (result) => {
           let id = 1
-          let objConfig = {
-            Consecutivo: nroOrden + 1
+          let ordenA = nroOrden.split('-');
+          let sumaOrden = parseInt(ordenA[1], 10) + 1
+          let nroActualizadoAsociado: string;
+          let nroActualizadoConsultores: string;
+
+          if(sumaOrden < 10) {
+             nroActualizadoAsociado = 'A-00'+ `${sumaOrden}`;
+             nroActualizadoConsultores = 'C-00'+ `${sumaOrden}`
           }
-          this.servicio.ActualizarNroOrden(id, objConfig);
-          this.MensajeExitoso('La orden se registró con éxito')
+          else if(sumaOrden >= 10 && sumaOrden <100) {
+            nroActualizadoAsociado = 'A-0'+ `${sumaOrden}`;
+            nroActualizadoConsultores = 'C-0'+ `${sumaOrden}`
+          }
+          else {
+            nroActualizadoAsociado = 'A-'+ `${sumaOrden}`;
+            nroActualizadoConsultores = 'C-'+ `${sumaOrden}`
+          }
+          
+          let objConfigA = {
+            ConsecutivoAsociados: nroActualizadoAsociado 
+          }
+
+          let objConfigC = {
+            Consecutivo: nroActualizadoConsultores
+          }
+
+          if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+            this.servicio.ActualizarNroOrden(id, objConfigC);
+          }
+          else {
+            this.servicio.ActualizarNroOrden(id, objConfigA);
+          }
+          this.MensajeExitoso('La orden se registró con éxito');
+          setTimeout(() => {
+            this.router.navigate(['/'])
+          }, 2000);
         }
       ).catch(
         err => {
