@@ -46,3 +46,7 @@ mat-checkbox {
     background: lightgray;
     margin-top: 0;
 }
+
+.btn-success {
+    margin-right: 20px;
+}

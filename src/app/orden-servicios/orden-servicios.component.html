@@ -17,7 +17,12 @@
           <div class="row">
             <div class="col-md-12">
               <mat-form-field>
-                <input matInput placeholder="Empresa solicitante" formControlName="empresaSolicitante">
+                  <mat-label>Empresa solicitante</mat-label>
+                  <mat-select formControlName="empresaSolicitante" (selectionChange)="changeEmpresa($event)">
+                      <mat-option value="Araujo Ibarra Consultores Internacionales S.A.S">Araujo Ibarra Consultores Internacionales S.A.S</mat-option>
+                      <mat-option value="Araujo Ibarra Asociados S.A.S">Araujo Ibarra Asociados S.A.S</mat-option>
+                  </mat-select>
+                <!-- <input matInput placeholder="Empresa solicitante" formControlName="empresaSolicitante"> -->
               </mat-form-field>
               <mat-error>
                 <span *ngIf="!generarOrdenServicios.get('empresaSolicitante').valid && generarOrdenServicios.get('empresaSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -223,7 +228,7 @@
               <div class="col-md-4">
                 <mat-form-field>
                   <input matInput placeholder="Precio" currencyMask
-                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio" (change)="changePrecio($event)">
+                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio" (keyup)="changePrecio($event.target.value)">
                 </mat-form-field>
                 <mat-error>
                     <span *ngIf="!generarOrdenServicios.get('precio').valid && generarOrdenServicios.get('precio').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -231,7 +236,7 @@
               </div>
               <div class="col-md-1">
                 <section class="iva">
-                  <mat-checkbox value="IVA">IVA</mat-checkbox>
+                  <mat-checkbox value="true" formControlName="tieneIva" (change)="changeIva($event)">IVA</mat-checkbox>
                 </section>
               </div>
               <div class="col-md-3">
@@ -271,7 +276,7 @@
               </div>
               <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal" (change)="changeFecha($event)">
+                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal" (change)="changeFecha($event.target.value)">
                     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                   </mat-form-field>
@@ -369,9 +374,9 @@
             <div class="row">
               <div class="col-md-4 offset-4 text-center">
                   <label for="Regimen" id="regimen">¿El pago se distribuye en 2 o más CECOs?</label>
-                  <mat-radio-group (change)="pagoCECOchange($event)">
-                    <mat-radio-button value="true">Sí</mat-radio-button>
-                    <mat-radio-button value="false">No</mat-radio-button>
+                  <mat-radio-group (change)="pagoCECOchange($event)" formControlName="distPago">
+                    <mat-radio-button value='true'>Sí</mat-radio-button>
+                    <mat-radio-button value='false'>No</mat-radio-button>
                   </mat-radio-group>
               </div>
             </div>
@@ -490,5 +495,6 @@
     </mat-accordion>
     <br>
     <button type="submit" class="btn btn-success btn-lg">Guardar orden</button>
+    <button type="button" class="btn btn-danger btn-lg" (click)="cancelar()">Cancelar</button>
   </div>
 </form>
