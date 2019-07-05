@@ -15,6 +15,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   aprobarOrdenServicios: FormGroup;
   panelOpenState = false;
   panelOpenState1 = false;
+  panelOpenState2 = false;
   pagoCECO: boolean
   pagoUnico: boolean;
   pagoVarios: boolean;
@@ -27,6 +28,11 @@ export class AprobarOrdenServicioComponent implements OnInit {
   orden: Orden[] = [];
   ordenConsulta: Orden[]= [];
   mostrarGarantia: boolean;
+  nombreUsuario: any;
+  emailUsuario: any;
+  idUsuario: any;
+  firmaUsuario: any[];
+  usuarioSolicitante: any;
 
 
   constructor(
@@ -189,6 +195,24 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.switchValores();
   }
 
+  obtenerfirmaUsuario(): any {
+    this.servicio.obtenerFirmas(this.usuarioSolicitante).then(
+      (respuesta)=>{
+        this.nombreUsuario = respuesta[0].Title;
+        this.emailUsuario = respuesta[0].usuario.EMail;
+        this.idUsuario = respuesta[0].usuarioId;
+        if (respuesta[0].UrlFirma !== null) {
+          this.firmaUsuario = respuesta[0].UrlFirma.Url;
+        }       
+      }
+    ).catch(
+      (error)=>{
+        this.MensajeError("Error al cargar las firmas");
+        console.log(error);
+      }
+    )
+  }
+
   switchValores() {
     console.log(this.aprobarOrdenServicios.controls['garantia'].value);
     if (this.aprobarOrdenServicios.controls['formaPago'].value === 'Único') {
@@ -219,5 +243,21 @@ export class AprobarOrdenServicioComponent implements OnInit {
     else {
       this.aprobarOrdenServicios.controls['polizaVehiculos'].setValue('false');
     }
+  }
+
+  MensajeExitoso(mensaje: string) {
+    this.toastr.successToastr(mensaje, 'Confirmado!');
+  }
+
+  MensajeError(mensaje: string) {
+    this.toastr.errorToastr(mensaje, 'Oops!');
+  }
+
+  MensajeAdvertencia(mensaje: string) {
+    this.toastr.warningToastr(mensaje, 'Alert!');
+  }
+
+  MensajeInfo() {
+    this.toastr.infoToastr('This is info toast.', 'Info');
   }
 }
