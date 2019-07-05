@@ -7,34 +7,35 @@
     </div>
 </header>
 <br>
-<div class="row">
+<div class="row principal">
     <div class="col-md-8 offset-2">
         <div class="card">
             <div class="card-header text-center"><h3>Orden de servicios</h3></div>
-            <div class="card-body">
+            <div class="card-body text-center" id="contenedor">
                 <div class="row">
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-body">
-                            Generar Orden
+                        <div class="card-body user text-center">
+                            <a routerLink="/orden-servicios" routerLinkActive="active"><h4>Generar Orden</h4>
+                            <p class="font"><i class="fas fa-plus"></i></p></a>
                         </div>
                     </div>
                 </div>
-            </div>
-                <div class="row">
+                
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-body">
-                            Aprobar orden
+                        <div class="card-body user text-center">
+                            <a routerLink="/aprobar-orden-servicio"><h4>Aprobar orden</h4>
+                            <p class="font"><i class="far fa-thumbs-up"></i></p></a>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
+            
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-body">
-                            Consultar
+                        <div class="card-body user text-center">
+                            <a href=""><h4>Consultar</h4>
+                            <p class="font"><i class="far fa-check-circle"></i></p></a>
                         </div>
                     </div>
                 </div>
@@ -44,6 +45,6 @@
     </div>
 </div>
 
-<app-orden-servicios></app-orden-servicios>
+<!-- <app-orden-servicios></app-orden-servicios> -->
 
 <router-outlet></router-outlet>
