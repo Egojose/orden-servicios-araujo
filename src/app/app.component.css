@@ -21,3 +21,31 @@ header {
     font-weight: 400;
     font-size: 22px;
  }
+
+ h3 {
+    color: #1F2547;
+ }
+
+
+ .principal {
+     margin-top: 40px;
+ }
+
+ #contenedor {
+     border: none;
+ }
+
+ .user {
+     background: grey;
+     color: white;
+ }
+
+ .font {
+     font-size: 40px;
+ }
+
+ .user a {
+     color: white;
+    text-decoration: none !important;
+    
+ }
