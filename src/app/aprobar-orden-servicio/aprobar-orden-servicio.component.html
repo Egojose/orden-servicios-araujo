@@ -407,6 +407,36 @@
       </mat-expansion-panel>
     </mat-accordion>
     <br>
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState2 = true" (closed)="panelOpenState2 = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title><strong>Firmas y aprobación</strong></mat-panel-title>
+          <mat-panel-description>{{panelOpenState2 ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <td>
+                <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
+                <img src="" alt="">
+                <span>Jose Vasquez</span><br>
+              </td>
+              <td>
+                <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
+                <img src="" alt="">
+                <span>Jose Vasquez</span><br>
+              </td>
+              <td>
+                <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
+                <img src="" alt="">
+                <span>Jose Vasquez</span><br>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <br>
     <button type="submit" class="btn btn-success btn-lg">Guardar orden</button>
     <button type="button" class="btn btn-danger btn-lg" (click)="cancelar()">Cancelar</button>
   </div>
