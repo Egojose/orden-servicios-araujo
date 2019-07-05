@@ -10,7 +10,8 @@ export const environment = {
   urlReltativa: 'sites/Intranet/Servicios',
   listaOrdenes: 'OrdenServicios',
   listaConfiguracion: 'ConfiguracionOrdenServicio',
-  listaUnegocios: 'UnidadNegocios'
+  listaUnegocios: 'UnidadNegocios',
+  ListaEmpleados: 'Empleados',
 };
 
 /*
