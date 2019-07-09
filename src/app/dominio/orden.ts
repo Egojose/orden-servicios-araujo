@@ -1,5 +1,6 @@
 export class Orden{
     constructor(
+        public id: number,
         public empresaSolicitante: string,
         public nitSolicitante: string,
         public ciudadSolicitante: string,
@@ -58,11 +59,23 @@ export class Orden{
         public polizaVehiculos: boolean,
         public nroOrden: string,
         public tieneIva: boolean,
-        public distPago: boolean
+        public distPago: boolean,
+        public estado: string,
+        public aprobadoUnegocios: boolean,
+        public aprobadoGerenteAdministrativo: boolean,
+        public motivoRechazo: string,
+        public nombreGerenteUnegocios: string,
+        public nombreGerenteAdministrativo: string,
+        public nombreDirectorOperativo: string,
+        public fechaAprobadoGerenteUnegocios: string,
+        public fechaAprobadoGerenteAdministrativo: string,
+        public fechaAprobadoDirector: string,
+        public usuarioSolicitante: any
     ) {}
 
     public static fromJson(element: any) {
         return new Orden(
+            element.ID,
             element.Title,
             element.NitSolicitante,
             element.CiudadSolicitante,
@@ -121,7 +134,18 @@ export class Orden{
             element.PolizaVehiculos,
             element.NroOrden,
             element.TieneIva,
-            element.DistribucionPago
+            element.DistribucionPago,
+            element.Estado,
+            element.AprobadoResponsableUnidadNegocios,
+            element.AprobadoGerenteAdministrativo,
+            element.MotivRechazo,
+            element.NombreGerenteUnegocios,
+            element.NombreGerenteAdministrativo,
+            element.NombreDirectorOperativo,
+            element.FechaAprobadoGerenteUnegocios,
+            element.FechaAprobadoGerenteAdministrati,
+            element.FechaAprobadoDirectorOperativo,
+            element.UsuarioSolicitanteId
         );
     }
 
