@@ -419,21 +419,40 @@
               <td>
                 <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
                 <img src="" alt="">
-                <span>Jose Vasquez</span><br>
+                <span>{{gerenteUnegocios}}</span><br>
+                <span>{{fechaAprobadoGerenteUnegocios}}</span>
               </td>
               <td>
-                <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
+                <span class="text-center"><b>Gerente administrativo y finaciero</b></span><br><br>
                 <img src="" alt="">
-                <span>Jose Vasquez</span><br>
+                <span>{{gerenteAdministrativo}}</span><br>
+                <span>{{fechaAprobadoGerenteAdministrativo}}</span>
               </td>
               <td>
-                <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
+                <span class="text-center"><b>Director operativo</b></span><br><br>
                 <img src="" alt="">
-                <span>Jose Vasquez</span><br>
+                <span>{{directorOperativo}}</span><br>
+                <span>{{fechaAprobadoDirector}}</span>
               </td>
             </tr>
           </tbody>
         </table>
+        <button type="button" class="btn btn-success" (click)="aprobar()">Aprobar</button>
+        <button type="button" class="btn btn-danger" (click)="openModal(template)">Rechazar</button>
+        <ng-template #template>
+            <div class="modal-header">
+              <h5 class="modal-title pull-left">Por favor especifique el motivo de rechazo</h5>
+              <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <textarea class="form-control" name="" id="" cols="3" rows="3" formControlName="motivoRechazo"></textarea>
+              <br>
+              <button type="button" class="btn btn-danger rechazo" (click)="rechazar()">Enviar</button>
+              <button type="button" class="btn btn-primary" (click)="cancelarRechazo()">Salir</button>
+            </div>
+          </ng-template>
       </mat-expansion-panel>
     </mat-accordion>
     <br>
