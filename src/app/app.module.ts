@@ -12,11 +12,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ToastrModule } from 'ng6-toastr-notifications';
 import { AprobarOrdenServicioComponent } from './aprobar-orden-servicio/aprobar-orden-servicio.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ConsultarOrdenComponent } from './consultar-orden/consultar-orden.component';
+import { ExportAsModule } from 'ngx-export-as';
 @NgModule({
   declarations: [
     AppComponent,
     OrdenServiciosComponent,
-    AprobarOrdenServicioComponent
+    AprobarOrdenServicioComponent,
+    ConsultarOrdenComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +42,9 @@ import { AprobarOrdenServicioComponent } from './aprobar-orden-servicio/aprobar-
     MatPaginatorModule, 
     MatToolbarModule,
     MatCheckboxModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    ModalModule.forRoot(),
+    ExportAsModule
   ],
   providers: [
     SPServicio,
