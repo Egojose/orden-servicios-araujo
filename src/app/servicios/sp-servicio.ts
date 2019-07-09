@@ -32,7 +32,7 @@ export class SPServicio {
             headers: {
                 'Accept': 'application/json; odata=verbose',
                 'Content-Type': 'application/json;odata=verbose',
-                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkN0ZlFDOExlLThOc0M3b0MyelFrWnBjcmZPYyIsImtpZCI6IkN0ZlFDOExlLThOc0M3b0MyelFrWnBjcmZPYyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvYXJpYmFzYXMuc2hhcmVwb2ludC5jb21AM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwiaXNzIjoiMDAwMDAwMDEtMDAwMC0wMDAwLWMwMDAtMDAwMDAwMDAwMDAwQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsImlhdCI6MTU2MjI3MzI4MiwibmJmIjoxNTYyMjczMjgyLCJleHAiOjE1NjIzMDIzODIsImlkZW50aXR5cHJvdmlkZXIiOiIwMDAwMDAwMS0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDBAM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwibmFtZWlkIjoiNTdjMWUwNjctOWM1My00MjQ4LWE2MmEtZmJhZGI3YWMwODUyQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsIm9pZCI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInN1YiI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInRydXN0ZWRmb3JkZWxlZ2F0aW9uIjoiZmFsc2UifQ.E9WR826VWMyGf-hVrYZR1-bR7mN7kJjvEr-hMk4FWYTmBAet7DuDN2yPGE2zhoQCaoEPHQPsZUGGypYiMzoNPvUOXxRs9SjlkaUag5LLXYZM4xjuFevRloMKmrFrt7rIVKa_KN7L9Vm5KEvGokhQhrF-8mFMQDTghq-2DrH5L6TJl9Jf1Prme0DzhsjD8D2dbER1r4z_d0M7R5N23XfJOAw5KBTn6FZIIqE_S5ACUTpc615V11ESeP4JFfL2Ou-Flmz1mp8GUNfabUbqrajwfU0bThpgmiuB0hm-VbhMH643uC-1b7rUDqd50mgE_enTbfrZwhOTUOrOQYdUtIjDkg'
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkN0ZlFDOExlLThOc0M3b0MyelFrWnBjcmZPYyIsImtpZCI6IkN0ZlFDOExlLThOc0M3b0MyelFrWnBjcmZPYyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvYXJpYmFzYXMuc2hhcmVwb2ludC5jb21AM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwiaXNzIjoiMDAwMDAwMDEtMDAwMC0wMDAwLWMwMDAtMDAwMDAwMDAwMDAwQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsImlhdCI6MTU2MjY4MjU2NCwibmJmIjoxNTYyNjgyNTY0LCJleHAiOjE1NjI3MTE2NjQsImlkZW50aXR5cHJvdmlkZXIiOiIwMDAwMDAwMS0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDBAM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwibmFtZWlkIjoiNTdjMWUwNjctOWM1My00MjQ4LWE2MmEtZmJhZGI3YWMwODUyQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsIm9pZCI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInN1YiI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInRydXN0ZWRmb3JkZWxlZ2F0aW9uIjoiZmFsc2UifQ.W7rEpYIGuDdKET6X3tbRMQgmOGm1gURTHVZj_SOE_QvRHOIm7zEUYtwC3G8byNMrIP5fc-34WLWHjxaiF2buEKspp1Sd32bWfB_tyuvQ-wgmPA7K3FmoimTqRgfqyDez2izH4_mb2jPvxHawOdoZ5RwE5zWyhAEaU2AL4xIaqmBv_5DbnXeeOfCj1Jj2eZol5kD6kHEGqyDNJKWYG8l-8b4BZ0lGg3y1vxPnTxdr9njyX_8YHItLSD9SDQUwUDjnnxKqTjqiexjb4NQupG0uyDagP5On8fN1AE7tubW4uQp9rmpzRA6oUnYk_tm0Pq5onAzxlfuw6QxYkWVOao8-Dg'
             }
         }, environment.urlWeb);
 
@@ -85,7 +85,7 @@ export class SPServicio {
     }
 
     ActualizarNroOrden(id: number, objConfig) {
-        let respuesta = from(this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaConfiguracion).items.getById(id).update(objConfig))
+        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaConfiguracion).items.getById(id).update(objConfig);
     }
 
     consultarOrden() {
@@ -102,4 +102,30 @@ export class SPServicio {
         let respuesta = this.ObtenerConfiguracionConPostGH().web.lists.getByTitle(environment.ListaEmpleados).items.filter("usuarioId eq '"+idUsuario+"'").select("*","usuario/EMail").expand("usuario").get();
         return respuesta;
     }
+
+    obtenerInfoEmpleadoSeleccionado(IdUsuario: number) {
+        let respuesta = from(this.ObtenerConfiguracionGH().web.lists.getByTitle(environment.ListaEmpleados).items.select("*").filter("usuarioId eq " + IdUsuario + "").get());
+        return respuesta;
+    }
+
+    EnviarNotificacion(objNotificacion){
+        let respuesta = this.ObtenerConfiguracionConPost().utility.sendEmail(objNotificacion);
+        return respuesta;
+    }
+
+    ValidarUsuarioGerente() {
+        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaAprobadores).items.getAll();
+        return respuesta;
+    } 
+
+    obtenerJefe(UsuarioActualId) {
+        let respuesta = this.ObtenerConfiguracionGH().web.lists.getByTitle(environment.ListaEmpleados).items.filter("usuario eq "+UsuarioActualId).select("*","Jefe/Title","Jefe/EMail").expand("Jefe").getAll();
+        return respuesta;
+    }
+
+    obtenerAprobadores() {
+        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaAprobadores).items.select("*","GerenteAdministrativo/ID","GerenteAdministrativo/Title", "GerenteAdministrativo/EMail","DirectorOperativo/ID","DirectorOperativo/Title","DirectorOperativo/EMail").expand("GerenteAdministrativo", "DirectorOperativo").getAll();
+        return respuesta;
+    }
+
 }
