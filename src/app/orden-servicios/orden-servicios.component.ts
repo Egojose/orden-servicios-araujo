@@ -6,6 +6,9 @@ import { Unegocios } from '../dominio/unegocios';
 import { Configuracion } from '../dominio/configuracion';
 import { ToastrManager } from 'ng6-toastr-notifications';
 import { Router } from '@angular/router';
+import { EmailProperties } from '@pnp/sp';
+import { Empleado } from '../dominio/empleado';
+import { Usuario } from '../dominio/usuario';
 
 
 @Component({
@@ -27,6 +30,11 @@ export class OrdenServiciosComponent implements OnInit {
   ivaCalculado: number;
   total: number;
   precio: number;
+  empleadoEditar: Empleado[] = [];
+  usuarioActual: Usuario;
+  nombreUsuario;
+  idUsuario: number;
+  jefe;
 
 
   constructor(
@@ -36,6 +44,7 @@ export class OrdenServiciosComponent implements OnInit {
     this.registrarControles();
     this.obtenerUnegocios();
     this.obtenerConsecutivo();
+    this.ObtenerUsuarioActual();
     this.pagoUnico = false;
     this.pagoVarios = false;
     this.pagoCECO = false;
@@ -105,6 +114,47 @@ export class OrdenServiciosComponent implements OnInit {
     })
   }
 
+  ObtenerUsuarioActual() {
+    this.servicio.ObtenerUsuarioActual().subscribe(
+      (respuesta) => {
+        this.usuarioActual = new Usuario(respuesta.Title, respuesta.Email, respuesta.Id);
+        this.nombreUsuario = this.usuarioActual.nombre;
+        this.idUsuario = this.usuarioActual.id;
+        sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
+        this.obtenerInfoEmpleado();
+        this.servicio.obtenerJefe(this.usuarioActual.id).then(
+          (respuesta) => {
+            if(respuesta[0].JefeId !== null) {
+              console.log(respuesta[0]);
+              this.usuarioActual.IdJefeDirecto = respuesta[0].JefeId;
+              this.usuarioActual.NombreJefeDirecto = respuesta[0].Jefe.Title;
+              this.usuarioActual.EmailJefeDirecto = respuesta[0].Jefe.EMail;
+              console.log(this.usuarioActual.EmailJefeDirecto);
+            }
+          }
+        ).catch(
+          (error) => {
+            console.log(error)
+          }
+        );
+      }, err => {
+        console.log('Error obteniendo usuario: ' + err);
+      }
+    )
+  };
+
+  obtenerInfoEmpleado() {
+    let idUser = this.usuarioActual.id;
+    console.log(idUser)
+    this.servicio.obtenerInfoEmpleadoSeleccionado(idUser).subscribe(
+      (respuesta) => {
+        this.empleadoEditar = Empleado.fromJsonList(respuesta);
+        this.jefe = this.empleadoEditar[0].jefeEmail;
+        console.log(this.jefe);
+      }
+    )
+  }
+
   obtenerUnegocios() {
     this.servicio.obtenerUnegocio().subscribe(
       (respuesta) => {
@@ -121,6 +171,7 @@ export class OrdenServiciosComponent implements OnInit {
       }
     )
   }
+
   cargarNroOrden() {
     if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
@@ -202,10 +253,45 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/'])
+    this.router.navigate(['/orden-servicios'])
+  }
+
+  enviarNotificacion() {
+    let cuerpo = '<p>Cordial saludo</p>'+
+                  '<br>'+
+                  '<p>El usuario <strong>'+this.usuarioActual.nombre+'</strong> ha generado una nueva orden de servicio con el número' + this.generarOrdenServicios.get('nroOrden').value + 'para su aprobación</p>'+
+                  '<br>'+
+                  '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/Orden-Compra/index.aspx/Ordenes-pendientes" target="_blank">aquí</a>.</p>';
+
+          const emailProps: EmailProperties = {
+            To: [this.usuarioActual.EmailJefeDirecto],
+            Subject: "Notificación de orden de servicio",
+            Body: cuerpo,
+          };
+    this.servicio.EnviarNotificacion(emailProps).then(
+      (res) => {
+        this.MensajeExitoso("La Orden se ha enviado con éxito");
+        setTimeout(
+          () => {
+            window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+            // this.spinnerService.hide();
+          }, 2000);
+      }
+    ).catch(
+      (error) => {
+        console.error(error);
+        this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
+        setTimeout(
+          () => {
+            window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+            // this.spinnerService.hide();
+          }, 2000);
+      }
+    );                 
   }
 
   onSubmit() {
+    console.log(this.empleadoEditar[0]);
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
@@ -265,19 +351,21 @@ export class OrdenServiciosComponent implements OnInit {
     let polizaVida = this.generarOrdenServicios.get('polizaVida').value;
     let polizaVehiculos = this.generarOrdenServicios.get('polizaVehiculos').value;
     let tieneIva = this.generarOrdenServicios.get('tieneIva').value;
+    let responsableActual = this.empleadoEditar[0].jefe;
+    let usuarioSolicitante = this.usuarioActual.id;
     let objOrden;
 
-    if(regimen === "") {
+    if (regimen === "") {
       this.MensajeAdvertencia('debe seleccionar el regimen');
       return false;
     }
 
-    if(rut === "" && camara === "") {
+    if (rut === "" && camara === "") {
       this.MensajeAdvertencia('Debe seleccionar el RUT o la Cámara de comercio')
       return false;
     }
 
-    if(distPago === "") {
+    if (distPago === "") {
       this.MensajeAdvertencia('Por favor especifique si si el pago se distribuye en 2 o más CECOs')
     }
 
@@ -285,7 +373,7 @@ export class OrdenServiciosComponent implements OnInit {
     rut === "" ? rut = false : rut = rut;
     camara === "" ? camara = false : camara = camara;
     distPago === 'true' ? distPago = true : distPago = false;
- 
+
     fechaPago === "" ? fechaPago = null : fechaPago = fechaPago;
     Pago1 === "" ? Pago1 = null : Pago1 = Pago1;
     Pago2 === "" ? Pago2 = null : Pago2 = Pago2;
@@ -302,7 +390,7 @@ export class OrdenServiciosComponent implements OnInit {
     let pCeco2 = parseInt(porcentajeCeco2, 10);
     let pCeco3 = parseInt(porcentajeCeco3, 10);
 
-    if(this.pagoCECO === true && pCeco1 + pCeco2 + pCeco3 !== 100) {
+    if (this.pagoCECO === true && pCeco1 + pCeco2 + pCeco3 !== 100) {
       this.MensajeAdvertencia('La suma de todos los porcentajes debe se igual a 100%, por favor verifique');
       return false;
     }
@@ -310,7 +398,7 @@ export class OrdenServiciosComponent implements OnInit {
     garantia === 'true' ? garantia = true : garantia = false;
     polizaVida === 'true' ? polizaVida = true : polizaVida = false;
     polizaVehiculos === "true" ? polizaVehiculos = true : polizaVehiculos = false;
-    
+
     objOrden = {
       NroOrden: nroOrden,
       Title: empresaSolicitante,
@@ -371,11 +459,13 @@ export class OrdenServiciosComponent implements OnInit {
       PolizaColectiva: polizaVida,
       PolizaVehiculos: polizaVehiculos,
       Garantia: garantia,
-      Estado: 'Pendiente de aprobación gerente unidad de negocios'
+      Estado: 'Pendiente de aprobación gerente unidad de negocios',
+      ResponsableActualId: responsableActual,
+      UsuarioSolicitanteId: usuarioSolicitante
     }
     console.log(objOrden);
 
-    if(this.generarOrdenServicios.invalid) {
+    if (this.generarOrdenServicios.invalid) {
       this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
     }
     else {
@@ -387,40 +477,73 @@ export class OrdenServiciosComponent implements OnInit {
           let nroActualizadoAsociado: string;
           let nroActualizadoConsultores: string;
 
-          if(sumaOrden < 10) {
-             nroActualizadoAsociado = 'A-00'+ `${sumaOrden}`;
-             nroActualizadoConsultores = 'C-00'+ `${sumaOrden}`
+          if (sumaOrden < 10) {
+            nroActualizadoAsociado = 'A-00' + `${sumaOrden}`;
+            nroActualizadoConsultores = 'C-00' + `${sumaOrden}`
           }
-          else if(sumaOrden >= 10 && sumaOrden <100) {
-            nroActualizadoAsociado = 'A-0'+ `${sumaOrden}`;
-            nroActualizadoConsultores = 'C-0'+ `${sumaOrden}`
+          else if (sumaOrden >= 10 && sumaOrden < 100) {
+            nroActualizadoAsociado = 'A-0' + `${sumaOrden}`;
+            nroActualizadoConsultores = 'C-0' + `${sumaOrden}`
           }
           else {
-            nroActualizadoAsociado = 'A-'+ `${sumaOrden}`;
-            nroActualizadoConsultores = 'C-'+ `${sumaOrden}`
+            nroActualizadoAsociado = 'A-' + `${sumaOrden}`;
+            nroActualizadoConsultores = 'C-' + `${sumaOrden}`
           }
-          
+
           let objConfigA = {
-            ConsecutivoAsociados: nroActualizadoAsociado 
+            ConsecutivoAsociados: nroActualizadoAsociado
           }
 
           let objConfigC = {
             Consecutivo: nroActualizadoConsultores
           }
 
-          if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+          if (this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
             this.servicio.ActualizarNroOrden(id, objConfigC);
           }
           else {
             this.servicio.ActualizarNroOrden(id, objConfigA);
           }
+
+          let cuerpo = '<p>Cordial saludo</p>' +
+            '<br>' +
+            '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado una nueva orden de servicio con el número <strong>' + this.generarOrdenServicios.get('nroOrden').value + '</strong> para su aprobación</p>' +
+            '<br>' +
+            '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/Orden-Compra/index.aspx/Ordenes-pendientes" target="_blank">aquí</a>.</p>';
+
+          const emailProps: EmailProperties = {
+            To: [this.usuarioActual.EmailJefeDirecto],
+            Subject: "Notificación de orden de servicio",
+            Body: cuerpo,
+          };
+          this.servicio.EnviarNotificacion(emailProps).then(
+            (res) => {
+              this.MensajeInfo("Se ha enviado una notificación para aprobación");
+              setTimeout(
+                () => {
+                  window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                  // this.spinnerService.hide();
+                }, 2000);
+            }
+          ).catch(
+            (error) => {
+              console.error(error);
+              this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
+              setTimeout(
+                () => {
+                  window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                  // this.spinnerService.hide();
+                }, 2000);
+            }
+          );
           this.MensajeExitoso('La orden se registró con éxito');
           setTimeout(() => {
             this.router.navigate(['/'])
           }, 2000);
         }
       ).catch(
-        err => {
+        (err) => {
+          console.log(err);
           this.MensajeError('Error al registrar la orden')
         }
       )
@@ -439,8 +562,8 @@ export class OrdenServiciosComponent implements OnInit {
     this.toastr.warningToastr(mensaje, 'Alert!');
   }
 
-  MensajeInfo() {
-    this.toastr.infoToastr('This is info toast.', 'Info');
+  MensajeInfo(mensaje: string) {
+    this.toastr.infoToastr(mensaje, 'Info');
   }
 
 
