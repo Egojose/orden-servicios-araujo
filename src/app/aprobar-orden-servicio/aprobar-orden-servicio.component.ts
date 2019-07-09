@@ -1,10 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef  } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { SPServicio } from "../servicios/sp-servicio";
 import { Unegocios } from '../dominio/unegocios';
 import { Configuracion } from '../dominio/configuracion';
 import { ToastrManager } from 'ng6-toastr-notifications';
 import { Orden } from '../dominio/orden';
+import { Usuario } from '../dominio/usuario';
+import { Empleado } from '../dominio/empleado';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { Aprobadores } from '../dominio/aprobadores';
+import { EmailProperties } from '@pnp/sp';
+
 @Component({
   selector: 'app-aprobar-orden-servicio',
   templateUrl: './aprobar-orden-servicio.component.html',
@@ -30,20 +36,45 @@ export class AprobarOrdenServicioComponent implements OnInit {
   mostrarGarantia: boolean;
   nombreUsuario: any;
   emailUsuario: any;
-  idUsuario: any;
+  idUsuario: number;
   firmaUsuario: any[];
-  usuarioSolicitante: any;
+  usuarioActual: Usuario;
+  empleadoEditar: Empleado[] = [];
+  jefe;
+  empleado: Empleado[] = []
+  gerenteUnegocios: string;
+  fechaAprobadoGerenteUnegocios: any;
+  gerenteAdministrativo: string;
+  directorOperativo: string;
+  responsableGerenteAdminisitrativo: string;
+  responsableDirectorOperativo: string;
+  modalRef: BsModalRef;
+  rechazado: boolean;
+  fechaAprobadoGerenteAdministrativo: any;
+  fechaAprobadoDirector: any;
+  aprobadores: Aprobadores[] = [];
+  emailGerenteAdministrativo: string;
+  emailDirectorOperativo: string;
+  ordenNro: any;
+  usuarioAprueba: boolean;
+  usuarioRechaza: boolean;
+
 
 
   constructor(
-    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager) { }
+    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService) { }
 
   ngOnInit() {
+    this.ObtenerUsuarioActual();
     this.mostrarGarantia = false;
     this.pagoUnico = false;
     this.pagoVarios = false;
+    this.rechazado = false;
+    this.usuarioAprueba = false;
+    this.usuarioRechaza = false;
     this.registrarControles();
-    this.consultarOrden()
+    this.consultarOrden();
+    this.obtenerDatosAprobadores();
   }
 
   private registrarControles() {
@@ -106,30 +137,86 @@ export class AprobarOrdenServicioComponent implements OnInit {
       mesesCalidad1: [''],
       mesesCalidad2: [''],
       polizaVida: [''],
-      polizaVehiculos: ['']
+      polizaVehiculos: [''],
+      gerenteUnegocios: [''],
+      motivoRechazo: ['']
     })
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
+  }
+
+
+  ObtenerUsuarioActual() {
+    this.servicio.ObtenerUsuarioActual().subscribe(
+      (respuesta) => {
+        this.usuarioActual = new Usuario(respuesta.Title, respuesta.email, respuesta.Id);
+        this.nombreUsuario = this.usuarioActual.nombre;
+        this.idUsuario = this.usuarioActual.id;
+        sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
+        this.obtenerInfoEmpleado();
+      }, err => {
+        console.log('Error obteniendo usuario: ' + err);
+      }
+    )
+  };
+
+  obtenerJefe() {
+    let id =  this.usuarioActual.id;
+    this.servicio.obtenerInfoEmpleadoSeleccionado(id).subscribe(
+      (respuesta) => {
+      
+      }
+    )
+    
+  }
+
+  obtenerInfoEmpleado() {
+    let idUser = this.usuarioActual.id;
+    console.log(idUser)
+    this.servicio.obtenerInfoEmpleadoSeleccionado(idUser).subscribe(
+      (respuesta) => {
+        this.empleadoEditar = Empleado.fromJsonList(respuesta);
+        this.jefe = this.empleadoEditar[0].jefe.nombre;
+        console.log(this.jefe);
+      }
+    )
   }
 
   consultarOrden() {
     this.servicio.consultarOrden().subscribe(
       (respuesta) => {
-        console.log(respuesta);
         this.ordenConsulta = Orden.fromJsonList(respuesta);
-        console.log(this.ordenConsulta);
       }
     )
   }
 
   obtenerOrden(event) {
     let ordenSeleccionada = event.value;
-    console.log(ordenSeleccionada);
     this.servicio.obtenerOrden(ordenSeleccionada).subscribe(
       (respuesta) => {
         this.orden = Orden.fromJsonList(respuesta);
-        this.valoresPorDefecto()
+        this.ordenNro = this.aprobarOrdenServicios.get('nroOrden').value;
+        this.valoresPorDefecto();
+        this.cargarValoresFirma();
       }
     )
     
+  }
+
+  obtenerDatosAprobadores() {
+    this.servicio.obtenerAprobadores().then(
+      (respuesta) => {
+        console.log(respuesta);
+       this.emailGerenteAdministrativo = respuesta[0].GerenteAdministrativo.EMail;
+       this.emailDirectorOperativo = respuesta[0].DirectorOperativo.EMail;
+       this.responsableGerenteAdminisitrativo = respuesta[0].GerenteAdministrativo;
+       this.responsableDirectorOperativo = respuesta[0].DirectorOperativo;
+      //  this.gerenteAdministrativo = respuesta[0].GerenteAdministrativo.Title;
+      //  this.directorOperativo = respuesta[0].DirectorOperativo.Title;
+      }
+    )
   }
 
   valoresPorDefecto() {
@@ -163,7 +250,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['valorLetras'].setValue(this.orden[0].valorLetras);
     this.aprobarOrdenServicios.controls['fechaInicio'].setValue(this.orden[0].fechaInicio);
     this.aprobarOrdenServicios.controls['fechaFinal'].setValue(this.orden[0].fechaFin);
-    // this.aprobarOrdenServicios.contains['totalDias'].setValue(this.orden[0].totalDias);
+    this.aprobarOrdenServicios.controls['totalDias'].setValue(this.orden[0].totalDias);
     this.aprobarOrdenServicios.controls['formaPago'].setValue(this.orden[0].formaPago);
     this.aprobarOrdenServicios.controls['fechaPago'].setValue(this.orden[0].fechaPago);
     this.aprobarOrdenServicios.controls['Pago1'].setValue(this.orden[0].fecha1erPago);
@@ -196,7 +283,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   }
 
   obtenerfirmaUsuario(): any {
-    this.servicio.obtenerFirmas(this.usuarioSolicitante).then(
+    this.servicio.obtenerFirmas(this.usuarioActual.id).then(
       (respuesta)=>{
         this.nombreUsuario = respuesta[0].Title;
         this.emailUsuario = respuesta[0].usuario.EMail;
@@ -245,6 +332,175 @@ export class AprobarOrdenServicioComponent implements OnInit {
     }
   }
 
+  cargarValoresFirma() {
+    if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+      this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios
+      this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios
+    }
+    if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+      this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
+      this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios;
+      this.gerenteAdministrativo = this.orden[0].nombreGerenteAdministrativo;
+      this.fechaAprobadoGerenteAdministrativo = this.orden[0].fechaAprobadoGerenteAdministrativo;
+    }
+  }
+
+  valoresFirma() {
+    let fecha = new Date().toString();
+    let fechaArray = fecha.split(' ');
+    let fechaEdit = fechaArray[0] + ' ' + fechaArray[1] + ' ' + fechaArray[2] + ' ' + fechaArray[3];
+
+    if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
+    this.gerenteUnegocios = this.nombreUsuario;
+    this.fechaAprobadoGerenteUnegocios = fechaEdit;
+    }
+    if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+      this.gerenteAdministrativo = this.nombreUsuario;
+      this.fechaAprobadoGerenteAdministrativo = fechaEdit;
+    }
+    if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+      this.directorOperativo = this.nombreUsuario;
+      this.fechaAprobadoDirector = fechaEdit;
+    }
+  }
+
+  aprobar() {
+    // this.obtenerfirmaUsuario();
+    this.usuarioAprueba = true; 
+    this.valoresFirma();
+  }
+
+  rechazar() {
+    this.gerenteUnegocios = ""
+    this.fechaAprobadoGerenteUnegocios = ""
+    this.rechazado = true;
+    this.usuarioRechaza = true;
+    this.modalRef.hide();
+    console.log(this.aprobarOrdenServicios.get('motivoRechazo').value);
+  }
+
+  cancelarRechazo() {
+    this.modalRef.hide();
+  }
+
+  onSubmit() {
+    let objOrden
+    let id = this.orden[0].id
+    console.log(id);
+    let AprobadoResponsableUnidadNegocios = "true";
+    let AprobadoGerenteAdministrativo = "true";
+
+    if(this.rechazado === true) {
+      objOrden = {
+        Estado: 'Rechazado',
+        MotivoRechazo: this.aprobarOrdenServicios.get('motivoRechazo').value,
+        ResponsableActual: this.usuarioActual
+      }
+    }
+
+    if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
+      objOrden = {
+        Estado: 'Pendiente aprobación gerente administrativo y financiero',
+        // ResponsableActual: this.responsableGerenteAdminisitrativo,
+        AprobadoResponsableUnidadNegocio: AprobadoResponsableUnidadNegocios,
+        FechaAprobadoGerenteUnegocios: this.fechaAprobadoGerenteUnegocios,
+        NombreGerenteUnegocios: this.usuarioActual.nombre
+      }
+    }
+
+    if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= 8000000) {
+      objOrden = {
+        Estado: 'Pendiente aprobación director operativo',
+        ResponsableActual: this.responsableDirectorOperativo,
+        AprobadoGerenteAdministrativo: AprobadoGerenteAdministrativo,
+        FechaAprobadoGerenteAdministrati: this.fechaAprobadoGerenteAdministrativo,
+        NombreGerenteAdministrativo: this.gerenteAdministrativo
+      }
+    }
+
+    if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000) {
+      objOrden = {
+        Estado: 'Aprobado',
+        ResponsableActual: this.responsableGerenteAdminisitrativo,
+        AprobadoResponsableUnidadNegocio: AprobadoResponsableUnidadNegocios,
+        FechaAprobadoGerenteUnegocios: this.fechaAprobadoGerenteUnegocios,
+        NombreGerenteUnegocios: this.usuarioActual.nombre
+      }
+    }
+
+    if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+      objOrden = {
+        Estado: 'Aprobado',
+        ResponsableActual: this.responsableDirectorOperativo,
+        AprobadoDirectorOperativo: true,
+        FechaAprobadoDirectorOperativo: this.fechaAprobadoDirector,
+        NombreDirectorOperativo: this.directorOperativo
+      }
+    }
+
+    let emailProps: EmailProperties;
+
+    let cuerpo = '<p>Cordial saludo</p>' +
+      '<br>' +
+      '<p>La orden de servicio número <strong>' + this.ordenNro + '</strong> Requiere de su aprobación</p>' +
+      '<br>' +
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/Orden-Servicio/index.aspx/aprobar-orden-servicio" target="_blank">aquí</a>.</p>';
+
+    if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
+      emailProps = {
+        To: [this.emailGerenteAdministrativo],
+        Subject: "Notificación de orden de servicio",
+        Body: cuerpo
+      };
+    }
+
+    if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+      emailProps = {
+        To: [this.emailDirectorOperativo],
+        Subject: "Notificación de orden de servicio",
+        Body: cuerpo,
+      };
+    }
+    if(this.usuarioAprueba === false && this.usuarioRechaza === false) {
+      this.MensajeAdvertencia('Debe aprobar o rechazar esta orden antes de poder guardar la información');
+      return false;
+    }
+    
+    this.servicio.ActualizarOrden(id, objOrden).then(
+      (respuesta) => {
+        if(this.orden[0].estado !== 'Pendiente aprobación director operativo') {
+          this.servicio.EnviarNotificacion(emailProps).then(
+            (res) => {
+              this.MensajeInfo("Se ha enviado una notificación para aprobación");
+              setTimeout(
+                () => {
+                  window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                  // this.spinnerService.hide();
+                }, 2000);
+            }
+          ).catch(
+            (error) => {
+              console.error(error);
+              this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
+              setTimeout(
+                () => {
+                  window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                  // this.spinnerService.hide();
+                }, 2000);
+            }
+          );
+        }
+
+        this.MensajeExitoso('La orden se aprobó con éxito');
+      }
+    ).catch(
+      err => {
+        console.log(err)
+        this.MensajeError('Error aprobando la solicitud');
+      }
+    )
+  }
+
   MensajeExitoso(mensaje: string) {
     this.toastr.successToastr(mensaje, 'Confirmado!');
   }
@@ -257,7 +513,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.toastr.warningToastr(mensaje, 'Alert!');
   }
 
-  MensajeInfo() {
-    this.toastr.infoToastr('This is info toast.', 'Info');
+  MensajeInfo(mensaje: string) {
+    this.toastr.infoToastr(mensaje, 'Info');
   }
 }
