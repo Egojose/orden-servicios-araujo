@@ -8,4 +8,5 @@ export const environment = {
   listaConfiguracion: 'ConfiguracionOrdenServicio',
   listaUnegocios: 'UnidadNegocios',
   ListaEmpleados: 'Empleados',
+  listaAprobadores: 'AprobadoresOrdenServicio'
 };
