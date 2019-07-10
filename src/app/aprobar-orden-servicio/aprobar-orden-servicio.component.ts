@@ -336,6 +336,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
       this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios
       this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios
+      this.firmaUsuario = this.orden[0].firma;
     }
     if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
       this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
@@ -351,6 +352,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     let fechaEdit = fechaArray[0] + ' ' + fechaArray[1] + ' ' + fechaArray[2] + ' ' + fechaArray[3];
 
     if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
+    this.firmaUsuario = this.firmaUsuario  
     this.gerenteUnegocios = this.nombreUsuario;
     this.fechaAprobadoGerenteUnegocios = fechaEdit;
     }
