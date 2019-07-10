@@ -70,7 +70,8 @@ export class Orden{
         public fechaAprobadoGerenteUnegocios: string,
         public fechaAprobadoGerenteAdministrativo: string,
         public fechaAprobadoDirector: string,
-        public usuarioSolicitante: any
+        public usuarioSolicitante: any,
+        public firma: any
     ) {}
 
     public static fromJson(element: any) {
@@ -145,7 +146,8 @@ export class Orden{
             element.FechaAprobadoGerenteUnegocios,
             element.FechaAprobadoGerenteAdministrati,
             element.FechaAprobadoDirectorOperativo,
-            element.UsuarioSolicitanteId
+            element.UsuarioSolicitanteId,
+            element.UrlFirma
         );
     }
 
