@@ -446,7 +446,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       '<br>' +
       '<p>La orden de servicio número <strong>' + this.ordenNro + '</strong> Requiere de su aprobación</p>' +
       '<br>' +
-      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/Orden-Servicio/index.aspx/aprobar-orden-servicio" target="_blank">aquí</a>.</p>';
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/aprobar-orden-servicio" target="_blank">aquí</a>.</p>';
 
     if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
       emailProps = {
