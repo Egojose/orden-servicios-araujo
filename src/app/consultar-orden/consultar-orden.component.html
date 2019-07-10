@@ -287,7 +287,7 @@
             <div class="row">
               <div class="col-md-4 offset-4 text-center">
                   <label for="Regimen" id="regimen">¿El pago se distribuye en 2 o más CECOs?</label>
-                  <mat-radio-group (change)="pagoCECOchange($event)" formControlName="distPago">
+                  <mat-radio-group  formControlName="distPago">
                     <mat-radio-button value="true">Sí</mat-radio-button>
                     <mat-radio-button value="false">No</mat-radio-button>
                   </mat-radio-group>
