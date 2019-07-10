@@ -62,11 +62,11 @@ export class SPServicio {
     }
 
     AgregarOrden(ObjOrden){
-        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaOrdenes).items.add(ObjOrden)
+        return this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaOrdenes).items.add(ObjOrden)
     }
 
     ActualizarOrden(IdOrden: number, objOrden) {
-        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaOrdenes).items.getById(IdOrden).update(objOrden);
+        return this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaOrdenes).items.getById(IdOrden).update(objOrden);
     }
 
     ObtenerGruposUsuario(usuarioId: number){
@@ -85,7 +85,7 @@ export class SPServicio {
     }
 
     ActualizarNroOrden(id: number, objConfig) {
-        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaConfiguracion).items.getById(id).update(objConfig);
+        return this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaConfiguracion).items.getById(id).update(objConfig);
     }
 
     consultarOrden() {
@@ -99,7 +99,7 @@ export class SPServicio {
     }
 
     obtenerFirmas(idUsuario){
-        let respuesta = this.ObtenerConfiguracionConPostGH().web.lists.getByTitle(environment.ListaEmpleados).items.filter("usuarioId eq '"+idUsuario+"'").select("*","usuario/EMail").expand("usuario").get();
+        let respuesta = this.ObtenerConfiguracionGH().web.lists.getByTitle(environment.ListaEmpleados).items.filter("usuarioId eq '"+idUsuario+"'").select("*","usuario/EMail").expand("usuario").get();
         return respuesta;
     }
 
@@ -109,12 +109,12 @@ export class SPServicio {
     }
 
     EnviarNotificacion(objNotificacion){
-        let respuesta = this.ObtenerConfiguracionConPost().utility.sendEmail(objNotificacion);
+        let respuesta = this.ObtenerConfiguracion().utility.sendEmail(objNotificacion);
         return respuesta;
     }
 
     ValidarUsuarioGerente() {
-        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaAprobadores).items.getAll();
+        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaAprobadores).items.getAll();
         return respuesta;
     } 
 
