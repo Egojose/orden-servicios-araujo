@@ -54,3 +54,8 @@ mat-checkbox {
 .rechazo {
     margin-right: 10px;
 }
+img {
+    width: 200px;
+    height: 70px;
+    display: inline-block;
+}
