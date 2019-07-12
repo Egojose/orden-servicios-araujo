@@ -1,11 +1,13 @@
 export class Aprobadores{
     constructor(public gerenteUnegocios: string,
-                public director: string) { }
+                public director: string,
+                public auxiliarContabilidad) { }
 
     public static fromJson(element: any) {
         return new Aprobadores(
             element.GerenteAdministrativoId,
-            element.DirectorOperativoId
+            element.DirectorOperativoId,
+            element.AuxiliarContabilidad
         );
     }
 

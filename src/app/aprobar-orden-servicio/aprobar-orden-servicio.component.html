@@ -163,12 +163,12 @@
               <div class="col-md-4">
                 <mat-form-field>
                   <input matInput placeholder="Precio" currencyMask
-                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio">
+                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio" (keyup)="changePrecio($event.target.value)">
                 </mat-form-field>
               </div>
               <div class="col-md-1">
                 <section class="iva">
-                  <mat-checkbox value="true" formControlName="tieneIva">IVA</mat-checkbox>
+                  <mat-checkbox value="true" formControlName="tieneIva" (change)="changeIva($event)">IVA</mat-checkbox>
                 </section>
               </div>
               <div class="col-md-3">
@@ -202,7 +202,7 @@
               </div>
               <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal">
+                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal" (change)="changeFecha($event.target.value)">
                     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                   </mat-form-field>
@@ -218,7 +218,7 @@
             <br>
             <div class="row">
               <div class="col-md-4 offset-4 text-center">
-                <mat-radio-group formControlName="formaPago">
+                <mat-radio-group formControlName="formaPago" (change)="formaPago($event)">
                   <mat-radio-button value="Único">Único</mat-radio-button>
                   <mat-radio-button value="Varios">Varios</mat-radio-button>
                 </mat-radio-group>
@@ -418,19 +418,19 @@
             <tr>
               <td>
                 <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
-                <img src="https://aribasas.sharepoint.com/sites/Intranet/Gestion-humana/Firmas/Julian%20Camilo%20Rodriguez.png" alt=""><br>
+                <img src="{{firmaJefe}}" alt=""><br>
                 <span>{{gerenteUnegocios}}</span><br>
                 <span>{{fechaAprobadoGerenteUnegocios}}</span>
               </td>
               <td>
                 <span class="text-center"><b>Gerente administrativo y finaciero</b></span><br><br>
-                <img src="{{firmaUsuario}}" alt="">
+                <img src="{{firmaGerenteAdmin}}" alt=""><br>
                 <span>{{gerenteAdministrativo}}</span><br>
                 <span>{{fechaAprobadoGerenteAdministrativo}}</span>
               </td>
               <td>
                 <span class="text-center"><b>Director operativo</b></span><br><br>
-                <img src="{{firmaUsuario}}" alt="">
+                <img src="{{firmaDirector}}" alt=""><br>
                 <span>{{directorOperativo}}</span><br>
                 <span>{{fechaAprobadoDirector}}</span>
               </td>
@@ -448,6 +448,9 @@
             </div>
             <div class="modal-body">
               <textarea class="form-control" name="" id="" cols="3" rows="3" formControlName="motivoRechazo"></textarea>
+              <!-- <mat-error>
+                  <span *ngIf="!aprobarOrdenServicios.get('motivoRechazo').valid && aprobarOrdenServicios.get('motivoRechazo').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+              </mat-error> -->
               <br>
               <button type="button" class="btn btn-danger rechazo" (click)="rechazar()">Enviar</button>
               <button type="button" class="btn btn-primary" (click)="cancelarRechazo()">Salir</button>
@@ -456,7 +459,8 @@
       </mat-expansion-panel>
     </mat-accordion>
     <br>
-    <button type="submit" class="btn btn-success btn-lg">Guardar orden</button>
-    <button type="button" class="btn btn-danger btn-lg">Cancelar</button>
+    <button type="submit" class="btn btn-success btn-lg">Enviar</button>
+    <button type="button" class="btn btn-danger btn-lg" (click)="cancelar()">Cancelar</button>
   </div>
+  <br>
 </form>

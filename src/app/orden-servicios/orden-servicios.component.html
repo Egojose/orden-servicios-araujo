@@ -228,7 +228,7 @@
               <div class="col-md-4">
                 <mat-form-field>
                   <input matInput placeholder="Precio" currencyMask
-                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio" (keyup)="changePrecio($event.target.value)">
+                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio" (change)="changePrecio($event.target.value)">
                 </mat-form-field>
                 <mat-error>
                     <span *ngIf="!generarOrdenServicios.get('precio').valid && generarOrdenServicios.get('precio').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
