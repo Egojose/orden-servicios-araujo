@@ -418,19 +418,19 @@
             <tr>
               <td>
                 <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
-                <img src="https://aribasas.sharepoint.com/sites/Intranet/Gestion-humana/Firmas/Julian%20Camilo%20Rodriguez.png" alt=""><br>
+                <img src="{{firmaJefe}}" alt=""><br>
                 <span>{{gerenteUnegocios}}</span><br>
                 <span>{{fechaAprobadoGerenteUnegocios}}</span>
               </td>
               <td>
                 <span class="text-center"><b>Gerente administrativo y finaciero</b></span><br><br>
-                <img src="{{firmaUsuario}}" alt="">
+                <img src="{{firmaGerenteAdmin}}" alt=""><br>
                 <span>{{gerenteAdministrativo}}</span><br>
                 <span>{{fechaAprobadoGerenteAdministrativo}}</span>
               </td>
               <td>
                 <span class="text-center"><b>Director operativo</b></span><br><br>
-                <img src="{{firmaUsuario}}" alt="">
+                <img src="{{firmaDirector}}" alt=""><br>
                 <span>{{directorOperativo}}</span><br>
                 <span>{{fechaAprobadoDirector}}</span>
               </td>
@@ -448,6 +448,9 @@
             </div>
             <div class="modal-body">
               <textarea class="form-control" name="" id="" cols="3" rows="3" formControlName="motivoRechazo"></textarea>
+              <!-- <mat-error>
+                  <span *ngIf="!aprobarOrdenServicios.get('motivoRechazo').valid && aprobarOrdenServicios.get('motivoRechazo').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+              </mat-error> -->
               <br>
               <button type="button" class="btn btn-danger rechazo" (click)="rechazar()">Enviar</button>
               <button type="button" class="btn btn-primary" (click)="cancelarRechazo()">Salir</button>
@@ -456,7 +459,8 @@
       </mat-expansion-panel>
     </mat-accordion>
     <br>
-    <button type="submit" class="btn btn-success btn-lg">Guardar orden</button>
+    <button type="submit" class="btn btn-success btn-lg">Enviar</button>
     <button type="button" class="btn btn-danger btn-lg" (click)="cancelar()">Cancelar</button>
   </div>
+  <br>
 </form>
