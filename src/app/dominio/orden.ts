@@ -63,6 +63,7 @@ export class Orden{
         public estado: string,
         public aprobadoUnegocios: boolean,
         public aprobadoGerenteAdministrativo: boolean,
+        public aprobadoDirector: string,
         public motivoRechazo: string,
         public nombreGerenteUnegocios: string,
         public nombreGerenteAdministrativo: string,
@@ -71,7 +72,9 @@ export class Orden{
         public fechaAprobadoGerenteAdministrativo: string,
         public fechaAprobadoDirector: string,
         public usuarioSolicitante: any,
-        public firma: any
+        public firmaResponsableUnegocio: string[],
+        public firmaResponsableGerenteAdmin: string[],
+        public firmaResponsableDirector: string[]
     ) {}
 
     public static fromJson(element: any) {
@@ -139,6 +142,7 @@ export class Orden{
             element.Estado,
             element.AprobadoResponsableUnidadNegocios,
             element.AprobadoGerenteAdministrativo,
+            element.AprobadoDirectorOperativo,
             element.MotivRechazo,
             element.NombreGerenteUnegocios,
             element.NombreGerenteAdministrativo,
@@ -147,7 +151,9 @@ export class Orden{
             element.FechaAprobadoGerenteAdministrati,
             element.FechaAprobadoDirectorOperativo,
             element.UsuarioSolicitanteId,
-            element.UrlFirma
+            element.FirmaResponsableUnidadNegocios,
+            element.FirmaGerenteAdministrativo,
+            element.FirmaDirectorOperativo
         );
     }
 
