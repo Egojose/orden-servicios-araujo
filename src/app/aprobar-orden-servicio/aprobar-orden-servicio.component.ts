@@ -10,6 +10,7 @@ import { Empleado } from '../dominio/empleado';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { Aprobadores } from '../dominio/aprobadores';
 import { EmailProperties } from '@pnp/sp';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-aprobar-orden-servicio',
@@ -72,7 +73,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
 
 
   constructor(
-    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService) { }
+    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private router: Router) { }
 
   ngOnInit() {
     this.ObtenerUsuarioActual();
@@ -411,6 +412,10 @@ export class AprobarOrdenServicioComponent implements OnInit {
   cancelarRechazo() {
     this.aprobarOrdenServicios.controls['motivoRechazo'].setValue("");
     this.modalRef.hide();
+  }
+
+  cancelar() {
+    this.router.navigate(['/orden-servicios'])
   }
 
   onSubmit() {
