@@ -1,4 +1,4 @@
-<h4 class="text-center">Aprobar orden de servicios</h4>
+<h4 class="text-center">Consultar orden de servicios</h4>
 <form action="" autocomplete="off" [formGroup]="aprobarOrdenServicios" class="main" id="ordenServicio">
   <div class="container">
     <mat-accordion>
@@ -10,7 +10,7 @@
         <mat-card>
           <div class="row">
             <div class="col-md-2 offset-10 text-center">
-              <label for="Nro de orden">Seleccionar orden</label>
+              <label for="Nro de orden">Número de orden</label>
               <mat-select formControlName="nroOrden" id="nroOrden" (selectionChange)="obtenerOrden($event)">
                   <mat-option *ngFor="let orden of ordenConsulta" [value]="orden.nroOrden">{{orden.nroOrden}}</mat-option>
               </mat-select>
@@ -20,62 +20,62 @@
           <div class="row">
             <div class="col-md-12">
               <mat-form-field>
-                <input matInput placeholder="Empresa solicitante" formControlName="empresaSolicitante">
+                <input matInput placeholder="Empresa solicitante" formControlName="empresaSolicitante" readonly>
               </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Nit" formControlName="nitSolicitante">
+                <input matInput placeholder="Nit" formControlName="nitSolicitante" readonly>
               </mat-form-field>
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Ciudad" formControlName="ciudadSolicitante">
+                <input matInput placeholder="Ciudad" formControlName="ciudadSolicitante" readonly>
               </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Teléfono" formControlName="telSolicitante">
+                <input matInput placeholder="Teléfono" formControlName="telSolicitante" readonly>
               </mat-form-field>  
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Dirección" formControlName="direccionSolicitante">
+                <input matInput placeholder="Dirección" formControlName="direccionSolicitante" readonly>
               </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Contacto" formControlName="contactoSolicitante">
+                <input matInput placeholder="Contacto" formControlName="contactoSolicitante" readonly>
               </mat-form-field>
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Email" formControlName="emailSolicitante">
+                <input matInput placeholder="Email" formControlName="emailSolicitante" readonly>
               </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12">
               <mat-form-field>
-                  <input matInput placeholder="Unidad de negocios" formControlName="unidadNegocios">
+                  <input matInput placeholder="Unidad de negocios" formControlName="unidadNegocios" readonly>
                 </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Nombre CECO" formControlName="nombreCECO">
+                <input matInput placeholder="Nombre CECO" formControlName="nombreCECO" readonly>
               </mat-form-field>
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Número CECO" formControlName="numeroCECO">
+                <input matInput placeholder="Número CECO" formControlName="numeroCECO" readonly> 
               </mat-form-field>
             </div>
           </div>
@@ -84,38 +84,38 @@
           <div class="row">
             <div class="col-md-12">
               <mat-form-field>
-                <input matInput placeholder="Razón social" formControlName="razonSocial">
+                <input matInput placeholder="Razón social" formControlName="razonSocial" readonly>
               </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="C.C/Nit" formControlName="nitProveedor">
+                <input matInput placeholder="C.C/Nit" formControlName="nitProveedor" readonly>
               </mat-form-field>
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Ciudad" formControlName="ciudadProveedor">
+                <input matInput placeholder="Ciudad" formControlName="ciudadProveedor" readonly>
               </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Teléfono" formControlName="telProveedor">
+                <input matInput placeholder="Teléfono" formControlName="telProveedor" readonly>
               </mat-form-field>
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Dirección" formControlName="direccionProveedor">
+                <input matInput placeholder="Dirección" formControlName="direccionProveedor" readonly>
               </mat-form-field>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12">
               <mat-form-field>
-                <input matInput placeholder="Contacto" formControlName="contactoProveedor">
+                <input matInput placeholder="Contacto" formControlName="contactoProveedor" readonly>
               </mat-form-field>
             </div>
           </div>
@@ -141,19 +141,19 @@
               <div class="col-md-12">
                   <div class="form-group">
                       <label for="Descripción general del servicio">Descripción general del servicio</label>
-                      <textarea class="form-control" rows="3" formControlName="descripcionServicios"></textarea>
+                      <textarea class="form-control" rows="3" formControlName="descripcionServicios" readonly></textarea>
                   </div>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6">
                 <mat-form-field>
-                  <input matInput placeholder="Cliente" formControlName="cliente">
+                  <input matInput placeholder="Cliente" formControlName="cliente" readonly>
                 </mat-form-field>
               </div>
               <div class="col-md-6">
                 <mat-form-field>
-                  <input matInput placeholder="Nro Job" formControlName="job">
+                  <input matInput placeholder="Nro Job" formControlName="job" readonly>
                 </mat-form-field>
               </div>
             </div>
@@ -163,7 +163,7 @@
               <div class="col-md-4">
                 <mat-form-field>
                   <input matInput placeholder="Precio" currencyMask
-                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio" (keyup)="changePrecio($event.target.value)">
+                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio" (keyup)="changePrecio($event.target.value)" readonly>
                 </mat-form-field>
               </div>
               <div class="col-md-1">
@@ -186,7 +186,7 @@
             <div class="row">
               <div class="col-md-12">
                 <mat-form-field>
-                  <input matInput placeholder="Valor en letras" formControlName="valorLetras">
+                  <input matInput placeholder="Valor en letras" formControlName="valorLetras" readonly>
                 </mat-form-field>
               </div>
             </div>
@@ -195,21 +195,21 @@
             <div class="row">
               <div class="col-md-4">
                   <mat-form-field>
-                      <input matInput [matDatepicker]="picker" placeholder="Fecha de inicio" formControlName="fechaInicio">
+                      <input matInput [matDatepicker]="picker" placeholder="Fecha de inicio" formControlName="fechaInicio" readonly>
                       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                       <mat-datepicker #picker></mat-datepicker>
                     </mat-form-field>
               </div>
               <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal" (change)="changeFecha($event.target.value)">
+                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal" (change)="changeFecha($event.target.value)" readonly>
                     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                   </mat-form-field>
               </div>
               <div class="col-md-4">
                 <mat-form-field>
-                  <input matInput placeholder="Total días del contrato" formControlName="totalDias">
+                  <input matInput placeholder="Total días del contrato" formControlName="totalDias" readonly>
                 </mat-form-field>
               </div>
             </div>
@@ -228,7 +228,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker3" placeholder="Fecha de pago" formControlName="fechaPago">
+                    <input matInput [matDatepicker]="picker3" placeholder="Fecha de pago" formControlName="fechaPago" readonly>
                     <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
                     <mat-datepicker #picker3></mat-datepicker>
                   </mat-form-field>
@@ -239,21 +239,21 @@
               <div class="row">
                 <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker4" placeholder="Fecha de pago 1" formControlName="Pago1">
+                    <input matInput [matDatepicker]="picker4" placeholder="Fecha de pago 1" formControlName="Pago1" readonly>
                     <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
                     <mat-datepicker #picker4></mat-datepicker>
                   </mat-form-field>
                 </div>
                 <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker5" placeholder="Fecha de pago 2" formControlName="Pago2">
+                    <input matInput [matDatepicker]="picker5" placeholder="Fecha de pago 2" formControlName="Pago2" readonly>
                     <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
                     <mat-datepicker #picker5></mat-datepicker>
                   </mat-form-field>
                 </div>
                 <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker6" placeholder="Fecha de pago 3" formControlName="Pago3">
+                    <input matInput [matDatepicker]="picker6" placeholder="Fecha de pago 3" formControlName="Pago3" readonly>
                     <mat-datepicker-toggle matSuffix [for]="picker6"></mat-datepicker-toggle>
                     <mat-datepicker #picker6></mat-datepicker>
                   </mat-form-field>
@@ -262,21 +262,21 @@
               <div class="row">
                 <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker7" placeholder="Fecha de pago 4" formControlName="Pago4">
+                    <input matInput [matDatepicker]="picker7" placeholder="Fecha de pago 4" formControlName="Pago4" readonly>
                     <mat-datepicker-toggle matSuffix [for]="picker7"></mat-datepicker-toggle>
                     <mat-datepicker #picker7></mat-datepicker>
                   </mat-form-field>
                 </div>
                 <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker8" placeholder="Fecha de pago 5" formControlName="Pago5">
+                    <input matInput [matDatepicker]="picker8" placeholder="Fecha de pago 5" formControlName="Pago5" readonly>
                     <mat-datepicker-toggle matSuffix [for]="picker8"></mat-datepicker-toggle>
                     <mat-datepicker #picker8></mat-datepicker>
                   </mat-form-field>
                 </div>
                 <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker9" placeholder="Fecha de pago 6" formControlName="Pago6">
+                    <input matInput [matDatepicker]="picker9" placeholder="Fecha de pago 6" formControlName="Pago6" readonly>
                     <mat-datepicker-toggle matSuffix [for]="picker9"></mat-datepicker-toggle>
                     <mat-datepicker #picker9></mat-datepicker>
                   </mat-form-field>
@@ -297,36 +297,36 @@
               <div class="row">
                 <div class="col-md-6">
                   <mat-form-field>
-                    <input matInput placeholder="CECO 1" formControlName="ceco1">
+                    <input matInput placeholder="CECO 1" formControlName="ceco1" readonly>
                   </mat-form-field>
                 </div>
                 <div class="col-md-6">
                   <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1">
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 2" formControlName="ceco2">
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco2">
+                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1" readonly>
                   </mat-form-field>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-6">
                   <mat-form-field>
-                    <input matInput placeholder="CECO 3" formControlName="ceco3">
+                    <input matInput placeholder="CECO 2" formControlName="ceco2" readonly>
                   </mat-form-field>
                 </div>
                 <div class="col-md-6">
                   <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco3">
+                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco2" readonly>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field>
+                    <input matInput placeholder="CECO 3" formControlName="ceco3" readonly>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field>
+                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco3" readonly>
                   </mat-form-field>
                 </div>
               </div>
@@ -366,27 +366,27 @@
             <div class="row">
               <div class="col-md-6">
                 <h6 class="text-center"><b>Cumplimiento</b></h6>
-                <p><input type="text" class="text-center inputp" formControlName="porcentajeCumplimiento"> % del valor del contrato, válido por la duración del mismo y  <input type="text" class="text-center inputp" formControlName="mesesCumplimiento"> meses adicionales</p>
+                <p><input type="text" class="text-center inputp" formControlName="porcentajeCumplimiento" readonly> % del valor del contrato, válido por la duración del mismo y  <input type="text" class="text-center inputp" formControlName="mesesCumplimiento" readonly> meses adicionales</p>
               </div>
               <div class="col-md-6">
                 <h6 class="text-center"><b>Manejo de anticipos</b></h6>
-                <p><input type="text" class="text-center inputp" formControlName="porcentajeAnticipos">% del valor del anticipo, válido por la duración del contrato y  <input type="text" class="text-center inputp" formControlName="mesesAnticipos"> meses adicionales</p>
+                <p><input type="text" class="text-center inputp" formControlName="porcentajeAnticipos" readonly>% del valor del anticipo, válido por la duración del contrato y  <input type="text" class="text-center inputp" formControlName="mesesAnticipos" readonly> meses adicionales</p>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6">
                 <h6 class="text-center"><b>Pago de salarios</b></h6>
-                <p><input type="text" class="text-center inputp" formControlName="porcentajeSalarios">% del valor del contrato, válido por la duración del mismo y  <input type="text" class="text-center inputp" formControlName="mesesSalarios"> años adicionales</p>
+                <p><input type="text" class="text-center inputp" formControlName="porcentajeSalarios" readonly>% del valor del contrato, válido por la duración del mismo y  <input type="text" class="text-center inputp" formControlName="mesesSalarios" readonly> años adicionales</p>
               </div>
               <div class="col-md-6">
                 <h6 class="text-center"><b>Responsabilidad civil extracontractual</b></h6>
-                <p><input type="text" class="text-center inputp" formControlName="porcentajeResponsabilidad">% del valor del contrato, válido por la duración del contrato</p>
+                <p><input type="text" class="text-center inputp" formControlName="porcentajeResponsabilidad" readonly>% del valor del contrato, válido por la duración del contrato</p>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6">
                 <h6 class="text-center"><b>Calidad del servicio</b></h6>
-                <p><input type="text" class="text-center inputp" formControlName="porcentajeCalidad">% del valor del contrato, válido por <input type="text" class="text-center inputp" formControlName="mesesCalidad1"> meses a partir de la finalización del contrato y <input type="text" class="text-center inputp" formControlName="mesesCalidad2"> meses más</p>
+                <p><input type="text" class="text-center inputp" formControlName="porcentajeCalidad" readonly>% del valor del contrato, válido por <input type="text" class="text-center inputp" formControlName="mesesCalidad1" readonly> meses a partir de la finalización del contrato y <input type="text" class="text-center inputp" formControlName="mesesCalidad2"> meses más</p>
               </div>
               <div class="col-md-6">
                 <h6 class="text-center"><b>Otros</b></h6>
@@ -418,19 +418,19 @@
             <tr>
               <td>
                 <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
-                <img src="" alt="">
+                <img src="{{firmaJefe}}" alt=""><br>
                 <span>{{gerenteUnegocios}}</span><br>
                 <span>{{fechaAprobadoGerenteUnegocios}}</span>
               </td>
               <td>
                 <span class="text-center"><b>Gerente administrativo y finaciero</b></span><br><br>
-                <img src="" alt="">
+                <img src="{{firmaGerenteAdmin}}" alt=""><br>
                 <span>{{gerenteAdministrativo}}</span><br>
                 <span>{{fechaAprobadoGerenteAdministrativo}}</span>
               </td>
               <td>
                 <span class="text-center"><b>Director operativo</b></span><br><br>
-                <img src="" alt="">
+                <img src="{{firmaDirector}}" alt=""><br>
                 <span>{{directorOperativo}}</span><br>
                 <span>{{fechaAprobadoDirector}}</span>
               </td>
@@ -440,7 +440,6 @@
       </mat-expansion-panel>
     </mat-accordion>
     <br>
-    <button type="button" class="btn btn-default btn-lg" (click)="exportAs('pdf', 'portrait')">Generar pdf</button>
   </div>
 </form>
 
