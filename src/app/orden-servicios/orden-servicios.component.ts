@@ -207,9 +207,7 @@ export class OrdenServiciosComponent implements OnInit {
 
   changeIva($event) {
     this. calcularIva();
-    // if($event.target.checked === false) {
-    //   this.generarOrdenServicios.controls['iva'].setValue(0);
-    // }
+    this.calcularTotal();
   }
 
   pagoCECOchange($event) {
@@ -351,7 +349,8 @@ export class OrdenServiciosComponent implements OnInit {
     let polizaVida = this.generarOrdenServicios.get('polizaVida').value;
     let polizaVehiculos = this.generarOrdenServicios.get('polizaVehiculos').value;
     let tieneIva = this.generarOrdenServicios.get('tieneIva').value;
-    let responsableActual = this.empleadoEditar[0].jefe;
+    let responsableActual = this.usuarioActual.IdJefeDirecto;
+    // let responsableActual = this.empleadoEditar[0].jefe;
     let usuarioSolicitante = this.usuarioActual.id;
     let objOrden;
 
