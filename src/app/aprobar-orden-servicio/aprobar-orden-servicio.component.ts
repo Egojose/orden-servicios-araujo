@@ -35,9 +35,17 @@ export class AprobarOrdenServicioComponent implements OnInit {
   ordenConsulta: Orden[]= [];
   mostrarGarantia: boolean;
   nombreUsuario: any;
+  nombre: any;
   emailUsuario: any;
+  emailSolicitante: any;
   idUsuario: number;
+  firmaJefe: any[];
+  cargarFirmajefe: any[];
+  cargarFirmaGerente: any[];
+  cargarFirmaDirector: any[];
   firmaUsuario: any[];
+  firmaGerenteAdmin: any[];
+  firmaDirector: any[];
   usuarioActual: Usuario;
   empleadoEditar: Empleado[] = [];
   jefe;
@@ -48,6 +56,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   directorOperativo: string;
   responsableGerenteAdminisitrativo: string;
   responsableDirectorOperativo: string;
+  responsableAuxContabilidad: string;
   modalRef: BsModalRef;
   rechazado: boolean;
   fechaAprobadoGerenteAdministrativo: any;
@@ -55,6 +64,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   aprobadores: Aprobadores[] = [];
   emailGerenteAdministrativo: string;
   emailDirectorOperativo: string;
+  emailAuxiliarContabilidad: string;
   ordenNro: any;
   usuarioAprueba: boolean;
   usuarioRechaza: boolean;
@@ -73,7 +83,6 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.usuarioAprueba = false;
     this.usuarioRechaza = false;
     this.registrarControles();
-    this.consultarOrden();
     this.obtenerDatosAprobadores();
   }
 
@@ -139,7 +148,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       polizaVida: [''],
       polizaVehiculos: [''],
       gerenteUnegocios: [''],
-      motivoRechazo: ['']
+      motivoRechazo: ['', Validators.required]
     })
   }
 
@@ -156,36 +165,28 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.idUsuario = this.usuarioActual.id;
         sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
         this.obtenerInfoEmpleado();
+        this.consultarOrden();
       }, err => {
         console.log('Error obteniendo usuario: ' + err);
       }
     )
   };
 
-  obtenerJefe() {
-    let id =  this.usuarioActual.id;
-    this.servicio.obtenerInfoEmpleadoSeleccionado(id).subscribe(
-      (respuesta) => {
-      
-      }
-    )
-    
-  }
-
   obtenerInfoEmpleado() {
     let idUser = this.usuarioActual.id;
     console.log(idUser)
     this.servicio.obtenerInfoEmpleadoSeleccionado(idUser).subscribe(
       (respuesta) => {
+        console.log(respuesta)
         this.empleadoEditar = Empleado.fromJsonList(respuesta);
-        this.jefe = this.empleadoEditar[0].jefe.nombre;
+        this.jefe = respuesta[0].JefeId
         console.log(this.jefe);
       }
     )
   }
 
   consultarOrden() {
-    this.servicio.consultarOrden().subscribe(
+    this.servicio.consultarOrden(this.usuarioActual.id).subscribe(
       (respuesta) => {
         this.ordenConsulta = Orden.fromJsonList(respuesta);
       }
@@ -197,12 +198,20 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.servicio.obtenerOrden(ordenSeleccionada).subscribe(
       (respuesta) => {
         this.orden = Orden.fromJsonList(respuesta);
+        this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
+        if( this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+          this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
+        }
+        else if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+          this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
+          this.cargarFirmaGerente = respuesta[0].FirmaGerenteAdministrativo.Url
+        }
         this.ordenNro = this.aprobarOrdenServicios.get('nroOrden').value;
         this.valoresPorDefecto();
         this.cargarValoresFirma();
+        this.obtenerfirmaUsuario();
       }
     )
-    
   }
 
   obtenerDatosAprobadores() {
@@ -211,10 +220,12 @@ export class AprobarOrdenServicioComponent implements OnInit {
         console.log(respuesta);
        this.emailGerenteAdministrativo = respuesta[0].GerenteAdministrativo.EMail;
        this.emailDirectorOperativo = respuesta[0].DirectorOperativo.EMail;
-       this.responsableGerenteAdminisitrativo = respuesta[0].GerenteAdministrativo;
-       this.responsableDirectorOperativo = respuesta[0].DirectorOperativo;
-      //  this.gerenteAdministrativo = respuesta[0].GerenteAdministrativo.Title;
-      //  this.directorOperativo = respuesta[0].DirectorOperativo.Title;
+       this.emailAuxiliarContabilidad = respuesta[0].AuxiliarContabilidad.EMail;
+       this.responsableGerenteAdminisitrativo = respuesta[0].GerenteAdministrativo.ID;
+       console.log(this.responsableGerenteAdminisitrativo);
+       this.responsableDirectorOperativo = respuesta[0].DirectorOperativo.ID;
+       console.log(this.responsableDirectorOperativo)
+       this.responsableAuxContabilidad = respuesta[0].AuxiliarContabilidad.ID;
       }
     )
   }
@@ -285,11 +296,13 @@ export class AprobarOrdenServicioComponent implements OnInit {
   obtenerfirmaUsuario(): any {
     this.servicio.obtenerFirmas(this.usuarioActual.id).then(
       (respuesta)=>{
-        this.nombreUsuario = respuesta[0].Title;
+        console.log(respuesta);
+        this.nombre = respuesta[0].Title;
         this.emailUsuario = respuesta[0].usuario.EMail;
         this.idUsuario = respuesta[0].usuarioId;
         if (respuesta[0].UrlFirma !== null) {
           this.firmaUsuario = respuesta[0].UrlFirma.Url;
+          console.log(this.firmaUsuario);
         }       
       }
     ).catch(
@@ -334,13 +347,17 @@ export class AprobarOrdenServicioComponent implements OnInit {
 
   cargarValoresFirma() {
     if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
-      this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios
-      this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios
-      this.firmaUsuario = this.orden[0].firma;
-    }
-    if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+      this.firmaJefe = this.cargarFirmajefe;
+      console.log(this.firmaJefe);
       this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
       this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios;
+    }
+    else if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+      this.firmaJefe = this.cargarFirmajefe;
+      console.log(this.firmaJefe);
+      this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
+      this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios;
+      this.firmaGerenteAdmin = this.cargarFirmaGerente;
       this.gerenteAdministrativo = this.orden[0].nombreGerenteAdministrativo;
       this.fechaAprobadoGerenteAdministrativo = this.orden[0].fechaAprobadoGerenteAdministrativo;
     }
@@ -350,105 +367,105 @@ export class AprobarOrdenServicioComponent implements OnInit {
     let fecha = new Date().toString();
     let fechaArray = fecha.split(' ');
     let fechaEdit = fechaArray[0] + ' ' + fechaArray[1] + ' ' + fechaArray[2] + ' ' + fechaArray[3];
-
-    if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
-    this.firmaUsuario = this.firmaUsuario  
-    this.gerenteUnegocios = this.nombreUsuario;
-    this.fechaAprobadoGerenteUnegocios = fechaEdit;
+    
+    if(this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
+      this.firmaJefe = this.firmaUsuario;
+      this.gerenteUnegocios = this.nombreUsuario;
+      this.fechaAprobadoGerenteUnegocios = fechaEdit;
     }
-    if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+    else if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+      this.firmaGerenteAdmin = this.firmaUsuario;
       this.gerenteAdministrativo = this.nombreUsuario;
       this.fechaAprobadoGerenteAdministrativo = fechaEdit;
     }
-    if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+    else if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+      this.firmaDirector = this.firmaUsuario;
       this.directorOperativo = this.nombreUsuario;
       this.fechaAprobadoDirector = fechaEdit;
     }
   }
 
   aprobar() {
-    // this.obtenerfirmaUsuario();
-    this.usuarioAprueba = true; 
+    this.usuarioAprueba = true;
+    this.aprobarOrdenServicios.controls['motivoRechazo'].setValue(""); 
     this.valoresFirma();
+    this.MensajeInfo('La orden ha sido aprobada! Haga click en "Enviar" para terminar')
   }
 
   rechazar() {
-    this.gerenteUnegocios = ""
-    this.fechaAprobadoGerenteUnegocios = ""
-    this.rechazado = true;
-    this.usuarioRechaza = true;
-    this.modalRef.hide();
-    console.log(this.aprobarOrdenServicios.get('motivoRechazo').value);
+    if(this.aprobarOrdenServicios.get('motivoRechazo').value === ""){
+      this.MensajeAdvertencia('Debe especificar el motivo de rechazo');
+      return false;
+    }
+    else {
+      this.gerenteUnegocios = ""
+      this.fechaAprobadoGerenteUnegocios = ""
+      this.firmaUsuario = null;
+      this.rechazado = true;
+      this.usuarioRechaza = true;
+      this.MensajeInfo('La orden ha sido rechazada! Haga click en "Enviar" para terminar')
+      this.modalRef.hide();
+    }
   }
 
   cancelarRechazo() {
+    this.aprobarOrdenServicios.controls['motivoRechazo'].setValue("");
     this.modalRef.hide();
   }
 
   onSubmit() {
     let objOrden
     let id = this.orden[0].id
-    console.log(id);
     let AprobadoResponsableUnidadNegocios = "true";
     let AprobadoGerenteAdministrativo = "true";
-
-    if(this.rechazado === true) {
-      objOrden = {
-        Estado: 'Rechazado',
-        MotivoRechazo: this.aprobarOrdenServicios.get('motivoRechazo').value,
-        ResponsableActual: this.usuarioActual
-      }
-    }
-
-    if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
-      objOrden = {
-        Estado: 'Pendiente aprobación gerente administrativo y financiero',
-        // ResponsableActual: this.responsableGerenteAdminisitrativo,
-        AprobadoResponsableUnidadNegocio: AprobadoResponsableUnidadNegocios,
-        FechaAprobadoGerenteUnegocios: this.fechaAprobadoGerenteUnegocios,
-        NombreGerenteUnegocios: this.usuarioActual.nombre
-      }
-    }
-
-    if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= 8000000) {
-      objOrden = {
-        Estado: 'Pendiente aprobación director operativo',
-        ResponsableActual: this.responsableDirectorOperativo,
-        AprobadoGerenteAdministrativo: AprobadoGerenteAdministrativo,
-        FechaAprobadoGerenteAdministrati: this.fechaAprobadoGerenteAdministrativo,
-        NombreGerenteAdministrativo: this.gerenteAdministrativo
-      }
-    }
-
-    if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000) {
-      objOrden = {
-        Estado: 'Aprobado',
-        ResponsableActual: this.responsableGerenteAdminisitrativo,
-        AprobadoResponsableUnidadNegocio: AprobadoResponsableUnidadNegocios,
-        FechaAprobadoGerenteUnegocios: this.fechaAprobadoGerenteUnegocios,
-        NombreGerenteUnegocios: this.usuarioActual.nombre
-      }
-    }
-
-    if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
-      objOrden = {
-        Estado: 'Aprobado',
-        ResponsableActual: this.responsableDirectorOperativo,
-        AprobadoDirectorOperativo: true,
-        FechaAprobadoDirectorOperativo: this.fechaAprobadoDirector,
-        NombreDirectorOperativo: this.directorOperativo
-      }
-    }
 
     let emailProps: EmailProperties;
 
     let cuerpo = '<p>Cordial saludo</p>' +
       '<br>' +
-      '<p>La orden de servicio número <strong>' + this.ordenNro + '</strong> Requiere de su aprobación</p>' +
+      '<p>La orden de servicio número <strong>' + this.ordenNro + '</strong> requiere de su aprobación</p>' +
       '<br>' +
       '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/aprobar-orden-servicio" target="_blank">aquí</a>.</p>';
 
+    let cuerpoAprobado = '<p>Cordial saludo</p>' +
+      '<br>' +
+      '<p>La orden de servicio número <strong>' + this.ordenNro + '</strong> ha sido aprobada y está lista para continuar el proceso.</p>' +
+      '<br>' +
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/consultar-orden" target="_blank">aquí</a>.</p>';
+
+    let cuerpoRechazado = '<p>Cordial saludo</p>' +
+        '<br>' +
+        '<p>La orden de servicio número <strong>' + this.ordenNro + '</strong> ha sido rechazada por el usuario <strong>' + this.usuarioActual.nombre + '</strong> por el motivo <strong>"' + this.aprobarOrdenServicios.get('motivoRechazo').value + '"</strong></p>' +
+        '<br>' +
+        '<p>Si necesita más información por favor comuníquese con el responsable del rechazo.</p>'; 
+
+    if(this.rechazado === true) {
+      objOrden = {
+        Estado: 'Rechazado',
+        MotivoRechazo: this.aprobarOrdenServicios.get('motivoRechazo').value,
+        ResponsableActualId: null
+      }
+      emailProps = {
+        To: [this.emailSolicitante],
+        Subject: "Notificación de orden de servicio",
+        Body: cuerpoRechazado,
+      };
+    }
+
     if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
+      let url = this.firmaUsuario
+      objOrden = {
+        Estado: 'Pendiente aprobación gerente administrativo y financiero',
+        ResponsableActualId: this.responsableGerenteAdminisitrativo,
+        AprobadoResponsableUnidadNegocio: AprobadoResponsableUnidadNegocios,
+        FechaAprobadoGerenteUnegocios: this.fechaAprobadoGerenteUnegocios,
+        NombreGerenteUnegocios: this.usuarioActual.nombre,
+        FirmaResponsableUnidadNegocios: {
+          "__metadata": { "type": "SP.FieldUrlValue" },
+          "Description": "Firma gerente unidad de negocios",
+          "Url": url
+         }
+      }
       emailProps = {
         To: [this.emailGerenteAdministrativo],
         Subject: "Notificación de orden de servicio",
@@ -456,13 +473,110 @@ export class AprobarOrdenServicioComponent implements OnInit {
       };
     }
 
-    if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+    if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= 8000000) {
+      let url = this.firmaGerenteAdmin;
+      objOrden = {
+        Estado: 'Pendiente aprobación director operativo',
+        ResponsableActualId: this.responsableDirectorOperativo,
+        AprobadoGerenteAdministrativo: AprobadoGerenteAdministrativo,
+        FechaAprobadoGerenteAdministrati: this.fechaAprobadoGerenteAdministrativo,
+        NombreGerenteAdministrativo: this.gerenteAdministrativo,
+        FirmaGerenteAdministrativo: {
+          "__metadata": { "type": "SP.FieldUrlValue" },
+          "Description": "Firma gerente administrativo",
+          "Url": url
+         }
+      }
       emailProps = {
         To: [this.emailDirectorOperativo],
         Subject: "Notificación de orden de servicio",
         Body: cuerpo,
       };
     }
+
+    if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000) {
+      let url = this.firmaGerenteAdmin;
+      objOrden = {
+        Estado: 'Aprobado',
+        ResponsableActualId: this.responsableAuxContabilidad,
+        AprobadoGerenteAdministrativo: AprobadoGerenteAdministrativo,
+        FechaAprobadoGerenteAdministrati: this.fechaAprobadoGerenteAdministrativo,
+        NombreGerenteAdministrativo: this.usuarioActual.nombre,
+        FirmaGerenteAdministrativo: {
+          "__metadata": { "type": "SP.FieldUrlValue" },
+          "Description": "Firma gerente administrativo",
+          "Url": url
+         }
+      }
+      emailProps = {
+        To: [this.emailAuxiliarContabilidad],
+        Subject: "Notificación de orden de servicio",
+        Body: cuerpoAprobado,
+      };
+    }
+
+    if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+      let url = this.firmaDirector
+      objOrden = {
+        Estado: 'Aprobado',
+        ResponsableActualId: this.responsableAuxContabilidad,
+        AprobadoDirectorOperativo: true,
+        FechaAprobadoDirectorOperativo: this.fechaAprobadoDirector,
+        NombreDirectorOperativo: this.directorOperativo,
+        FirmaDirectorOperativo: {
+          "__metadata": { "type": "SP.FieldUrlValue" },
+          "Description": "Firma director operativo",
+          "Url": url
+         }
+      }
+      emailProps = {
+        To: [this.emailAuxiliarContabilidad],
+        Subject: "Notificación de orden de servicio",
+        Body: cuerpoAprobado,
+      };
+    }
+
+
+    // if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
+    //   emailProps = {
+    //     To: [this.emailGerenteAdministrativo],
+    //     Subject: "Notificación de orden de servicio",
+    //     Body: cuerpo
+    //   };
+    // }
+
+    // if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+    //   emailProps = {
+    //     To: [this.emailDirectorOperativo],
+    //     Subject: "Notificación de orden de servicio",
+    //     Body: cuerpo,
+    //   };
+    // }
+
+    // if((this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000)) {
+    //   emailProps = {
+    //     To: [this.emailAuxiliarContabilidad],
+    //     Subject: "Notificación de orden de servicio",
+    //     Body: cuerpoAprobado,
+    //   };
+    // }
+
+    // if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+    //   emailProps = {
+    //     To: [this.emailAuxiliarContabilidad],
+    //     Subject: "Notificación de orden de servicio",
+    //     Body: cuerpoAprobado,
+    //   };
+    // }
+
+    // if(this.rechazado) {
+    //   emailProps = {
+    //     To: [this.emailSolicitante],
+    //     Subject: "Notificación de orden de servicio",
+    //     Body: cuerpoRechazado,
+    //   };
+    // }
+
     if(this.usuarioAprueba === false && this.usuarioRechaza === false) {
       this.MensajeAdvertencia('Debe aprobar o rechazar esta orden antes de poder guardar la información');
       return false;
@@ -470,7 +584,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     
     this.servicio.ActualizarOrden(id, objOrden).then(
       (respuesta) => {
-        if(this.orden[0].estado !== 'Pendiente aprobación director operativo') {
+        if(this.orden[0].estado !== 'Aprobado') {
           this.servicio.EnviarNotificacion(emailProps).then(
             (res) => {
               this.MensajeInfo("Se ha enviado una notificación para aprobación");
