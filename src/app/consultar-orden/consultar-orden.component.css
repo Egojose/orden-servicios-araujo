@@ -50,3 +50,9 @@ mat-checkbox {
 .btn-success {
     margin-right: 20px;
 }
+
+img {
+    width: 200px;
+    height: 70px;
+    display: inline-block;
+}
