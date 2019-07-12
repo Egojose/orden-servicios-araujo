@@ -17,16 +17,6 @@ import { Aprobadores } from '../dominio/aprobadores';
 })
 export class ConsultarOrdenComponent implements OnInit {
 
-  config: ExportAsConfig = {
-    type: 'pdf',
-    elementId: 'ordenServicio',
-    options: {
-      jsPDF: {
-        orientation: 'landscape'
-      }
-    }
-  };
-
   aprobarOrdenServicios: FormGroup;
   panelOpenState = false;
   panelOpenState1 = false;
@@ -67,12 +57,22 @@ export class ConsultarOrdenComponent implements OnInit {
   ordenNro: any;
   usuarioAprueba: boolean;
   usuarioRechaza: boolean;
+  emailSolicitante: any;
+  nombre: any;
+  cargarFirmajefe: any[];
+  cargarFirmaGerente: any[];
+  cargarFirmaDirector: any[];
+  firmaJefe: any[];
+  firmaGerenteAdmin: any[];
+  firmaDirector: any[];
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService) { }
 
   ngOnInit() {
+    this.pagoUnico = false;
+    this.pagoVarios = false;
     this.registrarControles();
-    this.consultarOrden();
+    // this.consultarOrden();
     this.ObtenerUsuarioActual();
   }
 
@@ -137,22 +137,9 @@ export class ConsultarOrdenComponent implements OnInit {
       mesesCalidad2: [''],
       polizaVida: [''],
       polizaVehiculos: [''],
-      gerenteUnegocios: [''],
+      
       motivoRechazo: ['']
     })
-  }
-
-  exportAs(type: SupportedExtensions, opt?: string) {
-    this.config.type = type;
-    if (opt) {
-      this.config.options.jsPDF.orientation = opt;
-    }
-    this.exportar.save(this.config, 'myFile').subscribe(() => {
-      // save started
-    });
-    // this.exportAsService.get(this.config).subscribe(content => {
-    //   console.log(content);
-    // });
   }
 
   ObtenerUsuarioActual() {
@@ -161,8 +148,9 @@ export class ConsultarOrdenComponent implements OnInit {
         this.usuarioActual = new Usuario(respuesta.Title, respuesta.email, respuesta.Id);
         this.nombreUsuario = this.usuarioActual.nombre;
         this.idUsuario = this.usuarioActual.id;
+        console.log(this.idUsuario);
         sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
-        // this.obtenerInfoEmpleado();
+        this.consultarOrden();
       }, err => {
         console.log('Error obteniendo usuario: ' + err);
       }
@@ -170,7 +158,8 @@ export class ConsultarOrdenComponent implements OnInit {
   };
 
   consultarOrden() {
-    this.servicio.consultarOrden().subscribe(
+    console.log(this.usuarioActual.id);
+    this.servicio.consultarOrden(this.usuarioActual.id).subscribe(
       (respuesta) => {
         this.ordenConsulta = Orden.fromJsonList(respuesta);
       }
@@ -181,13 +170,24 @@ export class ConsultarOrdenComponent implements OnInit {
     let ordenSeleccionada = event.value;
     this.servicio.obtenerOrden(ordenSeleccionada).subscribe(
       (respuesta) => {
+        console.log(respuesta);
         this.orden = Orden.fromJsonList(respuesta);
+        this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
+        this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url;
+        console.log(this.cargarFirmajefe)
+        this.cargarFirmaGerente = respuesta[0].FirmaGerenteAdministrativo.Url;
+
+        if(this.orden[0].aprobadoDirector) {
+          this.cargarFirmaDirector = respuesta[0].FirmaDirectorOperativo.Url;
+        }
+        else {
+          this.firmaDirector = null;
+        }
         this.ordenNro = this.aprobarOrdenServicios.get('nroOrden').value;
         this.valoresPorDefecto();
         this.cargarValoresFirma();
       }
     )
-    
   }
 
   valoresPorDefecto() {
@@ -250,6 +250,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['polizaVida'].setValue(this.orden[0].polizaColectiva);
     this.aprobarOrdenServicios.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
     this.aprobarOrdenServicios.controls['distPago'].setValue(this.orden[0].distPago);
+    this.switchValores(); 
   }
 
   switchValores() {
@@ -285,17 +286,21 @@ export class ConsultarOrdenComponent implements OnInit {
   }
 
   cargarValoresFirma() {
-    if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
-      this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios
-      this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios
+    this.firmaJefe = this.cargarFirmajefe;
+    this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
+    this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios;
+    this.firmaGerenteAdmin = this.cargarFirmaGerente;
+    this.gerenteAdministrativo = this.orden[0].nombreGerenteAdministrativo;
+    this.fechaAprobadoGerenteAdministrativo = this.orden[0].fechaAprobadoGerenteAdministrativo;
+    if (!this.orden[0].aprobadoDirector) {
+      this.firmaDirector = null
+      this.directorOperativo = ""
+      this.fechaAprobadoDirector = ""
     }
-    if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
-      this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
-      this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios;
-      this.gerenteAdministrativo = this.orden[0].nombreGerenteAdministrativo;
-      this.fechaAprobadoGerenteAdministrativo = this.orden[0].fechaAprobadoGerenteAdministrativo;
+    else {
+      this.firmaDirector = this.cargarFirmaDirector;
+      this.directorOperativo = this.orden[0].nombreDirectorOperativo;
+      this.fechaAprobadoDirector = this.orden[0].fechaAprobadoDirector;
     }
   }
-
-
 }
