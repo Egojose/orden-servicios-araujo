@@ -163,12 +163,12 @@
               <div class="col-md-4">
                 <mat-form-field>
                   <input matInput placeholder="Precio" currencyMask
-                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio" (keyup)="changePrecio($event.target.value)">
+                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio">
                 </mat-form-field>
               </div>
               <div class="col-md-1">
                 <section class="iva">
-                  <mat-checkbox value="true" formControlName="tieneIva" (change)="changeIva($event)">IVA</mat-checkbox>
+                  <mat-checkbox value="true" formControlName="tieneIva">IVA</mat-checkbox>
                 </section>
               </div>
               <div class="col-md-3">
@@ -202,7 +202,7 @@
               </div>
               <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal" (change)="changeFecha($event.target.value)">
+                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal">
                     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                   </mat-form-field>
