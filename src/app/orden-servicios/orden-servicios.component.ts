@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { EmailProperties } from '@pnp/sp';
 import { Empleado } from '../dominio/empleado';
 import { Usuario } from '../dominio/usuario';
+import { NgxSpinnerService } from "ngx-spinner";
 
 
 @Component({
@@ -38,7 +39,7 @@ export class OrdenServiciosComponent implements OnInit {
 
 
   constructor(
-    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router) { }
+    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     this.registrarControles();
@@ -289,6 +290,7 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   onSubmit() {
+    this.spinner.show()
     console.log(this.empleadoEditar[0]);
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value;
@@ -356,16 +358,19 @@ export class OrdenServiciosComponent implements OnInit {
 
     if (regimen === "") {
       this.MensajeAdvertencia('debe seleccionar el regimen');
+      this.spinner.hide();
       return false;
     }
 
     if (rut === "" && camara === "") {
       this.MensajeAdvertencia('Debe seleccionar el RUT o la Cámara de comercio')
+      this.spinner.hide();
       return false;
     }
 
     if (distPago === "") {
       this.MensajeAdvertencia('Por favor especifique si si el pago se distribuye en 2 o más CECOs')
+      this.spinner.hide();
     }
 
     tieneIva === "" ? tieneIva = false : tieneIva = true;
@@ -391,7 +396,20 @@ export class OrdenServiciosComponent implements OnInit {
 
     if (this.pagoCECO === true && pCeco1 + pCeco2 + pCeco3 !== 100) {
       this.MensajeAdvertencia('La suma de todos los porcentajes debe se igual a 100%, por favor verifique');
+      this.spinner.hide();
       return false;
+    }
+
+    if(formaPago === 'Único' && fechaPago === null) {
+      this.MensajeAdvertencia('Seleccione la fecha de pago');
+      this.spinner.hide();
+      return false; 
+    }
+
+    if(formaPago === 'Varios' && (Pago1 === null || Pago2 === null)) {
+      this.MensajeAdvertencia('Se deben especificar al menos 2 fechas de pago cuando no es pago único');
+      this.spinner.hide();
+      return false; 
     }
 
     garantia === 'true' ? garantia = true : garantia = false;
@@ -466,6 +484,7 @@ export class OrdenServiciosComponent implements OnInit {
 
     if (this.generarOrdenServicios.invalid) {
       this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
+      this.spinner.hide();
     }
     else {
       this.servicio.AgregarOrden(objOrden).then(
@@ -518,6 +537,7 @@ export class OrdenServiciosComponent implements OnInit {
           this.servicio.EnviarNotificacion(emailProps).then(
             (res) => {
               this.MensajeInfo("Se ha enviado una notificación para aprobación");
+              this.spinner.hide();
               setTimeout(
                 () => {
                   window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
@@ -528,6 +548,7 @@ export class OrdenServiciosComponent implements OnInit {
             (error) => {
               console.error(error);
               this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
+              this.spinner.hide();
               setTimeout(
                 () => {
                   window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
@@ -535,7 +556,8 @@ export class OrdenServiciosComponent implements OnInit {
                 }, 2000);
             }
           );
-          this.MensajeExitoso('La orden se registró con éxito');
+          this.MensajeExitoso('El proceso finalizó con éxito');
+          this.spinner.hide();
           setTimeout(() => {
             this.router.navigate(['/'])
           }, 2000);
@@ -544,6 +566,7 @@ export class OrdenServiciosComponent implements OnInit {
         (err) => {
           console.log(err);
           this.MensajeError('Error al registrar la orden')
+          this.spinner.hide();
         }
       )
     }
