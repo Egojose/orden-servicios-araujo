@@ -32,7 +32,7 @@
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Nit" formControlName="nitSolicitante">
+                <input matInput placeholder="Nit" formControlName="nitSolicitante" readonly>
               </mat-form-field>
               <mat-error>
                 <span *ngIf="!generarOrdenServicios.get('nitSolicitante').valid && generarOrdenServicios.get('nitSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
