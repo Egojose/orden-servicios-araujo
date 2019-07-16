@@ -355,13 +355,11 @@ export class AprobarOrdenServicioComponent implements OnInit {
   cargarValoresFirma() {
     if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
       this.firmaJefe = this.cargarFirmajefe;
-      console.log(this.firmaJefe);
       this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
       this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios;
     }
     else if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
       this.firmaJefe = this.cargarFirmajefe;
-      console.log(this.firmaJefe);
       this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
       this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios;
       this.firmaGerenteAdmin = this.cargarFirmaGerente;
@@ -463,7 +461,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       };
     }
 
-    if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
+    else if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
       let url = this.firmaUsuario
       objOrden = {
         Estado: 'Pendiente aprobación gerente administrativo y financiero',
@@ -484,7 +482,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       };
     }
 
-    if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= 8000000) {
+    else if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= 8000000) {
       let url = this.firmaGerenteAdmin;
       objOrden = {
         Estado: 'Pendiente aprobación director operativo',
@@ -505,7 +503,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       };
     }
 
-    if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000) {
+   else if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000) {
       let url = this.firmaGerenteAdmin;
       objOrden = {
         Estado: 'Aprobado',
@@ -526,7 +524,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       };
     }
 
-    if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+  else if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
       let url = this.firmaDirector
       objOrden = {
         Estado: 'Aprobado',
@@ -557,13 +555,19 @@ export class AprobarOrdenServicioComponent implements OnInit {
         if(this.orden[0].estado !== 'Aprobado') {
           this.servicio.EnviarNotificacion(emailProps).then(
             (res) => {
-              this.MensajeInfo("Se ha enviado una notificación para aprobación");
+              if(this.rechazado === true) {
+                this.MensajeInfo('Se ha enviado una notificación al usuario que ordenó el servicio')
+              }
+              else {
+              this.MensajeInfo("Se ha enviado una notificación al siguiente responsable");
+              }
               setTimeout(
                 () => {
                   window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
                   // this.spinnerService.hide();
                 }, 2000);
             }
+            
           ).catch(
             (error) => {
               console.error(error);
@@ -577,7 +581,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
           );
         }
 
-        this.MensajeExitoso('La orden se aprobó con éxito');
+        this.MensajeExitoso('El proceso finalizó con éxito');
       }
     ).catch(
       err => {
