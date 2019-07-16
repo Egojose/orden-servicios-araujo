@@ -328,9 +328,15 @@ export class AprobarOrdenServicioComponent implements OnInit {
       this.aprobarOrdenServicios.controls['distPago'].setValue('true');
       this.pagoCECO = true;
     }
+    else {
+      this.aprobarOrdenServicios.controls['distPago'].setValue('false');
+    }
     if (this.aprobarOrdenServicios.controls['garantia'].value === true) {
       this.aprobarOrdenServicios.controls['garantia'].setValue('true');
       this.mostrarGarantia = true;
+    }
+    else {
+      this.aprobarOrdenServicios.controls['garantia'].setValue('false');
     }
     if (this.aprobarOrdenServicios.controls['polizaVida'].value === true) {
       this.aprobarOrdenServicios.controls['polizaVida'].setValue('true');
@@ -540,47 +546,6 @@ export class AprobarOrdenServicioComponent implements OnInit {
         Body: cuerpoAprobado,
       };
     }
-
-
-    // if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
-    //   emailProps = {
-    //     To: [this.emailGerenteAdministrativo],
-    //     Subject: "Notificación de orden de servicio",
-    //     Body: cuerpo
-    //   };
-    // }
-
-    // if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
-    //   emailProps = {
-    //     To: [this.emailDirectorOperativo],
-    //     Subject: "Notificación de orden de servicio",
-    //     Body: cuerpo,
-    //   };
-    // }
-
-    // if((this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000)) {
-    //   emailProps = {
-    //     To: [this.emailAuxiliarContabilidad],
-    //     Subject: "Notificación de orden de servicio",
-    //     Body: cuerpoAprobado,
-    //   };
-    // }
-
-    // if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
-    //   emailProps = {
-    //     To: [this.emailAuxiliarContabilidad],
-    //     Subject: "Notificación de orden de servicio",
-    //     Body: cuerpoAprobado,
-    //   };
-    // }
-
-    // if(this.rechazado) {
-    //   emailProps = {
-    //     To: [this.emailSolicitante],
-    //     Subject: "Notificación de orden de servicio",
-    //     Body: cuerpoRechazado,
-    //   };
-    // }
 
     if(this.usuarioAprueba === false && this.usuarioRechaza === false) {
       this.MensajeAdvertencia('Debe aprobar o rechazar esta orden antes de poder guardar la información');
