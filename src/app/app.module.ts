@@ -15,6 +15,7 @@ import { AprobarOrdenServicioComponent } from './aprobar-orden-servicio/aprobar-
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ConsultarOrdenComponent } from './consultar-orden/consultar-orden.component';
 import { ExportAsModule } from 'ngx-export-as';
+import { NgxSpinnerModule } from "ngx-spinner";
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,7 +45,8 @@ import { ExportAsModule } from 'ngx-export-as';
     MatCheckboxModule,
     ToastrModule.forRoot(),
     ModalModule.forRoot(),
-    ExportAsModule
+    ExportAsModule,
+    NgxSpinnerModule
   ],
   providers: [
     SPServicio,
