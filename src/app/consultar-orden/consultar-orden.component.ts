@@ -267,9 +267,15 @@ export class ConsultarOrdenComponent implements OnInit {
       this.aprobarOrdenServicios.controls['distPago'].setValue('true');
       this.pagoCECO = true;
     }
+    else {
+      this.aprobarOrdenServicios.controls['distPago'].setValue('false');
+    }
     if (this.aprobarOrdenServicios.controls['garantia'].value === true) {
       this.aprobarOrdenServicios.controls['garantia'].setValue('true');
       this.mostrarGarantia = true;
+    }
+    else {
+      this.aprobarOrdenServicios.controls['garantia'].setValue('false');
     }
     if (this.aprobarOrdenServicios.controls['polizaVida'].value === true) {
       this.aprobarOrdenServicios.controls['polizaVida'].setValue('true');
