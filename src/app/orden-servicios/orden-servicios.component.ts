@@ -176,9 +176,11 @@ export class OrdenServiciosComponent implements OnInit {
   cargarNroOrden() {
     if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
+      this.generarOrdenServicios.controls['nitSolicitante'].setValue('901-139-615-6')
     }
     else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados)
+      this.generarOrdenServicios.controls['nitSolicitante'].setValue('860-028-399-5')
     }
   }
 
