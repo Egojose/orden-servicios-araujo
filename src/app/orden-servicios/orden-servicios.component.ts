@@ -6,7 +6,7 @@ import { Unegocios } from '../dominio/unegocios';
 import { Configuracion } from '../dominio/configuracion';
 import { ToastrManager } from 'ng6-toastr-notifications';
 import { Router } from '@angular/router';
-import { EmailProperties } from '@pnp/sp';
+import { EmailProperties, ItemAddResult } from '@pnp/sp';
 import { Empleado } from '../dominio/empleado';
 import { Usuario } from '../dominio/usuario';
 import { NgxSpinnerService } from "ngx-spinner";
@@ -378,6 +378,7 @@ export class OrdenServiciosComponent implements OnInit {
     // let responsableActual = this.empleadoEditar[0].jefe;
     let usuarioSolicitante = this.usuarioActual.id;
     let objOrden;
+    let objServicio;
 
     if (regimen === "") {
       this.MensajeAdvertencia('debe seleccionar el regimen');
@@ -503,6 +504,7 @@ export class OrdenServiciosComponent implements OnInit {
       ResponsableActualId: responsableActual,
       UsuarioSolicitanteId: usuarioSolicitante
     }
+
     console.log(objOrden);
 
     if (this.generarOrdenServicios.invalid) {
@@ -511,7 +513,18 @@ export class OrdenServiciosComponent implements OnInit {
     }
     else {
       this.servicio.AgregarOrden(objOrden).then(
-        (result) => {
+        (item: ItemAddResult) => {
+          let idOrden = item.data.Id;
+          console.log(idOrden);
+          objServicio = {
+            TipoServicio: "Orden de servicio",
+            CodigoServicioId: 4,
+            AutorId: usuarioSolicitante,
+            ResponsableActualId: responsableActual,
+            Estado: "Pendiente de aprobación gerente unidad de negocios",
+            idServicio: idOrden
+          }
+
           let id = 1
           let ordenA = nroOrden.split('-');
           let sumaOrden = parseInt(ordenA[1], 10) + 1
@@ -557,6 +570,8 @@ export class OrdenServiciosComponent implements OnInit {
             Subject: "Notificación de orden de servicio",
             Body: cuerpo,
           };
+          this.servicio.GuardarServicio(objServicio).then(
+            (respuesta) => {
           this.servicio.EnviarNotificacion(emailProps).then(
             (res) => {
               this.MensajeInfo("Se ha enviado una notificación para aprobación");
@@ -579,6 +594,8 @@ export class OrdenServiciosComponent implements OnInit {
                 }, 2000);
             }
           );
+        }
+        )
           this.MensajeExitoso('El proceso finalizó con éxito');
           this.spinner.hide();
           setTimeout(() => {
