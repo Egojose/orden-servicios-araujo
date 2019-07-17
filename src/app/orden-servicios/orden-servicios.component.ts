@@ -36,6 +36,7 @@ export class OrdenServiciosComponent implements OnInit {
   nombreUsuario;
   idUsuario: number;
   jefe;
+  emailInvalido: boolean = false;
 
 
   constructor(
@@ -188,29 +189,48 @@ export class OrdenServiciosComponent implements OnInit {
     this.cargarNroOrden();
   }
 
+  // validarEmail() {
+  //   alert('hola')
+  //   let validarEmail = [/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/];
+  //   let emailCampo = this.generarOrdenServicios.get('emailSolicitante').value;
+  //   let emailSolicitanteValido = emailCampo.test(validarEmail);
+  //   console.log(emailSolicitanteValido);
+  //   if(emailSolicitanteValido !== true) {
+  //     this.emailInvalido = true;
+  //   }
+  // }
+
   calcularIva() {
     let price = this.generarOrdenServicios.get('precio').value;
     let iva = this.config[0].iva;
     let ivaPorcentaje = iva / 100
     this.ivaCalculado = price * ivaPorcentaje
+    let total = price + this.ivaCalculado
     this.generarOrdenServicios.controls['iva'].setValue(this.ivaCalculado);
+    this.generarOrdenServicios.controls['total'].setValue(total);
   }
 
   calcularTotal() {
     let price = parseInt(this.generarOrdenServicios.get('precio').value, 10);
-    let impuesto = parseInt(this.generarOrdenServicios.get('iva').value, 10);
-    this.total = price + impuesto;
+    this.total = price;
     this.generarOrdenServicios.controls['total'].setValue(this.total);
+    this.generarOrdenServicios.controls['iva'].setValue(0);
+    this.generarOrdenServicios.controls['tieneIva'].setValue(false);
   }
 
   changePrecio($event) {
     this.calcularTotal();
-    
   }
 
   changeIva($event) {
-    this. calcularIva();
-    this.calcularTotal();
+    let precio = this.generarOrdenServicios.controls['precio'].value
+    if($event.checked === true) {
+      this. calcularIva();
+    }
+    else {
+      this.generarOrdenServicios.controls['iva'].setValue(0);
+      this.generarOrdenServicios.controls['total'].setValue(precio);
+    }
   }
 
   pagoCECOchange($event) {
@@ -294,6 +314,7 @@ export class OrdenServiciosComponent implements OnInit {
   onSubmit() {
     this.spinner.show()
     console.log(this.empleadoEditar[0]);
+    
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
