@@ -429,6 +429,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     let id = this.orden[0].id
     let AprobadoResponsableUnidadNegocios = "true";
     let AprobadoGerenteAdministrativo = "true";
+    let ordenServ;
 
     let emailProps: EmailProperties;
 
@@ -461,6 +462,10 @@ export class AprobarOrdenServicioComponent implements OnInit {
         Subject: "Notificación de orden de servicio",
         Body: cuerpoRechazado,
       };
+      ordenServ = {
+        ResponsableActualId: null,
+        Estado: "Pendiente de aprobación gerente unidad de negocios",
+      }
     }
 
     else if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
@@ -482,6 +487,10 @@ export class AprobarOrdenServicioComponent implements OnInit {
         Subject: "Notificación de orden de servicio",
         Body: cuerpo
       };
+     ordenServ = {
+        ResponsableActualId: this.responsableGerenteAdminisitrativo,
+        Estado: "Pendiente aprobación gerente administrativo y financiero",
+      }
     }
 
     else if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= 8000000) {
@@ -503,6 +512,10 @@ export class AprobarOrdenServicioComponent implements OnInit {
         Subject: "Notificación de orden de servicio",
         Body: cuerpo,
       };
+      ordenServ = {
+        ResponsableActualId: this.responsableDirectorOperativo,
+        Estado: "Pendiente aprobación director operativo",
+      }
     }
 
    else if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000) {
@@ -524,6 +537,10 @@ export class AprobarOrdenServicioComponent implements OnInit {
         Subject: "Notificación de orden de servicio",
         Body: cuerpoAprobado,
       };
+      ordenServ = {
+        ResponsableActualId: this.responsableAuxContabilidad,
+        Estado: "Aprobado",
+      }
     }
 
   else if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
@@ -545,6 +562,10 @@ export class AprobarOrdenServicioComponent implements OnInit {
         Subject: "Notificación de orden de servicio",
         Body: cuerpoAprobado,
       };
+      ordenServ = {
+        ResponsableActualId: this.responsableAuxContabilidad,
+        Estado: "Aprobado",
+      }
     }
 
     if(this.usuarioAprueba === false && this.usuarioRechaza === false) {
@@ -555,6 +576,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     
     this.servicio.ActualizarOrden(id, objOrden).then(
       (respuesta) => {
+        
         if(this.orden[0].estado !== 'Aprobado') {
           this.servicio.EnviarNotificacion(emailProps).then(
             (res) => {
@@ -566,6 +588,11 @@ export class AprobarOrdenServicioComponent implements OnInit {
               this.MensajeInfo("Se ha enviado una notificación al siguiente responsable");
               this.spinner.hide();
               }
+              this.servicio.ObtenerServicio(id).then(
+                (respuesta) => {
+                  this.servicio.ModificarServicio(respuesta[0].ID, ordenServ)
+                }
+              )
               setTimeout(
                 () => {
                   window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
