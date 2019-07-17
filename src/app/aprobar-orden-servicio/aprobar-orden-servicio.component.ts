@@ -11,6 +11,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { Aprobadores } from '../dominio/aprobadores';
 import { EmailProperties } from '@pnp/sp';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-aprobar-orden-servicio',
@@ -73,7 +74,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
 
 
   constructor(
-    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private router: Router) { }
+    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private router: Router, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     this.ObtenerUsuarioActual();
@@ -423,6 +424,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   }
 
   onSubmit() {
+    this.spinner.show()
     let objOrden
     let id = this.orden[0].id
     let AprobadoResponsableUnidadNegocios = "true";
@@ -547,6 +549,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
 
     if(this.usuarioAprueba === false && this.usuarioRechaza === false) {
       this.MensajeAdvertencia('Debe aprobar o rechazar esta orden antes de poder guardar la información');
+      this.spinner.hide();
       return false;
     }
     
@@ -556,10 +559,12 @@ export class AprobarOrdenServicioComponent implements OnInit {
           this.servicio.EnviarNotificacion(emailProps).then(
             (res) => {
               if(this.rechazado === true) {
-                this.MensajeInfo('Se ha enviado una notificación al usuario que ordenó el servicio')
+                this.MensajeInfo('Se ha enviado una notificación al usuario que ordenó el servicio');
+                this.spinner.hide()
               }
               else {
               this.MensajeInfo("Se ha enviado una notificación al siguiente responsable");
+              this.spinner.hide();
               }
               setTimeout(
                 () => {
@@ -572,6 +577,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
             (error) => {
               console.error(error);
               this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
+              this.spinner.hide();
               setTimeout(
                 () => {
                   window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
@@ -582,11 +588,13 @@ export class AprobarOrdenServicioComponent implements OnInit {
         }
 
         this.MensajeExitoso('El proceso finalizó con éxito');
+        this.spinner.hide();
       }
     ).catch(
       err => {
         console.log(err)
-        this.MensajeError('Error aprobando la solicitud');
+        this.MensajeError('Error aprobando la orden');
+        this.spinner.hide();
       }
     )
   }
