@@ -4,7 +4,8 @@ export class Configuracion{
         public consecutivoAsociados: string,
         public iva: number,
         public consultores: string,
-        public asociados: string) {}
+        public asociados: string,
+        public id: number) {}
 
     public static fromJson(element: any) {
         return new Configuracion(
@@ -12,7 +13,8 @@ export class Configuracion{
             element.ConsecutivoAsociados,
             element.valorIva,
             element.AraujoConsultores,
-            element.AraujoAsociados);
+            element.AraujoAsociados,
+            element.Id);
     }
 
     public static fromJsonList(elements: any) {
