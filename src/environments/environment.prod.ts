@@ -9,5 +9,6 @@ export const environment = {
   listaUnegocios: 'UnidadNegocios',
   ListaEmpleados: 'Empleados',
   listaAprobadores: 'AprobadoresOrdenServicio',
-  ListaServicios: 'Servicios'
+  ListaServicios: 'Servicios',
+  ListaEmpresas: 'EmpresasAraujoIbarra'
 };
