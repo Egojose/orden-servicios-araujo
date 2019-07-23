@@ -10,5 +10,6 @@ export const environment = {
   ListaEmpleados: 'Empleados',
   listaAprobadores: 'AprobadoresOrdenServicio',
   ListaServicios: 'Servicios',
-  ListaEmpresas: 'EmpresasAraujoIbarra'
+  ListaEmpresas: 'EmpresasAraujoIbarra',
+  ListaCeco: 'CentroCostos'
 };
