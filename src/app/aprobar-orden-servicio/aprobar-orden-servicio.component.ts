@@ -70,6 +70,11 @@ export class AprobarOrdenServicioComponent implements OnInit {
   ordenNro: any;
   usuarioAprueba: boolean;
   usuarioRechaza: boolean;
+  esResponsableActual: boolean = false;
+  esSolicitante: boolean;
+  IdRegistroOS: string;
+  ObjServicio: any;
+  NumeroOrden: any;
 
 
 
@@ -84,7 +89,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.rechazado = false;
     this.usuarioAprueba = false;
     this.usuarioRechaza = false;
-    this.registrarControles();
+    this.registrarControles();        
     this.obtenerDatosAprobadores();
   }
 
@@ -167,7 +172,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.idUsuario = this.usuarioActual.id;
         sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
         this.obtenerInfoEmpleado();
-        this.consultarOrden();
+        this.obtenerOrden();
       }, err => {
         console.log('Error obteniendo usuario: ' + err);
       }
@@ -179,25 +184,16 @@ export class AprobarOrdenServicioComponent implements OnInit {
     console.log(idUser)
     this.servicio.obtenerInfoEmpleadoSeleccionado(idUser).subscribe(
       (respuesta) => {
-        console.log(respuesta)
         this.empleadoEditar = Empleado.fromJsonList(respuesta);
         this.jefe = respuesta[0].JefeId
-        console.log(this.jefe);
+        // this.consultarOrden();
       }
     )
   }
 
-  consultarOrden() {
-    this.servicio.consultarOrden(this.usuarioActual.id).subscribe(
-      (respuesta) => {
-        this.ordenConsulta = Orden.fromJsonList(respuesta);
-      }
-    )
-  }
-
-  obtenerOrden(event) {
-    let ordenSeleccionada = event.value;
-    this.servicio.obtenerOrden(ordenSeleccionada).subscribe(
+  obtenerOrden() {
+    this.IdRegistroOS = sessionStorage.getItem("IdServicio");
+    this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
       (respuesta) => {
         this.orden = Orden.fromJsonList(respuesta);
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
@@ -292,6 +288,10 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['polizaVida'].setValue(this.orden[0].polizaColectiva);
     this.aprobarOrdenServicios.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
     this.aprobarOrdenServicios.controls['distPago'].setValue(this.orden[0].distPago);
+    this.NumeroOrden = this.orden[0].nroOrden;
+    if (this.orden[0].ResponsableActual === this.usuarioActual.id) {
+        this.esResponsableActual = true;
+    }
     this.switchValores();
   }
 
@@ -424,30 +424,35 @@ export class AprobarOrdenServicioComponent implements OnInit {
   }
 
   onSubmit() {
+    debugger
     this.spinner.show()
     let objOrden
     let id = this.orden[0].id
+    console.log(id);
     let AprobadoResponsableUnidadNegocios = "true";
     let AprobadoGerenteAdministrativo = "true";
     let ordenServ;
+    console.log(this.emailGerenteAdministrativo);
+    console.log(this.emailDirectorOperativo);
+    console.log(this.emailAuxiliarContabilidad);
 
     let emailProps: EmailProperties;
 
     let cuerpo = '<p>Cordial saludo</p>' +
       '<br>' +
-      '<p>La orden de servicio número <strong>' + this.ordenNro + '</strong> requiere de su aprobación</p>' +
+      '<p>La orden de servicio número <strong>' + this.NumeroOrden + '</strong> requiere de su aprobación</p>' +
       '<br>' +
-      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/aprobar-orden-servicio" target="_blank">aquí</a>.</p>';
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
 
     let cuerpoAprobado = '<p>Cordial saludo</p>' +
       '<br>' +
-      '<p>La orden de servicio número <strong>' + this.ordenNro + '</strong> ha sido aprobada y está lista para continuar el proceso.</p>' +
+      '<p>La orden de servicio número <strong>' + this.NumeroOrden + '</strong> ha sido aprobada y está lista para continuar el proceso.</p>' +
       '<br>' +
-      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/consultar-orden" target="_blank">aquí</a>.</p>';
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
 
     let cuerpoRechazado = '<p>Cordial saludo</p>' +
         '<br>' +
-        '<p>La orden de servicio número <strong>' + this.ordenNro + '</strong> ha sido rechazada por el usuario <strong>' + this.usuarioActual.nombre + '</strong> por el motivo <strong>"' + this.aprobarOrdenServicios.get('motivoRechazo').value + '"</strong></p>' +
+        '<p>La orden de servicio número <strong>' + this.NumeroOrden + '</strong> ha sido rechazada por el usuario <strong>' + this.usuarioActual.nombre + '</strong> por el motivo <strong>"' + this.aprobarOrdenServicios.get('motivoRechazo').value + '"</strong></p>' +
         '<br>' +
         '<p>Si necesita más información por favor comuníquese con el responsable del rechazo.</p>'; 
 
@@ -576,44 +581,48 @@ export class AprobarOrdenServicioComponent implements OnInit {
     
     this.servicio.ActualizarOrden(id, objOrden).then(
       (respuesta) => {
-        
-        if(this.orden[0].estado !== 'Aprobado') {
-          this.servicio.EnviarNotificacion(emailProps).then(
-            (res) => {
-              if(this.rechazado === true) {
-                this.MensajeInfo('Se ha enviado una notificación al usuario que ordenó el servicio');
-                this.spinner.hide()
-              }
-              else {
-              this.MensajeInfo("Se ha enviado una notificación al siguiente responsable");
-              this.spinner.hide();
-              }
-              this.servicio.ObtenerServicio(id).then(
-                (respuesta) => {
-                  this.servicio.ModificarServicio(respuesta[0].ID, ordenServ)
-                }
-              )
-              setTimeout(
-                () => {
-                  window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
-                  // this.spinnerService.hide();
-                }, 2000);
-            }
-            
-          ).catch(
-            (error) => {
-              console.error(error);
-              this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
-              this.spinner.hide();
-              setTimeout(
-                () => {
-                  window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
-                  // this.spinnerService.hide();
-                }, 2000);
-            }
-          );
-        }
+        this.servicio.ObtenerServicio(id).then(
+          (respuesta1) => {
+            console.log(respuesta1);
+            this.servicio.ModificarServicio(ordenServ, respuesta1[0].ID ).then(
+              (respuesta2) => {
+                if (this.orden[0].estado !== 'Aprobado') {
+                  this.servicio.EnviarNotificacion(emailProps).then(
+                    (res) => {
+                      if (this.rechazado === true) {
+                        this.MensajeInfo('Se ha enviado una notificación al usuario que ordenó el servicio');
+                        this.spinner.hide()
+                      }
+                      else {
+                        this.MensajeInfo("Se ha enviado una notificación al siguiente responsable");
+                        this.spinner.hide();
+                      }
 
+                      setTimeout(
+                        () => {
+                          window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                          // this.spinnerService.hide();
+                        }, 2000);
+                    }
+
+                  ).catch(
+                    (error) => {
+                      console.error(error);
+                      this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
+                      this.spinner.hide();
+                      setTimeout(
+                        () => {
+                          window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                          // this.spinnerService.hide();
+                        }, 2000);
+                    }
+                  );
+                }
+              }
+            )
+          }
+        )
+        
         this.MensajeExitoso('El proceso finalizó con éxito');
         this.spinner.hide();
       }
