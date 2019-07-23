@@ -1,0 +1,108 @@
+<div class="container">
+  <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title><strong>Ver órdenes pendientes</strong></mat-panel-title>
+          <mat-panel-description>{{panelOpenState ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
+        </mat-expansion-panel-header>
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource">
+      
+          <!-- Position Column -->
+          <ng-container matColumnDef="NumeroOrden">
+            <th mat-header-cell *matHeaderCellDef> Número de orden </th>
+            <td mat-cell *matCellDef="let element"> {{element.NumeroOrden}} </td>
+          </ng-container>
+      
+          <!-- Name Column -->
+          <ng-container matColumnDef="Solicitante">
+            <th mat-header-cell *matHeaderCellDef> Solicitante </th>
+            <td mat-cell *matCellDef="let element"> {{element.Solicitante}} </td>
+          </ng-container>
+      
+          <!-- Symbol Column -->
+          <ng-container matColumnDef="FechaSolicitud">
+            <th mat-header-cell *matHeaderCellDef> Fecha de solicitud </th>
+            <td mat-cell *matCellDef="let element"> {{element.FechaSolicitud | date: 'dd-MM-yyyy'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="EmpresaSolicitante">
+              <th mat-header-cell *matHeaderCellDef> Empresa </th>
+              <td mat-cell *matCellDef="let element"> {{element.Empresa}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Estado">
+                <th mat-header-cell *matHeaderCellDef> Estado </th>
+                <td mat-cell *matCellDef="let element"> {{element.Estado}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="Acciones">
+                  <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                  <td mat-cell *matCellDef="let element"> 
+                    <button class="btn btn-primary" (click)="VerServicio(element.Id)">Ver Servicio</button>
+                  </td>
+                </ng-container>
+      
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      
+        <mat-paginator #MisPendientesPaginador [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+      </mat-expansion-panel>
+      </mat-accordion>
+      <br>
+      <mat-accordion>
+          <mat-expansion-panel (opened)="panelOpenState1 = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title><strong>Ver mis órdenes</strong></mat-panel-title>
+              <mat-panel-description>{{panelOpenState ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
+            </mat-expansion-panel-header>
+        <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource1">
+          
+              <!-- Position Column -->
+              <ng-container matColumnDef="NumeroOrden">
+                <th mat-header-cell *matHeaderCellDef> Número de orden </th>
+                <td mat-cell *matCellDef="let element"> {{element.NumeroOrden}} </td>
+              </ng-container>
+          
+              <!-- Name Column -->
+              <ng-container matColumnDef="Solicitante">
+                <th mat-header-cell *matHeaderCellDef> Solicitante </th>
+                <td mat-cell *matCellDef="let element"> {{element.Solicitante}} </td>
+              </ng-container>
+          
+              <!-- Symbol Column -->
+              <ng-container matColumnDef="FechaSolicitud">
+                <th mat-header-cell *matHeaderCellDef> Fecha de solicitud </th>
+                <td mat-cell *matCellDef="let element"> {{element.FechaSolicitud | date: 'dd-MM-yyyy'}} </td>
+              </ng-container>
+    
+              <ng-container matColumnDef="EmpresaSolicitante">
+                  <th mat-header-cell *matHeaderCellDef> Empresa </th>
+                  <td mat-cell *matCellDef="let element"> {{element.Empresa}} </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="Estado">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element"> {{element.Estado}} </td>
+                  </ng-container>
+    
+                  <ng-container matColumnDef="Acciones">
+                      <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                      <td mat-cell *matCellDef="let element"> 
+                        <button class="btn btn-primary" (click)="VerServicio(element.Id)">Ver Servicio</button>
+                      </td>
+                    </ng-container>
+          
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          
+            <mat-paginator #MisOrdenesPaginador [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+          </mat-expansion-panel>
+          </mat-accordion>
+          <br>
+</div>

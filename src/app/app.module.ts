@@ -16,12 +16,14 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { ConsultarOrdenComponent } from './consultar-orden/consultar-orden.component';
 import { ExportAsModule } from 'ngx-export-as';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { BandejaServiciosComponent } from './bandeja-servicios/bandeja-servicios.component';
 @NgModule({
   declarations: [
     AppComponent,
     OrdenServiciosComponent,
     AprobarOrdenServicioComponent,
-    ConsultarOrdenComponent
+    ConsultarOrdenComponent,
+    BandejaServiciosComponent
   ],
   imports: [
     BrowserModule,

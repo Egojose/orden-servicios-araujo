@@ -19,8 +19,12 @@
               <mat-form-field>
                   <mat-label>Empresa solicitante</mat-label>
                   <mat-select formControlName="empresaSolicitante" (selectionChange)="changeEmpresa($event)">
-                      <mat-option value="Araujo Ibarra Consultores Internacionales S.A.S">Araujo Ibarra Consultores Internacionales S.A.S</mat-option>
-                      <mat-option value="Araujo Ibarra Asociados S.A.S">Araujo Ibarra Asociados S.A.S</mat-option>
+                    <mat-option *ngFor="let empresas of empresa" [value]="empresas.nombre">
+                      {{empresas.nombre}}
+                    </mat-option>
+                  
+                    <!-- <mat-option value="Araujo Ibarra Consultores Internacionales S.A.S">Araujo Ibarra Consultores Internacionales S.A.S</mat-option>
+                                        <mat-option value="Araujo Ibarra Asociados S.A.S">Araujo Ibarra Asociados S.A.S</mat-option> -->
                   </mat-select>
                 <!-- <input matInput placeholder="Empresa solicitante" formControlName="empresaSolicitante"> -->
               </mat-form-field>
@@ -39,9 +43,18 @@
               </mat-error>
             </div>
             <div class="col-md-6">
-              <mat-form-field>
+                <mat-form-field>
+                    <mat-label>Ciudad</mat-label>
+                    <mat-select formControlName="ciudadSolicitante" (selectionChange)="changeCiudad($event)">
+                        <mat-option value="BOGOTÁ D.C">BOGOTÁ D.C</mat-option>
+                        <mat-option value="BARRANQUILLA">BARRANQUILLA</mat-option>
+                        <mat-option value="MEDELLÍN">MEDELLÍN</mat-option>
+                        <mat-option value="CALI">CALI</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+              <!-- <mat-form-field>
                 <input matInput placeholder="Ciudad" formControlName="ciudadSolicitante">
-              </mat-form-field>
+              </mat-form-field> -->
               <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('ciudadSolicitante').valid && generarOrdenServicios.get('ciudadSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
               </mat-error>
@@ -50,25 +63,31 @@
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Teléfono" formControlName="telSolicitante">
+                <input matInput placeholder="Teléfono" formControlName="telSolicitante" readonly>
               </mat-form-field>
-              <mat-error>
+              <!-- <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('telSolicitante').valid && generarOrdenServicios.get('telSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error>   
+              </mat-error>    -->
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Dirección" formControlName="direccionSolicitante">
+                <input matInput placeholder="Dirección" formControlName="direccionSolicitante" readonly>
               </mat-form-field>
-              <mat-error>
+              <!-- <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('direccionSolicitante').valid && generarOrdenServicios.get('direccionSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error> 
+              </mat-error>  -->
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Contacto" formControlName="contactoSolicitante">
+                  <mat-label>Contacto</mat-label>
+                  <mat-select formControlName="contactoSolicitante" (selectionChange)="changeContacto($event)">
+                      <mat-option *ngFor="let usuario of dataUsuarios" [value]="usuario">
+                        {{usuario.label}}                        
+                      </mat-option>
+                  </mat-select>
+                <!-- <input matInput placeholder="Contacto" formControlName="contactoSolicitante"> -->
               </mat-form-field>
               <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('contactoSolicitante').valid && generarOrdenServicios.get('contactoSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -76,7 +95,7 @@
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Email" formControlName="emailSolicitante">
+                <input matInput placeholder="Email" formControlName="emailSolicitante" readonly>
               </mat-form-field>
               <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('emailSolicitante').valid && generarOrdenServicios.get('emailSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -101,7 +120,7 @@
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Nombre CECO" formControlName="nombreCECO">
+                <input matInput placeholder="Área" formControlName="nombreCECO">
               </mat-form-field>
               <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('nombreCECO').valid && generarOrdenServicios.get('nombreCECO').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -209,17 +228,17 @@
                 <mat-form-field>
                   <input matInput placeholder="Cliente" formControlName="cliente">
                 </mat-form-field>
-                <mat-error>
+                <!-- <mat-error>
                     <span *ngIf="!generarOrdenServicios.get('cliente').valid && generarOrdenServicios.get('cliente').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-                </mat-error>
+                </mat-error> -->
               </div>
               <div class="col-md-6">
                 <mat-form-field>
                   <input matInput placeholder="Nro Job" formControlName="job">
                 </mat-form-field>
-                <mat-error>
+                <!-- <mat-error>
                     <span *ngIf="!generarOrdenServicios.get('job').valid && generarOrdenServicios.get('job').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-                </mat-error>
+                </mat-error> -->
               </div>
             </div>
             <br>

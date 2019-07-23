@@ -1,4 +1,11 @@
-<h4 class="text-center">Aprobar orden de servicios</h4>
+<ng-container *ngIf="esResponsableActual">
+    <h4 class="text-center">Aprobar orden de servicios</h4>
+</ng-container>
+<ng-container *ngIf="esSolicitante">
+    <h4 class="text-center">Consultar mis órdenes</h4>
+</ng-container>
+
+
 <form action="" autocomplete="off" [formGroup]="aprobarOrdenServicios" (ngSubmit)="onSubmit()" class="main">
   <div class="container">
     <mat-accordion>
@@ -7,16 +14,13 @@
           <mat-panel-title><strong>Información de la orden</strong></mat-panel-title>
           <mat-panel-description>{{panelOpenState ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
         </mat-expansion-panel-header>
-        <mat-card>
-          <div class="row">
-            <div class="col-md-2 offset-10 text-center">
-              <label for="Nro de orden">Seleccionar orden</label>
-              <mat-select formControlName="nroOrden" id="nroOrden" (selectionChange)="obtenerOrden($event)">
-                  <mat-option *ngFor="let orden of ordenConsulta" [value]="orden.nroOrden">{{orden.nroOrden}}</mat-option>
-              </mat-select>
-              <!-- <input matInput  formControlName="nroOrden" readonly id="nroOrden" class="text-center"> -->
-            </div>
-          </div>
+        <mat-card>          
+        <div class="row">
+          <div class="col-5">
+              <h3><strong>N° {{NumeroOrden}}</strong></h3>
+          </div>         
+        </div>
+        <br>
           <div class="row">
             <div class="col-md-12">
               <mat-form-field>
@@ -407,6 +411,7 @@
       </mat-expansion-panel>
     </mat-accordion>
     <br>
+    <ng-container *ngIf="esResponsableActual">
     <mat-accordion>
       <mat-expansion-panel (opened)="panelOpenState2 = true" (closed)="panelOpenState2 = false">
         <mat-expansion-panel-header>
@@ -458,11 +463,15 @@
           </ng-template>
       </mat-expansion-panel>
     </mat-accordion>
+  </ng-container>
     <br>
-    <button type="submit" class="btn btn-success btn-lg">Enviar</button>
-    <button type="button" class="btn btn-danger btn-lg" (click)="cancelar()">Cancelar</button>
+    <ng-container *ngIf="esResponsableActual">
+      <button type="submit" class="btn btn-success btn-lg">Enviar</button>
+      <button type="button" class="btn btn-danger btn-lg" (click)="cancelar()">Cancelar</button>
+    </ng-container>
   </div>
   <br>
+
 </form>
 
 <ngx-spinner
