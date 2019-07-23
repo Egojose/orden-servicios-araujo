@@ -83,8 +83,8 @@ export class OrdenServiciosComponent implements OnInit {
       rut: [''],
       camara: [''],
       descripcionServicios: ['', Validators.required],
-      cliente: ['', Validators.required],
-      job: ['', Validators.required],
+      cliente: [''],
+      job: [''],
       precio: ['', Validators.required],
       tieneIva: [''],
       iva: [''],
@@ -207,7 +207,16 @@ export class OrdenServiciosComponent implements OnInit {
 
   async obtenerConsecutivo(): Promise<any> {
     let numeroOrdenString = this.config[0].consecutivo.split('-')
-    let numeroOrdenNumber = parseInt(numeroOrdenString[1], 10)
+    let numeroOrdenStringAsociados = this.config[0].consecutivoAsociados.split('-');
+    let numeroOrdenNumber;
+
+    if(this.generarOrdenServicios.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+      numeroOrdenNumber = parseInt(numeroOrdenString[1], 10)
+    }
+    else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
+      numeroOrdenNumber = parseInt(numeroOrdenStringAsociados[1], 10)
+    }
+    
     await this.servicio.obtenerConsecutivo().then(
       (respuesta) => {
         this.config = Configuracion.fromJsonList(respuesta);
@@ -533,32 +542,32 @@ export class OrdenServiciosComponent implements OnInit {
     polizaVida === 'true' ? polizaVida = true : polizaVida = false;
     polizaVehiculos === "true" ? polizaVehiculos = true : polizaVehiculos = false;
 
-        let id = 1
-        let ordenA = nroOrden.split('-');
-        let sumaOrden = parseInt(ordenA[1], 10) + 1
-        let nroActualizadoAsociado: string;
-        let nroActualizadoConsultores: string;
+    let id = 1
+    let ordenA = nroOrden.split('-');
+    let sumaOrden = parseInt(ordenA[1], 10) + 1
+    let nroActualizadoAsociado: string;
+    let nroActualizadoConsultores: string;
 
-        if (sumaOrden < 10) {
-          nroActualizadoAsociado = 'A-00' + `${sumaOrden}`;
-          nroActualizadoConsultores = 'C-00' + `${sumaOrden}`
-        }
-        else if (sumaOrden >= 10 && sumaOrden < 100) {
-          nroActualizadoAsociado = 'A-0' + `${sumaOrden}`;
-          nroActualizadoConsultores = 'C-0' + `${sumaOrden}`
-        }
-        else {
-          nroActualizadoAsociado = 'A-' + `${sumaOrden}`;
-          nroActualizadoConsultores = 'C-' + `${sumaOrden}`
-        }
+    if (sumaOrden < 10) {
+      nroActualizadoAsociado = 'A-00' + `${sumaOrden}`;
+      nroActualizadoConsultores = 'C-00' + `${sumaOrden}`
+    }
+    else if (sumaOrden >= 10 && sumaOrden < 100) {
+      nroActualizadoAsociado = 'A-0' + `${sumaOrden}`;
+      nroActualizadoConsultores = 'C-0' + `${sumaOrden}`
+    }
+    else {
+      nroActualizadoAsociado = 'A-' + `${sumaOrden}`;
+      nroActualizadoConsultores = 'C-' + `${sumaOrden}`
+    }
 
-        let objConfigA = {
-          ConsecutivoAsociados: nroActualizadoAsociado
-        }
+    let objConfigA = {
+      ConsecutivoAsociados: nroActualizadoAsociado
+    }
 
-        let objConfigC = {
-          Consecutivo: nroActualizadoConsultores
-        }
+    let objConfigC = {
+      Consecutivo: nroActualizadoConsultores
+    }
 
     objOrden = {
       Title: empresaSolicitante,
@@ -625,15 +634,6 @@ export class OrdenServiciosComponent implements OnInit {
       UsuarioSolicitanteId: usuarioSolicitante
     }
 
-    // this.servicio.AgregarOrden(objOrden).then(
-    //   (item) => { 
-
-    //   }).catch(
-    //     (error)=>{
-    //       console.log(error);
-    //     }
-    //   );
-
     if (this.generarOrdenServicios.invalid) {
       this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
       this.spinner.hide();
@@ -652,8 +652,6 @@ export class OrdenServiciosComponent implements OnInit {
             Estado: "Pendiente de aprobación gerente unidad de negocios",
             idServicio: idOrden
           }
-
-          
 
           if (this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
             this.servicio.ActualizarNroOrden(id, objConfigC);
@@ -675,30 +673,30 @@ export class OrdenServiciosComponent implements OnInit {
           };
           this.servicio.GuardarServicio(objServicio).then(
             (respuesta) => {
-          this.servicio.EnviarNotificacion(emailProps).then(
-            (res) => {
-              this.MensajeInfo("Se ha enviado una notificación para aprobación");
-              this.spinner.hide();
-              setTimeout(
-                () => {
-                  window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
-                  // this.spinnerService.hide();
-                }, 2000);
+              this.servicio.EnviarNotificacion(emailProps).then(
+                (res) => {
+                  this.MensajeInfo("Se ha enviado una notificación para aprobación");
+                  this.spinner.hide();
+                  setTimeout(
+                    () => {
+                      window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                      // this.spinnerService.hide();
+                    }, 2000);
+                }
+              ).catch(
+                (error) => {
+                  console.error(error);
+                  this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
+                  this.spinner.hide();
+                  setTimeout(
+                    () => {
+                      window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                      // this.spinnerService.hide();
+                    }, 2000);
+                }
+              );
             }
-          ).catch(
-            (error) => {
-              console.error(error);
-              this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
-              this.spinner.hide();
-              setTimeout(
-                () => {
-                  window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
-                  // this.spinnerService.hide();
-                }, 2000);
-            }
-          );
-        }
-        )
+          )
           this.MensajeExitoso('El proceso finalizó con éxito');
           this.spinner.hide();
           setTimeout(() => {
