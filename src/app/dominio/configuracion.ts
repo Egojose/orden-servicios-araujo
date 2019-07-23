@@ -2,13 +2,17 @@ export class Configuracion{
     constructor(
         public consecutivo: string,
         public consecutivoAsociados: string,
-        public iva: number) {}
+        public iva: number,
+        public consultores: string,
+        public asociados: string) {}
 
     public static fromJson(element: any) {
         return new Configuracion(
             element.Consecutivo,
             element.ConsecutivoAsociados,
-            element.valorIva);
+            element.valorIva,
+            element.AraujoConsultores,
+            element.AraujoAsociados);
     }
 
     public static fromJsonList(elements: any) {
