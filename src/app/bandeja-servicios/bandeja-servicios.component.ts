@@ -4,6 +4,7 @@ import { Usuario } from '../dominio/usuario';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { BandejaServicios } from '../dominio/BandejaServicios';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrManager } from 'ng6-toastr-notifications';
 
 @Component({
   selector: 'app-bandeja-servicios',
@@ -11,21 +12,22 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./bandeja-servicios.component.css']
 })
 export class BandejaServiciosComponent implements OnInit {
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  // @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+@ViewChild('MisPendientesPaginador', {read: MatPaginator, static:true}) MisPendientesPaginador: MatPaginator;
+@ViewChild('MisOrdenesPaginador', {read: MatPaginator, static:true}) MisOrdenesPaginador: MatPaginator; 
 
   panelOpenState = false;
   panelOpenState1 = false;
   usuarioActual: any;
   nombreUsuario: any;
   idUsuario: any;
-  toastr: any;
   dataSource;
   dataSource1;
 
   displayedColumns: string[] = ['NumeroOrden', 'Solicitante', 'FechaSolicitud', 'EmpresaSolicitante', 'Estado', 'Acciones'];
   ObjServicios: BandejaServicios[];
 
-  constructor(private servicio: SPServicio, private route: ActivatedRoute, private router: Router) { }
+  constructor(private servicio: SPServicio, private route: ActivatedRoute, private router: Router, private toastr: ToastrManager) { }
 
   ngOnInit() {
     this.ObtenerUsuarioActual();
@@ -50,12 +52,12 @@ export class BandejaServiciosComponent implements OnInit {
       (res)=>{
         this.ObjServicios = BandejaServicios.fromJsonList(res);
         this.dataSource = new MatTableDataSource(this.ObjServicios);
-          this.dataSource.paginator = this.paginator;
+        this.dataSource.paginator = this.MisPendientesPaginador;
       }
     ).catch(
       (error)=>{
         console.error(error);
-          this.MensajeError("Error al obtener mis pendientes");
+        this.MensajeError("Error al obtener mis pendientes");
       }
     );
   }
@@ -65,12 +67,12 @@ export class BandejaServiciosComponent implements OnInit {
       (res)=>{
         this.ObjServicios = BandejaServicios.fromJsonList(res);
         this.dataSource1 = new MatTableDataSource(this.ObjServicios);
-          this.dataSource.paginator = this.paginator;
+        this.dataSource1.paginator = this.MisOrdenesPaginador;
       }
     ).catch(
       (error)=>{
         console.error(error);
-          this.MensajeError("Error al obtener mis pendientes");
+        this.MensajeError("Error al obtener mis pendientes");
       }
     );
   }
