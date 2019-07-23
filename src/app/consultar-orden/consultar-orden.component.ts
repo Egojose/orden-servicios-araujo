@@ -65,6 +65,8 @@ export class ConsultarOrdenComponent implements OnInit {
   firmaJefe: any[];
   firmaGerenteAdmin: any[];
   firmaDirector: any[];
+  IdRegistroOS: string;
+  NumeroOrden: string;
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService) { }
 
@@ -148,27 +150,18 @@ export class ConsultarOrdenComponent implements OnInit {
         this.usuarioActual = new Usuario(respuesta.Title, respuesta.email, respuesta.Id);
         this.nombreUsuario = this.usuarioActual.nombre;
         this.idUsuario = this.usuarioActual.id;
-        console.log(this.idUsuario);
-        sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
-        this.consultarOrden();
+        this.obtenerOrden();
+        
       }, err => {
         console.log('Error obteniendo usuario: ' + err);
+        
       }
     )
   };
 
-  consultarOrden() {
-    console.log(this.usuarioActual.id);
-    this.servicio.consultarOrden(this.usuarioActual.id).subscribe(
-      (respuesta) => {
-        this.ordenConsulta = Orden.fromJsonList(respuesta);
-      }
-    )
-  }
-
-  obtenerOrden(event) {
-    let ordenSeleccionada = event.value;
-    this.servicio.obtenerOrden(ordenSeleccionada).subscribe(
+  obtenerOrden() {
+    this.IdRegistroOS = sessionStorage.getItem("IdServicio");
+    this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
       (respuesta) => {
         console.log(respuesta);
         this.orden = Orden.fromJsonList(respuesta);
@@ -250,6 +243,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['polizaVida'].setValue(this.orden[0].polizaColectiva);
     this.aprobarOrdenServicios.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
     this.aprobarOrdenServicios.controls['distPago'].setValue(this.orden[0].distPago);
+    this.NumeroOrden = this.orden[0].nroOrden;
     this.switchValores(); 
   }
 
