@@ -74,7 +74,8 @@ export class Orden{
         public usuarioSolicitante: any,
         public firmaResponsableUnegocio: string[],
         public firmaResponsableGerenteAdmin: string[],
-        public firmaResponsableDirector: string[]
+        public firmaResponsableDirector: string[],
+        public ResponsableActual: number
     ) {}
 
     public static fromJson(element: any) {
@@ -153,7 +154,8 @@ export class Orden{
             element.UsuarioSolicitanteId,
             element.FirmaResponsableUnidadNegocios,
             element.FirmaGerenteAdministrativo,
-            element.FirmaDirectorOperativo
+            element.FirmaDirectorOperativo,
+            element.ResponsableActualId
         );
     }
 
