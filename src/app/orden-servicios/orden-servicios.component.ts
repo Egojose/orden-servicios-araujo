@@ -206,6 +206,9 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   async obtenerConsecutivo(): Promise<any> {
+    console.log("2");
+    let RespuestaMensaje = "";
+    let RespuestaGurdado;
     let numeroOrdenString = this.config[0].consecutivo.split('-')
     let numeroOrdenStringAsociados = this.config[0].consecutivoAsociados.split('-');
     let numeroOrdenNumber;
@@ -218,7 +221,8 @@ export class OrdenServiciosComponent implements OnInit {
     }
     
     await this.servicio.obtenerConsecutivo().then(
-      (respuesta) => {
+      async (respuesta) => {
+        console.log("3");
         this.config = Configuracion.fromJsonList(respuesta);
         let ordenActual = numeroOrdenNumber 
         let ordenValue;
@@ -241,8 +245,59 @@ export class OrdenServiciosComponent implements OnInit {
           ordenValue = `A-${ordenActual}`
         }
         this.generarOrdenServicios.controls['nroOrden'].setValue(ordenValue);
+        
+        let objConfig;
+        
+        let Consecutivo = ordenValue.split("-");
+        let suma = parseInt(Consecutivo[1])+1;
+        let sumaString;
+        if(suma < 10) {
+          sumaString = "00"+suma
+        }
+        else if(suma < 100) {
+          sumaString = "0"+suma;
+        }
+        else {
+          sumaString = suma
+        } 
+        Consecutivo = Consecutivo[0] + "-" + sumaString;
+        if (this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+          objConfig = { Consecutivo: Consecutivo }
+        }
+        else {
+          objConfig = { ConsecutivoAsociados: Consecutivo }          
+        }
+        RespuestaMensaje = "Exitoso";
+        RespuestaGurdado = await this.ActualizarConsecutivo(this.config[0].id, objConfig);
+        if (RespuestaGurdado === "Error") {
+          RespuestaMensaje = "Error";
+        }
+        
+      }
+    ).catch(
+      (error)=>{
+         console.log(error);
+         RespuestaMensaje = "Error";
       }
     )
+
+    return RespuestaMensaje
+  }
+
+  async ActualizarConsecutivo(id, Obj): Promise<any>{
+    let RespuestaMensaje = "";
+    await this.servicio.ActualizarNroOrden(id, Obj).then(
+      (res)=>{
+        RespuestaMensaje = "Exitoso";
+      }
+    ).catch(
+      (error)=>{
+        console.log(error);
+         RespuestaMensaje = "Error";
+      }
+    );
+
+    return RespuestaMensaje;
   }
 
   obtenerEmpresa() {
@@ -415,8 +470,13 @@ export class OrdenServiciosComponent implements OnInit {
     async onSubmit() {
     this.spinner.show()
     console.log(this.empleadoEditar[0]);
-    await this.obtenerConsecutivo();
+    let RespuestaConsecutivo = await this.obtenerConsecutivo();
+     if (RespuestaConsecutivo === "Error") {
+       this.MensajeError("Error al obtener el consecutivo");
+        return false;
+     }
     
+     console.log("1");
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
@@ -561,13 +621,7 @@ export class OrdenServiciosComponent implements OnInit {
       nroActualizadoConsultores = 'C-' + `${sumaOrden}`
     }
 
-    let objConfigA = {
-      ConsecutivoAsociados: nroActualizadoAsociado
-    }
-
-    let objConfigC = {
-      Consecutivo: nroActualizadoConsultores
-    }
+    
 
     objOrden = {
       Title: empresaSolicitante,
@@ -639,6 +693,11 @@ export class OrdenServiciosComponent implements OnInit {
       this.spinner.hide();
     }
     else {
+     let RespuestaConsecutivo = await this.obtenerConsecutivo();
+     if (RespuestaConsecutivo === "Error") {
+       this.MensajeError("Error al obtener el consecutivo");
+        return false;
+     }
       this.servicio.AgregarOrden(objOrden).then(
         (item: ItemAddResult) => {
           let idOrden = item.data.Id;
@@ -653,12 +712,7 @@ export class OrdenServiciosComponent implements OnInit {
             idServicio: idOrden
           }
 
-          if (this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
-            this.servicio.ActualizarNroOrden(id, objConfigC);
-          }
-          else {
-            this.servicio.ActualizarNroOrden(id, objConfigA);
-          }
+     
 
           let cuerpo = '<p>Cordial saludo</p>' +
             '<br>' +
