@@ -82,8 +82,8 @@
             <div class="col-md-6">
               <mat-form-field>
                   <mat-label>Contacto</mat-label>
-                  <mat-select formControlName="contactoSolicitante">
-                      <mat-option *ngFor="let usuario of dataUsuarios" [value]="usuario.label" (selectionChange)="changeContacto($event)">
+                  <mat-select formControlName="contactoSolicitante" (selectionChange)="changeContacto($event)">
+                      <mat-option *ngFor="let usuario of dataUsuarios" [value]="usuario">
                         {{usuario.label}}                        
                       </mat-option>
                   </mat-select>
@@ -95,7 +95,7 @@
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Email" formControlName="emailSolicitante">
+                <input matInput placeholder="Email" formControlName="emailSolicitante" readonly>
               </mat-form-field>
               <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('emailSolicitante').valid && generarOrdenServicios.get('emailSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>

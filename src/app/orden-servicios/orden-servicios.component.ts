@@ -179,10 +179,12 @@ export class OrdenServiciosComponent implements OnInit {
     });
   };
 
+  
 
   changeContacto($event) {
-    alert('hola')
-   console.log($event.target.value);
+  console.log($event)
+  let email = $event.value.email
+  this.generarOrdenServicios.controls['emailSolicitante'].setValue(email)
   }
 
   obtenerUnegocios() {
@@ -483,7 +485,7 @@ export class OrdenServiciosComponent implements OnInit {
     let ciudadSolicitante = this.generarOrdenServicios.get('ciudadSolicitante').value;
     let telSolicitante = this.generarOrdenServicios.get('telSolicitante').value;
     let direccionSolicitante = this.generarOrdenServicios.get('direccionSolicitante').value;
-    let contactoSolicitante = this.generarOrdenServicios.get('contactoSolicitante').value;
+    let contactoSolicitante = this.generarOrdenServicios.get('contactoSolicitante').value.label;
     let emailSolicitante = this.generarOrdenServicios.get('emailSolicitante').value;
     let unidadNegocios = this.generarOrdenServicios.get('unidadNegocios').value;
     let nombreCECO = this.generarOrdenServicios.get('nombreCECO').value;
