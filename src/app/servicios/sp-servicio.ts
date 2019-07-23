@@ -79,6 +79,11 @@ export class SPServicio {
         return respuesta;
     }
 
+    obtenerCecos() {
+        let respuesta = from(this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCeco).items.get());
+        return respuesta;
+    }
+
    async obtenerConsecutivo(): Promise<any> {
         let respuesta = await this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaConfiguracion).items.get();
         return respuesta;

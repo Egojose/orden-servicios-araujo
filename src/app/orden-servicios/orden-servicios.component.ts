@@ -13,6 +13,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { Empresas } from '../dominio/empresas'
 import { async } from 'q';
 import { promise } from 'protractor';
+import { CentroCosto } from '../dominio/centroCosto';
 
 
 @Component({
@@ -38,6 +39,7 @@ export class OrdenServiciosComponent implements OnInit {
   empleadoEditar: Empleado[] = [];
   usuarioActual: Usuario;
   usuarios: Usuario[] = [];
+  areas: CentroCosto[] = []
   nombreUsuario;
   idUsuario: number;
   jefe;
@@ -51,7 +53,7 @@ export class OrdenServiciosComponent implements OnInit {
 
   ngOnInit() {
     this.registrarControles();
-    this. obtenerUsuarios();
+    this.obtenerUsuarios();
     this.obtenerUnegocios();
     this.ObtenerUsuarioActual();
     this.obtenerConsecutivoInicial();
@@ -140,6 +142,7 @@ export class OrdenServiciosComponent implements OnInit {
         this.idUsuario = this.usuarioActual.id;
         sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
         this.obtenerInfoEmpleado();
+        this.obtenerCeco();
         this.servicio.obtenerJefe(this.usuarioActual.id).then(
           (respuesta) => {
             if(respuesta[0].JefeId !== null) {
@@ -179,7 +182,19 @@ export class OrdenServiciosComponent implements OnInit {
     });
   };
 
+  obtenerCeco() {
+    this.servicio.obtenerCecos().subscribe(
+      (respuesta) => {
+        this.areas = CentroCosto.fromJsonList(respuesta);
+      }
+    )
+  }
   
+  changeCeco($event) {
+    let numeroCeco = $event.value.ceco
+    console.log($event);
+    this.generarOrdenServicios.controls['numeroCECO'].setValue(numeroCeco);
+  }
 
   changeContacto($event) {
   console.log($event)
