@@ -440,7 +440,7 @@ export class OrdenServiciosComponent implements OnInit {
                   '<br>'+
                   '<p>El usuario <strong>'+this.usuarioActual.nombre+'</strong> ha generado una nueva orden de servicio con el número' + this.generarOrdenServicios.get('nroOrden').value + 'para su aprobación</p>'+
                   '<br>'+
-                  '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/Orden-Compra/index.aspx/Ordenes-pendientes" target="_blank">aquí</a>.</p>';
+                  '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
 
     const emailProps: EmailProperties = {
       To: [this.usuarioActual.EmailJefeDirecto],
@@ -720,7 +720,7 @@ export class OrdenServiciosComponent implements OnInit {
             '<br>' +
             '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado una nueva orden de servicio con el número <strong>' + this.generarOrdenServicios.get('nroOrden').value + '</strong> para su aprobación</p>' +
             '<br>' +
-            '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/aprobar-orden-servicio" target="_blank">aquí</a>.</p>';
+            '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
 
           const emailProps: EmailProperties = {
             To: [this.usuarioActual.EmailJefeDirecto],
