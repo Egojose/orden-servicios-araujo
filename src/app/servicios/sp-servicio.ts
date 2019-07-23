@@ -95,8 +95,8 @@ export class SPServicio {
     }
 
 
-    ActualizarNroOrden(id: number, objConfig) {
-        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaConfiguracion).items.getById(id).update(objConfig);
+    async ActualizarNroOrden(id: number, objConfig): Promise<any> {
+         return await this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaConfiguracion).items.getById(id).update(objConfig);
     }
 
     ConsultarMisPendientes(idUsuario) {
