@@ -336,13 +336,24 @@
               </div>
             </ng-container>
             <br>
-            <div class="row">
-              <div class="col-md-12">
-                <h6 class="text-center">
-                    NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA CONSULTORES INTERNACIONALES S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
-                </h6>
+            <ng-container *ngIf="esConsultores">
+              <div class="row">
+                <div class="col-md-12">
+                  <h6 class="text-center">
+                      NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA CONSULTORES INTERNACIONALES S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
+                  </h6>
+                </div>
               </div>
-            </div>
+            </ng-container>
+            <ng-container *ngIf="esAsociados">
+              <div class="row">
+                <div class="col-md-12">
+                  <h6 class="text-center">
+                      NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA ASOCIADOS S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
+                  </h6>
+                </div>
+              </div>
+            </ng-container>
         </mat-card>
       </mat-expansion-panel>
     </mat-accordion>
