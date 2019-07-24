@@ -67,6 +67,8 @@ export class ConsultarOrdenComponent implements OnInit {
   firmaDirector: any[];
   IdRegistroOS: string;
   NumeroOrden: string;
+  esConsultores: boolean = false;
+  esAsociados: boolean = false;
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService) { }
 
@@ -249,6 +251,12 @@ export class ConsultarOrdenComponent implements OnInit {
 
   switchValores() {
     console.log(this.aprobarOrdenServicios.controls['garantia'].value);
+    if(this.aprobarOrdenServicios.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+      this.esConsultores = true;
+    }
+    else {
+      this.esAsociados = true;
+    }
     if (this.aprobarOrdenServicios.controls['formaPago'].value === 'Único') {
       this.pagoUnico = true;
       this.pagoVarios = false;
