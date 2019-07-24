@@ -5,6 +5,7 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { BandejaServicios } from '../dominio/BandejaServicios';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrManager } from 'ng6-toastr-notifications';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-bandeja-servicios',
@@ -77,16 +78,17 @@ export class BandejaServiciosComponent implements OnInit {
     );
   }
 
-  VerServicio(id) {
+  VerServicio(id, estado) {
+  // ]console.log(event)
+    
     sessionStorage.setItem("IdServicio", id);
-    this.router.navigate(["/aprobar-orden-servicio"]);
-    // console.log(this.dataSource.data[0].Estado);
-    // if (this.dataSource.data[0].Estado !== 'Aprobado') {
-    //   this.router.navigate(["/aprobar-orden-servicio"]);
-    // }
-    // else {
-    //   this.router.navigate(["/consultar-orden"]);
-    // }
+
+    if (estado !== 'Aprobado') {
+      this.router.navigate(["/aprobar-orden-servicio"])
+    }
+    else {
+      this.router.navigate(["/consultar-orden"])
+    }
   }
 
   MensajeExitoso(mensaje: string) {
