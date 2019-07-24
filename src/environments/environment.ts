@@ -15,7 +15,8 @@ export const environment = {
   listaAprobadores: 'AprobadoresOrdenServicio',
   ListaServicios: 'Servicios',
   ListaEmpresas: 'EmpresasAraujoIbarra',
-  ListaCeco: 'CentroCostos'
+  ListaCeco: 'CentroCostos',
+  ListaSedes: 'Sedes'
 };
 
 /*

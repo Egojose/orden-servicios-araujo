@@ -43,20 +43,18 @@
               </mat-error>
             </div>
             <div class="col-md-6">
-                <mat-form-field>
-                    <mat-label>Ciudad</mat-label>
-                    <mat-select formControlName="ciudadSolicitante" (selectionChange)="changeCiudad($event)">
-                        <mat-option value="BOGOTÁ D.C">BOGOTÁ D.C</mat-option>
-                        <mat-option value="BARRANQUILLA">BARRANQUILLA</mat-option>
-                        <mat-option value="MEDELLÍN">MEDELLÍN</mat-option>
-                        <mat-option value="CALI">CALI</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-              <!-- <mat-form-field>
-                <input matInput placeholder="Ciudad" formControlName="ciudadSolicitante">
-              </mat-form-field> -->
+              <mat-form-field>
+                <mat-label>Ciudad</mat-label>
+                <mat-select formControlName="ciudadSolicitante" (selectionChange)="changeCiudad($event)">
+                  <mat-option *ngFor="let sede of sedes" [value]="sede">
+                    {{sede.nombre}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
               <mat-error>
-                  <span *ngIf="!generarOrdenServicios.get('ciudadSolicitante').valid && generarOrdenServicios.get('ciudadSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+                <span
+                  *ngIf="!generarOrdenServicios.get('ciudadSolicitante').valid && generarOrdenServicios.get('ciudadSolicitante').touched"><small
+                    class="form-text">Este campo debe estar diligenciado</small></span>
               </mat-error>
             </div>
           </div>
@@ -444,6 +442,7 @@
               </div>
             </ng-container>
             <br>
+            <ng-container *ngIf="esConsultores">
             <div class="row">
               <div class="col-md-12">
                 <h6 class="text-center">
@@ -451,6 +450,16 @@
                 </h6>
               </div>
             </div>
+          </ng-container>
+          <ng-container *ngIf="esAsociados">
+            <div class="row">
+              <div class="col-md-12">
+                <h6 class="text-center">
+                    NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA ASOCIADOS S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
+                </h6>
+              </div>
+            </div>
+          </ng-container>
         </mat-card>
       </mat-expansion-panel>
     </mat-accordion>

@@ -75,6 +75,8 @@ export class AprobarOrdenServicioComponent implements OnInit {
   IdRegistroOS: string;
   ObjServicio: any;
   NumeroOrden: any;
+  esConsultores: boolean = false;
+  esAsociados: boolean = false;
 
 
 
@@ -317,6 +319,12 @@ export class AprobarOrdenServicioComponent implements OnInit {
 
   switchValores() {
     console.log(this.aprobarOrdenServicios.controls['garantia'].value);
+    if(this.aprobarOrdenServicios.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+      this.esConsultores = true;
+    }
+    else {
+      this.esAsociados = true;
+    }
     if (this.aprobarOrdenServicios.controls['formaPago'].value === 'Único') {
       this.pagoUnico = true;
       this.pagoVarios = false;

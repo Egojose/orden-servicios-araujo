@@ -14,6 +14,7 @@ import { Empresas } from '../dominio/empresas'
 import { async } from 'q';
 import { promise } from 'protractor';
 import { CentroCosto } from '../dominio/centroCosto';
+import { Sede } from '../dominio/sede';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class OrdenServiciosComponent implements OnInit {
   unegocios: Unegocios[] = [];
   config: Configuracion[] = [];
   empresa: Empresas[] = [];
+  sedes: Sede[] = [];
   ivaCalculado: number;
   total: number;
   precio: number;
@@ -47,6 +49,8 @@ export class OrdenServiciosComponent implements OnInit {
   dataUsuarios = [
     {value: 'Seleccione', label : 'Seleccione', email: 'email'}
   ];
+  esConsultores: boolean = false;
+  esAsociados: boolean = false;
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -142,7 +146,7 @@ export class OrdenServiciosComponent implements OnInit {
         this.idUsuario = this.usuarioActual.id;
         sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
         this.obtenerInfoEmpleado();
-        this.obtenerCeco();
+        this.obtenerSedes();
         this.servicio.obtenerJefe(this.usuarioActual.id).then(
           (respuesta) => {
             if(respuesta[0].JefeId !== null) {
@@ -181,6 +185,15 @@ export class OrdenServiciosComponent implements OnInit {
       // console.log(this.dataUsuarios);
     });
   };
+
+  obtenerSedes() {
+    this.servicio.obtenerSedes().subscribe(
+      (respuesta) => {
+        this.sedes = Sede.fromJsonList(respuesta);
+        this. obtenerCeco();
+      }
+    )
+  }
 
   obtenerCeco() {
     this.servicio.obtenerCecos().subscribe(
@@ -330,19 +343,23 @@ export class OrdenServiciosComponent implements OnInit {
     if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
       this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[0].nit);
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
+      this.esConsultores = true;
+      this.esAsociados = false;
     }
     else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
       this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[1].nit);
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados);
+      this.esConsultores = false;
+      this.esAsociados = true;
     }
   }
 
   cargarNroOrden() {
     if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
-      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo); 
     }
     else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
-      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados)
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados) 
     }
   }
 
@@ -350,27 +367,13 @@ export class OrdenServiciosComponent implements OnInit {
     this.cargarNit();
   }
 
-  ciudad() {
-    if(this.generarOrdenServicios.get('ciudadSolicitante').value === 'BOGOTÁ D.C'){
-      this.generarOrdenServicios.controls['telSolicitante'].setValue('1-6511511')
-      this.generarOrdenServicios.controls['direccionSolicitante'].setValue('Calle 98 N° 22-64 Of 910')
-    }
-    else if(this.generarOrdenServicios.get('ciudadSolicitante').value === 'BARRANQUILLA') {
-      this.generarOrdenServicios.controls['telSolicitante'].setValue('5-3690866')
-      this.generarOrdenServicios.controls['direccionSolicitante'].setValue('Calle 77b N° 57-141 Of 211')
-    }
-    else if(this.generarOrdenServicios.get('ciudadSolicitante').value === 'MEDELLÍN') {
-      this.generarOrdenServicios.controls['telSolicitante'].setValue('4-3217131')
-      this.generarOrdenServicios.controls['direccionSolicitante'].setValue('Carrera 25 N° 1-31 Of 711. Centro empresarial El Tesoro')
-    }
-    else if(this.generarOrdenServicios.get('ciudadSolicitante').value === 'CALI') {
-      this.generarOrdenServicios.controls['telSolicitante'].setValue('2-3747044')
-      this.generarOrdenServicios.controls['direccionSolicitante'].setValue('Calle 11 N° 100-121 Of 1001')
-    }
-  }
   
   changeCiudad($event) {
-    this.ciudad();
+    console.log($event.value);
+    let direccion = $event.value.direccion;
+    let telefono = $event.value.telefono;
+    this.generarOrdenServicios.controls['direccionSolicitante'].setValue(direccion);
+    this.generarOrdenServicios.controls['telSolicitante'].setValue(telefono);
   }
 
   calcularIva() {
@@ -497,13 +500,13 @@ export class OrdenServiciosComponent implements OnInit {
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
-    let ciudadSolicitante = this.generarOrdenServicios.get('ciudadSolicitante').value;
+    let ciudadSolicitante = this.generarOrdenServicios.get('ciudadSolicitante').value.nombre;
     let telSolicitante = this.generarOrdenServicios.get('telSolicitante').value;
     let direccionSolicitante = this.generarOrdenServicios.get('direccionSolicitante').value;
     let contactoSolicitante = this.generarOrdenServicios.get('contactoSolicitante').value.label;
     let emailSolicitante = this.generarOrdenServicios.get('emailSolicitante').value;
     let unidadNegocios = this.generarOrdenServicios.get('unidadNegocios').value;
-    let nombreCECO = this.generarOrdenServicios.get('nombreCECO').value;
+    let nombreCECO = this.generarOrdenServicios.get('nombreCECO').value.nombre;
     let numeroCECO = this.generarOrdenServicios.get('numeroCECO').value;
     let razonSocial = this.generarOrdenServicios.get('razonSocial').value;
     let nitProveedor = this.generarOrdenServicios.get('nitProveedor').value;
