@@ -367,27 +367,13 @@ export class OrdenServiciosComponent implements OnInit {
     this.cargarNit();
   }
 
-  ciudad() {
-    if(this.generarOrdenServicios.get('ciudadSolicitante').value === 'BOGOTÁ D.C'){
-      this.generarOrdenServicios.controls['telSolicitante'].setValue('1-6511511')
-      this.generarOrdenServicios.controls['direccionSolicitante'].setValue('Calle 98 N° 22-64 Of 910')
-    }
-    else if(this.generarOrdenServicios.get('ciudadSolicitante').value === 'BARRANQUILLA') {
-      this.generarOrdenServicios.controls['telSolicitante'].setValue('5-3690866')
-      this.generarOrdenServicios.controls['direccionSolicitante'].setValue('Calle 77b N° 57-141 Of 211')
-    }
-    else if(this.generarOrdenServicios.get('ciudadSolicitante').value === 'MEDELLÍN') {
-      this.generarOrdenServicios.controls['telSolicitante'].setValue('4-3217131')
-      this.generarOrdenServicios.controls['direccionSolicitante'].setValue('Carrera 25 N° 1-31 Of 711. Centro empresarial El Tesoro')
-    }
-    else if(this.generarOrdenServicios.get('ciudadSolicitante').value === 'CALI') {
-      this.generarOrdenServicios.controls['telSolicitante'].setValue('2-3747044')
-      this.generarOrdenServicios.controls['direccionSolicitante'].setValue('Calle 11 N° 100-121 Of 1001')
-    }
-  }
   
   changeCiudad($event) {
-    this.ciudad();
+    console.log($event.value);
+    let direccion = $event.value.direccion;
+    let telefono = $event.value.telefono;
+    this.generarOrdenServicios.controls['direccionSolicitante'].setValue(direccion);
+    this.generarOrdenServicios.controls['telSolicitante'].setValue(telefono);
   }
 
   calcularIva() {
@@ -514,7 +500,7 @@ export class OrdenServiciosComponent implements OnInit {
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
-    let ciudadSolicitante = this.generarOrdenServicios.get('ciudadSolicitante').value;
+    let ciudadSolicitante = this.generarOrdenServicios.get('ciudadSolicitante').value.nombre;
     let telSolicitante = this.generarOrdenServicios.get('telSolicitante').value;
     let direccionSolicitante = this.generarOrdenServicios.get('direccionSolicitante').value;
     let contactoSolicitante = this.generarOrdenServicios.get('contactoSolicitante').value.label;
