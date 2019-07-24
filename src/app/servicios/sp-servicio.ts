@@ -79,6 +79,11 @@ export class SPServicio {
         return respuesta;
     }
 
+    obtenerSedes() {
+        let respuesta = from(this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaSedes).items.get());
+        return respuesta;
+    }
+
     obtenerCecos() {
         let respuesta = from(this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCeco).items.get());
         return respuesta;
