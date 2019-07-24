@@ -14,6 +14,7 @@ import { Empresas } from '../dominio/empresas'
 import { async } from 'q';
 import { promise } from 'protractor';
 import { CentroCosto } from '../dominio/centroCosto';
+import { Sede } from '../dominio/sede';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class OrdenServiciosComponent implements OnInit {
   unegocios: Unegocios[] = [];
   config: Configuracion[] = [];
   empresa: Empresas[] = [];
+  sedes: Sede[] = [];
   ivaCalculado: number;
   total: number;
   precio: number;
@@ -47,6 +49,8 @@ export class OrdenServiciosComponent implements OnInit {
   dataUsuarios = [
     {value: 'Seleccione', label : 'Seleccione', email: 'email'}
   ];
+  esConsultores: boolean = false;
+  esAsociados: boolean = false;
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -142,7 +146,7 @@ export class OrdenServiciosComponent implements OnInit {
         this.idUsuario = this.usuarioActual.id;
         sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
         this.obtenerInfoEmpleado();
-        this.obtenerCeco();
+        this.obtenerSedes();
         this.servicio.obtenerJefe(this.usuarioActual.id).then(
           (respuesta) => {
             if(respuesta[0].JefeId !== null) {
@@ -181,6 +185,15 @@ export class OrdenServiciosComponent implements OnInit {
       // console.log(this.dataUsuarios);
     });
   };
+
+  obtenerSedes() {
+    this.servicio.obtenerSedes().subscribe(
+      (respuesta) => {
+        this.sedes = Sede.fromJsonList(respuesta);
+        this. obtenerCeco();
+      }
+    )
+  }
 
   obtenerCeco() {
     this.servicio.obtenerCecos().subscribe(
@@ -330,19 +343,23 @@ export class OrdenServiciosComponent implements OnInit {
     if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
       this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[0].nit);
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
+      this.esConsultores = true;
+      this.esAsociados = false;
     }
     else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
       this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[1].nit);
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados);
+      this.esConsultores = false;
+      this.esAsociados = true;
     }
   }
 
   cargarNroOrden() {
     if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
-      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo); 
     }
     else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
-      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados)
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados) 
     }
   }
 
