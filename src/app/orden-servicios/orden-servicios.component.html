@@ -46,10 +46,9 @@
                 <mat-form-field>
                     <mat-label>Ciudad</mat-label>
                     <mat-select formControlName="ciudadSolicitante" (selectionChange)="changeCiudad($event)">
-                        <mat-option value="BOGOTÁ D.C">BOGOTÁ D.C</mat-option>
-                        <mat-option value="BARRANQUILLA">BARRANQUILLA</mat-option>
-                        <mat-option value="MEDELLÍN">MEDELLÍN</mat-option>
-                        <mat-option value="CALI">CALI</mat-option>
+                      <mat-option *ngFor="let sede of sedes" [value]="sede">
+                        {{sede.nombre}}
+                      </mat-option>
                     </mat-select>
                   </mat-form-field>
               <!-- <mat-form-field>
