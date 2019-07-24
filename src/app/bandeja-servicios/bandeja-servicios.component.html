@@ -39,7 +39,7 @@
               <ng-container matColumnDef="Acciones">
                   <th mat-header-cell *matHeaderCellDef> Acciones </th>
                   <td mat-cell *matCellDef="let element"> 
-                    <button class="btn btn-primary" (click)="VerServicio(element.Id)">Ver Servicio</button>
+                    <button class="btn btn-primary" (click)="VerServicio(element.Id, element.Estado)">Ver Servicio</button>
                   </td>
                 </ng-container>
       
@@ -92,7 +92,7 @@
                   <ng-container matColumnDef="Acciones">
                       <th mat-header-cell *matHeaderCellDef> Acciones </th>
                       <td mat-cell *matCellDef="let element"> 
-                        <button class="btn btn-primary" (click)="VerServicio(element.Id)">Ver Servicio</button>
+                        <button class="btn btn-primary" (click)="VerServicio(element.Id, element.Estado)">Ver Servicio</button>
                       </td>
                     </ng-container>
           
