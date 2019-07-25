@@ -450,7 +450,10 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/orden-servicios'])
+    setTimeout(
+      () => {
+        window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+      }, 500);
   }
 
   enviarNotificacion() {
@@ -493,6 +496,7 @@ export class OrdenServiciosComponent implements OnInit {
     let RespuestaConsecutivo = await this.obtenerConsecutivo();
      if (RespuestaConsecutivo === "Error") {
        this.MensajeError("Error al obtener el consecutivo");
+       this.spinner.hide();
         return false;
      }
     
@@ -716,6 +720,7 @@ export class OrdenServiciosComponent implements OnInit {
      let RespuestaConsecutivo = await this.obtenerConsecutivo();
      if (RespuestaConsecutivo === "Error") {
        this.MensajeError("Error al obtener el consecutivo");
+       this.spinner.hide();
         return false;
      }
       this.servicio.AgregarOrden(objOrden).then(
