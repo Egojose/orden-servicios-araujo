@@ -428,11 +428,13 @@ export class AprobarOrdenServicioComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/orden-servicios'])
+    setTimeout(
+      () => {
+        window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+      }, 1000);
   }
 
   onSubmit() {
-    debugger
     this.spinner.show()
     let objOrden
     let id = this.orden[0].id
@@ -450,13 +452,21 @@ export class AprobarOrdenServicioComponent implements OnInit {
       '<br>' +
       '<p>La orden de servicio número <strong>' + this.NumeroOrden + '</strong> requiere de su aprobación</p>' +
       '<br>' +
-      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
+      '<br>'
+      '<p>En caso de que el acceso no lo dirija a página por favor copie esta url en el navegador:</p>' + 
+      '<br>' +
+      'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';  
 
     let cuerpoAprobado = '<p>Cordial saludo</p>' +
       '<br>' +
       '<p>La orden de servicio número <strong>' + this.NumeroOrden + '</strong> ha sido aprobada y está lista para continuar el proceso.</p>' +
       '<br>' +
-      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
+      '<br>' +
+      '<p>En caso de que el acceso no lo dirija a página por favor copie esta url en el navegador:</p>' + 
+      '<br>' +
+      'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios'
 
     let cuerpoRechazado = '<p>Cordial saludo</p>' +
         '<br>' +
