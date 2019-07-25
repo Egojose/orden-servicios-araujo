@@ -454,7 +454,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     setTimeout(
       () => {
         window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
-      }, 1000);
+      }, 500);
   }
 
   onSubmit() {
