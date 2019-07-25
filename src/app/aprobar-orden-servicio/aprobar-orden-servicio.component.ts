@@ -98,37 +98,37 @@ export class AprobarOrdenServicioComponent implements OnInit {
   private registrarControles() {
     this.aprobarOrdenServicios = this.fb.group({
       nroOrden: [''],
-      empresaSolicitante: ['', Validators.required],
-      nitSolicitante: ['', Validators.required],
-      ciudadSolicitante: ['', Validators.required],
-      telSolicitante: ['', Validators.required],
-      direccionSolicitante: ['', Validators.required],
-      contactoSolicitante: ['', Validators.required],
-      emailSolicitante: ['', Validators.required],
-      unidadNegocios: ['', Validators.required],
-      nombreCECO: ['', Validators.required],
-      numeroCECO: ['', Validators.required],
-      razonSocial: ['', Validators.required],
-      nitProveedor: ['', Validators.required],
-      ciudadProveedor: ['', Validators.required],
-      telProveedor: ['', Validators.required],
-      direccionProveedor: ['', Validators.required],
-      contactoProveedor: ['', Validators.required],
-      regimen: ['', Validators.required],
+      empresaSolicitante: [''],
+      nitSolicitante: [''],
+      ciudadSolicitante: [''],
+      telSolicitante: [''],
+      direccionSolicitante: [''],
+      contactoSolicitante: [''],
+      emailSolicitante: [''],
+      unidadNegocios: [''],
+      nombreCECO: [''],
+      numeroCECO: [''],
+      razonSocial: [''],
+      nitProveedor: [''],
+      ciudadProveedor: [''],
+      telProveedor: [''],
+      direccionProveedor: [''],
+      contactoProveedor: [''],
+      regimen: ['',],
       rut: [''],
       camara: [''],
-      descripcionServicios: ['', Validators.required],
-      cliente: ['', Validators.required],
-      job: ['', Validators.required],
-      precio: ['', Validators.required],
+      descripcionServicios: [''],
+      cliente: [''],
+      job: [''],
+      precio: [''],
       tieneIva: [''],
       iva: [''],
       total: [''],
-      valorLetras: ['', Validators.required],
-      fechaInicio: ['', Validators.required],
-      fechaFinal: ['', Validators.required],
+      valorLetras: [''],
+      fechaInicio: [''],
+      fechaFinal: [''],
       totalDias: [''],
-      formaPago: ['',Validators.required],
+      formaPago: [''],
       fechaPago: [''],
       Pago1: [''],
       Pago2: [''],
@@ -157,7 +157,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       polizaVida: [''],
       polizaVehiculos: [''],
       gerenteUnegocios: [''],
-      motivoRechazo: ['', Validators.required]
+      motivoRechazo: ['']
     })
   }
 
@@ -212,6 +212,28 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.obtenerfirmaUsuario();
       }
     )
+  }
+
+  disableButtons():void {
+    this.aprobarOrdenServicios.controls['regimen'].disable();
+    this.aprobarOrdenServicios.controls['rut'].disable();
+    this.aprobarOrdenServicios.controls['camara'].disable();
+    this.aprobarOrdenServicios.controls['formaPago'].disable();
+    this.aprobarOrdenServicios.controls['distPago'].disable();
+    this.aprobarOrdenServicios.controls['garantia'].disable();
+    this.aprobarOrdenServicios.controls['polizaVida'].disable();
+    this.aprobarOrdenServicios.controls['polizaVehiculos'].disable();
+    this.aprobarOrdenServicios.controls['tieneIva'].disable();
+    this.aprobarOrdenServicios.controls['fechaInicio'].disable();
+    this.aprobarOrdenServicios.controls['fechaFinal'].disable();
+    this.aprobarOrdenServicios.controls['fechaPago'].disable();
+    this.aprobarOrdenServicios.controls['Pago1'].disable();
+    this.aprobarOrdenServicios.controls['Pago2'].disable();
+    this.aprobarOrdenServicios.controls['Pago3'].disable();
+    this.aprobarOrdenServicios.controls['Pago4'].disable();
+    this.aprobarOrdenServicios.controls['Pago5'].disable();
+    this.aprobarOrdenServicios.controls['Pago6'].disable();
+    this.aprobarOrdenServicios.controls['Pago1'].disable();
   }
 
   obtenerDatosAprobadores() {
@@ -295,6 +317,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.esResponsableActual = true;
     }
     this.switchValores();
+    this.disableButtons();
   }
 
   obtenerfirmaUsuario(): any {
@@ -428,11 +451,13 @@ export class AprobarOrdenServicioComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/orden-servicios'])
+    setTimeout(
+      () => {
+        window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+      }, 500);
   }
 
   onSubmit() {
-    debugger
     this.spinner.show()
     let objOrden
     let id = this.orden[0].id
@@ -450,13 +475,21 @@ export class AprobarOrdenServicioComponent implements OnInit {
       '<br>' +
       '<p>La orden de servicio número <strong>' + this.NumeroOrden + '</strong> requiere de su aprobación</p>' +
       '<br>' +
-      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
+      '<br>'
+      '<p>En caso de que el acceso no lo dirija a página por favor copie esta url en el navegador:</p>' + 
+      '<br>' +
+      'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';  
 
     let cuerpoAprobado = '<p>Cordial saludo</p>' +
       '<br>' +
       '<p>La orden de servicio número <strong>' + this.NumeroOrden + '</strong> ha sido aprobada y está lista para continuar el proceso.</p>' +
       '<br>' +
-      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
+      '<br>' +
+      '<p>En caso de que el acceso no lo dirija a página por favor copie esta url en el navegador:</p>' + 
+      '<br>' +
+      'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios'
 
     let cuerpoRechazado = '<p>Cordial saludo</p>' +
         '<br>' +

@@ -185,6 +185,28 @@ export class ConsultarOrdenComponent implements OnInit {
     )
   }
 
+  disableButtons():void {
+    this.aprobarOrdenServicios.controls['regimen'].disable();
+    this.aprobarOrdenServicios.controls['rut'].disable();
+    this.aprobarOrdenServicios.controls['camara'].disable();
+    this.aprobarOrdenServicios.controls['formaPago'].disable();
+    this.aprobarOrdenServicios.controls['distPago'].disable();
+    this.aprobarOrdenServicios.controls['garantia'].disable();
+    this.aprobarOrdenServicios.controls['polizaVida'].disable();
+    this.aprobarOrdenServicios.controls['polizaVehiculos'].disable();
+    this.aprobarOrdenServicios.controls['tieneIva'].disable();
+    this.aprobarOrdenServicios.controls['fechaInicio'].disable();
+    this.aprobarOrdenServicios.controls['fechaFinal'].disable();
+    this.aprobarOrdenServicios.controls['fechaPago'].disable();
+    this.aprobarOrdenServicios.controls['Pago1'].disable();
+    this.aprobarOrdenServicios.controls['Pago2'].disable();
+    this.aprobarOrdenServicios.controls['Pago3'].disable();
+    this.aprobarOrdenServicios.controls['Pago4'].disable();
+    this.aprobarOrdenServicios.controls['Pago5'].disable();
+    this.aprobarOrdenServicios.controls['Pago6'].disable();
+    this.aprobarOrdenServicios.controls['Pago1'].disable();
+  }
+
   valoresPorDefecto() {
     // this.aprobarOrdenServicios.controls['nroOrden'].setValue(this.orden[0].nroOrden);
     this.aprobarOrdenServicios.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
@@ -246,7 +268,8 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
     this.aprobarOrdenServicios.controls['distPago'].setValue(this.orden[0].distPago);
     this.NumeroOrden = this.orden[0].nroOrden;
-    this.switchValores(); 
+    this.switchValores();
+    this.disableButtons(); 
   }
 
   switchValores() {

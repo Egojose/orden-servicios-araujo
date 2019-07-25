@@ -450,7 +450,10 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/orden-servicios'])
+    setTimeout(
+      () => {
+        window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+      }, 500);
   }
 
   enviarNotificacion() {
@@ -493,6 +496,7 @@ export class OrdenServiciosComponent implements OnInit {
     let RespuestaConsecutivo = await this.obtenerConsecutivo();
      if (RespuestaConsecutivo === "Error") {
        this.MensajeError("Error al obtener el consecutivo");
+       this.spinner.hide();
         return false;
      }
     
@@ -716,6 +720,7 @@ export class OrdenServiciosComponent implements OnInit {
      let RespuestaConsecutivo = await this.obtenerConsecutivo();
      if (RespuestaConsecutivo === "Error") {
        this.MensajeError("Error al obtener el consecutivo");
+       this.spinner.hide();
         return false;
      }
       this.servicio.AgregarOrden(objOrden).then(
@@ -732,13 +737,14 @@ export class OrdenServiciosComponent implements OnInit {
             idServicio: idOrden
           }
 
-     
-
           let cuerpo = '<p>Cordial saludo</p>' +
             '<br>' +
             '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado una nueva orden de servicio con el número <strong>' + this.generarOrdenServicios.get('nroOrden').value + '</strong> para su aprobación</p>' +
             '<br>' +
-            '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
+            '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' + 
+            '<p>En caso de que el acceso no lo dirija a página por favor copie esta url en el navegador:</p>' + 
+            '<br>' +
+            'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios'; 
 
           const emailProps: EmailProperties = {
             To: [this.usuarioActual.EmailJefeDirecto],
