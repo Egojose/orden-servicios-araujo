@@ -6,6 +6,9 @@
           <mat-panel-description>{{panelOpenState ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
         </mat-expansion-panel-header>
     <div class="mat-elevation-z8">
+        <ng-container *ngIf="empty">
+            <mat-toolbar color="primary">No hay solicitudes</mat-toolbar>
+          </ng-container>
         <table mat-table [dataSource]="dataSource">
       
           <!-- Position Column -->
@@ -58,7 +61,11 @@
               <mat-panel-title><strong>Ver mis órdenes</strong></mat-panel-title>
               <mat-panel-description>{{panelOpenState ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
             </mat-expansion-panel-header>
+            
         <div class="mat-elevation-z8">
+          <ng-container *ngIf="emptyOrdenes">
+            <mat-toolbar color="primary">No hay solicitudes</mat-toolbar>
+          </ng-container>
             <table mat-table [dataSource]="dataSource1">
           
               <!-- Position Column -->

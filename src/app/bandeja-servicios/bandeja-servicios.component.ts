@@ -24,6 +24,8 @@ export class BandejaServiciosComponent implements OnInit {
   idUsuario: any;
   dataSource;
   dataSource1;
+  empty: boolean = false;
+  emptyOrdenes: boolean = false;
 
   displayedColumns: string[] = ['NumeroOrden', 'Solicitante', 'FechaSolicitud', 'EmpresaSolicitante', 'Estado', 'Acciones'];
   ObjServicios: BandejaServicios[];
@@ -54,6 +56,7 @@ export class BandejaServiciosComponent implements OnInit {
         this.ObjServicios = BandejaServicios.fromJsonList(res);
         this.dataSource = new MatTableDataSource(this.ObjServicios);
         this.dataSource.paginator = this.MisPendientesPaginador;
+        this.dataSource.data.length = 0 ? this.empty = true : this.empty = false;
       }
     ).catch(
       (error)=>{
@@ -69,7 +72,8 @@ export class BandejaServiciosComponent implements OnInit {
         this.ObjServicios = BandejaServicios.fromJsonList(res);
         this.dataSource1 = new MatTableDataSource(this.ObjServicios);
         this.dataSource1.paginator = this.MisOrdenesPaginador;
-      }
+        this.dataSource1.data.length === 0 ? this.emptyOrdenes = true : this.emptyOrdenes = false;
+      },
     ).catch(
       (error)=>{
         console.error(error);
