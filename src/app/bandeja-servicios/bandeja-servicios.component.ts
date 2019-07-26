@@ -56,7 +56,7 @@ export class BandejaServiciosComponent implements OnInit {
         this.ObjServicios = BandejaServicios.fromJsonList(res);
         this.dataSource = new MatTableDataSource(this.ObjServicios);
         this.dataSource.paginator = this.MisPendientesPaginador;
-        this.dataSource.data.length = 0 ? this.empty = true : this.empty = false;
+        this.dataSource.data.length === 0 ? this.empty = true : this.empty = false;
       }
     ).catch(
       (error)=>{
