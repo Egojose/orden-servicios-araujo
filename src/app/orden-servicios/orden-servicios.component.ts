@@ -539,6 +539,12 @@ export class OrdenServiciosComponent implements OnInit {
       return false;
     }
 
+    if(garantia === "") {
+      this.MensajeAdvertencia('Debe seleccionar si tiene garantías');
+      this.spinner.hide()
+      return false; 
+    }
+
     if (rut === "" && camara === "") {
       this.MensajeAdvertencia('Debe seleccionar el RUT o la Cámara de comercio')
       this.spinner.hide();
