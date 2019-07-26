@@ -236,7 +236,7 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   async obtenerConsecutivo(): Promise<any> {
-    console.log("2");
+   
     let RespuestaMensaje = "";
     let RespuestaGurdado;
     let numeroOrdenString = this.config[0].consecutivo.split('-')
@@ -252,7 +252,7 @@ export class OrdenServiciosComponent implements OnInit {
     
     await this.servicio.obtenerConsecutivo().then(
       async (respuesta) => {
-        console.log("3");
+        
         this.config = Configuracion.fromJsonList(respuesta);
         let ordenActual = numeroOrdenNumber 
         let ordenValue;
@@ -456,51 +456,18 @@ export class OrdenServiciosComponent implements OnInit {
       }, 500);
   }
 
-  enviarNotificacion() {
-    let cuerpo = '<p>Cordial saludo</p>'+
-                  '<br>'+
-                  '<p>El usuario <strong>'+this.usuarioActual.nombre+'</strong> ha generado una nueva orden de servicio con el número' + this.generarOrdenServicios.get('nroOrden').value + 'para su aprobación</p>'+
-                  '<br>'+
-                  '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>';
 
-    const emailProps: EmailProperties = {
-      To: [this.usuarioActual.EmailJefeDirecto],
-      Subject: "Notificación de orden de servicio",
-      Body: cuerpo,
-    };
-    this.servicio.EnviarNotificacion(emailProps).then(
-      (res) => {
-        this.MensajeExitoso("La Orden se ha enviado con éxito");
-        setTimeout(
-          () => {
-            window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
-            // this.spinnerService.hide();
-          }, 2000);
-      }
-    ).catch(
-      (error) => {
-        console.error(error);
-        this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
-        setTimeout(
-          () => {
-            window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
-            // this.spinnerService.hide();
-          }, 2000);
-      }
-    );                 
-  }
-
-    async onSubmit() {
+  async onSubmit() {
     this.spinner.show()
     console.log(this.empleadoEditar[0]);
     let RespuestaConsecutivo = await this.obtenerConsecutivo();
-     if (RespuestaConsecutivo === "Error") {
-       this.MensajeError("Error al obtener el consecutivo");
-       this.spinner.hide();
+      if (RespuestaConsecutivo === "Error") {
+        this.MensajeError("Error al obtener el consecutivo");
+        this.spinner.hide();
         return false;
-     }
+      }
     
-     console.log("1");
+    
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
@@ -645,8 +612,6 @@ export class OrdenServiciosComponent implements OnInit {
       nroActualizadoConsultores = 'C-' + `${sumaOrden}`
     }
 
-    
-
     objOrden = {
       Title: empresaSolicitante,
       NroOrden: nroOrden,      
@@ -742,8 +707,7 @@ export class OrdenServiciosComponent implements OnInit {
             '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado una nueva orden de servicio con el número <strong>' + this.generarOrdenServicios.get('nroOrden').value + '</strong> para su aprobación</p>' +
             '<br>' +
             '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' + 
-            '<p>En caso de que el acceso no lo dirija a página por favor copie esta url en el navegador:</p>' + 
-            '<br>' +
+            '<p>En caso de que el acceso no lo dirija a página por favor copie la siguiente url en el navegador:</p>' + 
             'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios'; 
 
           const emailProps: EmailProperties = {
