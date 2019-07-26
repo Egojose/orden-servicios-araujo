@@ -510,7 +510,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       };
       ordenServ = {
         ResponsableActualId: null,
-        Estado: "Pendiente de aprobación gerente unidad de negocios",
+        Estado: "Rechazado"
       }
     }
 
