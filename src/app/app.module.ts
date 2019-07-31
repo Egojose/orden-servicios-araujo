@@ -17,13 +17,15 @@ import { ConsultarOrdenComponent } from './consultar-orden/consultar-orden.compo
 import { ExportAsModule } from 'ngx-export-as';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BandejaServiciosComponent } from './bandeja-servicios/bandeja-servicios.component';
+import { EditarOrdenComponent } from './editar-orden/editar-orden.component';
 @NgModule({
   declarations: [
     AppComponent,
     OrdenServiciosComponent,
     AprobarOrdenServicioComponent,
     ConsultarOrdenComponent,
-    BandejaServiciosComponent
+    BandejaServiciosComponent,
+    EditarOrdenComponent
   ],
   imports: [
     BrowserModule,

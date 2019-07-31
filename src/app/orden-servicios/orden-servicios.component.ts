@@ -246,7 +246,7 @@ export class OrdenServiciosComponent implements OnInit {
     if(this.generarOrdenServicios.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
       numeroOrdenNumber = parseInt(numeroOrdenString[1], 10)
     }
-    else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
+    else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra & Asociados S.A.') {
       numeroOrdenNumber = parseInt(numeroOrdenStringAsociados[1], 10)
     }
     
@@ -265,13 +265,13 @@ export class OrdenServiciosComponent implements OnInit {
         else if(this.generarOrdenServicios.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S' && ordenActual > 99) {
           ordenValue = `C-${ordenActual}`
         }
-        else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S' && ordenActual < 10) {
+        else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra & Asociados S.A.' && ordenActual < 10) {
           ordenValue = `A-00${ordenActual}`
         }
-        else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S' && (ordenActual >= 10 && ordenActual < 100 )) {
+        else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra & Asociados S.A.' && (ordenActual >= 10 && ordenActual < 100 )) {
           ordenValue = `A-0${ordenActual}`
         }
-        else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S' && ordenActual > 99) {
+        else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra & Asociados S.A.' && ordenActual > 99) {
           ordenValue = `A-${ordenActual}`
         }
         this.generarOrdenServicios.controls['nroOrden'].setValue(ordenValue);
@@ -334,38 +334,33 @@ export class OrdenServiciosComponent implements OnInit {
     this.servicio.obtenerEmpresa().subscribe(
       (respuesta) => {
         this.empresa = Empresas.fromJsonList(respuesta);
-        console.log(this.empresa);
       }
     )
-  }
-
-  cargarNit() {
-    if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
-      this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[0].nit);
-      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
-      this.esConsultores = true;
-      this.esAsociados = false;
-    }
-    else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
-      this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[1].nit);
-      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados);
-      this.esConsultores = false;
-      this.esAsociados = true;
-    }
   }
 
   cargarNroOrden() {
     if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo); 
     }
-    else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
+    else if(this.generarOrdenServicios.get('empresaSolicitante').value === 'Araujo Ibarra & Asociados S.A.') {
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados) 
     }
   }
 
   changeEmpresa($event) {
-    this.cargarNit();
-  }
+    if($event.value.tipo === "Consultores") {
+      this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[0].nit);
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
+      this.esConsultores = true;
+      this.esAsociados = false;
+    }
+    else if($event.value.tipo === "Asociados") {
+      this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[1].nit);
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados);
+      this.esConsultores = false;
+      this.esAsociados = true;
+    }
+  };
 
   
   changeCiudad($event) {
