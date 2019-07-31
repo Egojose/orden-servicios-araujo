@@ -44,6 +44,8 @@ export class EditarOrdenComponent implements OnInit {
   pagoCECO: boolean;
   pagoUnico: boolean;
   pagoVarios: boolean;
+  panelOpenState = false;
+  panelOpenState1 = false;
 
 
   constructor(
