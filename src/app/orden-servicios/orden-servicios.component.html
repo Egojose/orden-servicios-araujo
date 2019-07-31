@@ -19,7 +19,7 @@
               <mat-form-field>
                   <mat-label>Empresa solicitante</mat-label>
                   <mat-select formControlName="empresaSolicitante" (selectionChange)="changeEmpresa($event)">
-                    <mat-option *ngFor="let empresas of empresa" [value]="empresas.nombre">
+                    <mat-option *ngFor="let empresas of empresa" [value]="empresas">
                       {{empresas.nombre}}
                     </mat-option>
                   
@@ -455,7 +455,7 @@
             <div class="row">
               <div class="col-md-12">
                 <h6 class="text-center">
-                    NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA ASOCIADOS S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
+                    NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA ASOCIADOS S.A y debe contener el numero de orden de servicios indicado en la parte superior.
                 </h6>
               </div>
             </div>
