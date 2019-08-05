@@ -118,7 +118,7 @@
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                  <mat-label>Áreas</mat-label>
+                  <mat-label>Responsable</mat-label>
                   <mat-select formControlName="nombreCECO" (selectionChange)="changeCeco($event)">
                       <mat-option *ngFor="let area of areas" [value]="area">
                         {{area.nombre}}                        
@@ -299,7 +299,7 @@
               </div>
               <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal" (change)="changeFecha($event.target.value)">
+                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal">
                     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                   </mat-form-field>
@@ -311,7 +311,7 @@
               </div>
               <div class="col-md-4">
                 <mat-form-field>
-                  <input matInput placeholder="Total días del contrato" formControlName="totalDias">
+                  <input matInput placeholder="Total días del contrato" formControlName="totalDias" (click)="changeFecha()">
                 </mat-form-field>
                 <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('totalDias').valid && generarOrdenServicios.get('totalDias').touched"><small
@@ -540,5 +540,7 @@
   color = "#fff"
   type = "pacman"
   [fullScreen] = "true">
-  <p style="color: white" > No des otro click! Ya está procesando... </p>
+  <br>
+  <br>
+  <p style="color: white; font-size: 30px;" > No des otro click! Ya está procesando... </p>
   </ngx-spinner>
