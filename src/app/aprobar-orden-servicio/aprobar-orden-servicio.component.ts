@@ -77,6 +77,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   NumeroOrden: any;
   esConsultores: boolean = false;
   esAsociados: boolean = false;
+  solicitante: any;
 
 
 
@@ -199,6 +200,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       (respuesta) => {
         this.orden = Orden.fromJsonList(respuesta);
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
+        this.solicitante = this.orden[0].usuarioSolicitante;
         if( this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
           this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
         }
@@ -461,14 +463,9 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.spinner.show()
     let objOrden
     let id = this.orden[0].id
-    console.log(id);
     let AprobadoResponsableUnidadNegocios = "true";
     let AprobadoGerenteAdministrativo = "true";
     let ordenServ;
-    console.log(this.emailGerenteAdministrativo);
-    console.log(this.emailDirectorOperativo);
-    console.log(this.emailAuxiliarContabilidad);
-
     let emailProps: EmailProperties;
 
     let cuerpo = '<p>Cordial saludo</p>' +
@@ -501,7 +498,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       objOrden = {
         Estado: 'Rechazado',
         MotivoRechazo: this.aprobarOrdenServicios.get('motivoRechazo').value,
-        ResponsableActualId: null
+        ResponsableActualId: this.solicitante
       }
       emailProps = {
         To: [this.emailSolicitante],
@@ -509,7 +506,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
         Body: cuerpoRechazado,
       };
       ordenServ = {
-        ResponsableActualId: null,
+        ResponsableActualId: this.solicitante,
         Estado: "Rechazado"
       }
     }
@@ -539,7 +536,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       }
     }
 
-    else if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= 8000000) {
+    else if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= this.config[0].parametroAprobacion) {
       let url = this.firmaGerenteAdmin;
       objOrden = {
         Estado: 'Pendiente aprobación director operativo',
@@ -564,7 +561,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       }
     }
 
-   else if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000) {
+   else if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value <= this.config[0].parametroAprobacion) {
       let url = this.firmaGerenteAdmin;
       objOrden = {
         Estado: 'Aprobado',
