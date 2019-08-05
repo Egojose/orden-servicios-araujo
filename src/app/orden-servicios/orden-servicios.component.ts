@@ -229,8 +229,7 @@ export class OrdenServiciosComponent implements OnInit {
        this.config = Configuracion.fromJsonList(respuesta);
        this.cargarNroOrden();
        this.obtenerEmpresa()
-       console.log(this.config)
-       
+       console.log(this.config);
       }
     )
   }
@@ -243,10 +242,10 @@ export class OrdenServiciosComponent implements OnInit {
     let numeroOrdenStringAsociados = this.config[0].consecutivoAsociados.split('-');
     let numeroOrdenNumber;
 
-    if(this.generarOrdenServicios.controls['empresaSolicitante'].value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+    if(this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores') {
       numeroOrdenNumber = parseInt(numeroOrdenString[1], 10)
     }
-    else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.') {
+    else if(this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados') {
       numeroOrdenNumber = parseInt(numeroOrdenStringAsociados[1], 10)
     }
     
@@ -256,22 +255,22 @@ export class OrdenServiciosComponent implements OnInit {
         this.config = Configuracion.fromJsonList(respuesta);
         let ordenActual = numeroOrdenNumber 
         let ordenValue;
-        if(this.generarOrdenServicios.controls['empresaSolicitante'].value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S' && ordenActual < 10) {
+        if(this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores' && ordenActual < 10) {
           ordenValue = `C-00${ordenActual}`
         }
-        else if(this.generarOrdenServicios.controls['empresaSolicitante'].value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S' && (ordenActual >= 10 && ordenActual < 100)) {
+        else if(this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores' && (ordenActual >= 10 && ordenActual < 100)) {
           ordenValue = `C-0${ordenActual}`
         }
-        else if(this.generarOrdenServicios.controls['empresaSolicitante'].value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S' && ordenActual > 99) {
+        else if(this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores' && ordenActual > 99) {
           ordenValue = `C-${ordenActual}`
         }
-        else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.' && ordenActual < 10) {
+        else if(this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados' && ordenActual < 10) {
           ordenValue = `A-00${ordenActual}`
         }
-        else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.' && (ordenActual >= 10 && ordenActual < 100 )) {
+        else if(this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados' && (ordenActual >= 10 && ordenActual < 100 )) {
           ordenValue = `A-0${ordenActual}`
         }
-        else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.' && ordenActual > 99) {
+        else if(this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados' && ordenActual > 99) {
           ordenValue = `A-${ordenActual}`
         }
         this.generarOrdenServicios.controls['nroOrden'].setValue(ordenValue);
@@ -291,7 +290,7 @@ export class OrdenServiciosComponent implements OnInit {
           sumaString = suma
         } 
         Consecutivo = Consecutivo[0] + "-" + sumaString;
-        if (this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+        if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Consultores') {
           objConfig = { Consecutivo: Consecutivo }
         }
         else {
@@ -339,10 +338,10 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   cargarNroOrden() {
-    if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+    if(this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Consultores') {
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo); 
     }
-    else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.') {
+    else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Asociados') {
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados) 
     }
   }
@@ -432,17 +431,18 @@ export class OrdenServiciosComponent implements OnInit {
     }
   }
 
-  changeFecha($event) {
+  changeFecha() {
     this.calcularDias();
   }
 
   calcularDias() {
-    let arrayInicio = this.generarOrdenServicios.get('fechaInicio').value.split(' ');
-    let arrayFin = this.generarOrdenServicios.get('fechaFinal').value.split(' ');
-    let fecha1 = parseInt(arrayInicio[2], 10);
-    let fecha2 = parseInt(arrayFin[2], 10);
-    let calculo = fecha1 + fecha2
-    this.generarOrdenServicios.controls['totalDias'].setValue(calculo);
+    let arrInicio = new Date(this.generarOrdenServicios.get('fechaInicio').value)
+    let arrInicio1 = arrInicio.getDate();
+    let arrFinal = new Date(this.generarOrdenServicios.get('fechaFinal').value)
+    let arrFinal1 = arrFinal.getDate();
+    let sumaDias = arrFinal1 - arrInicio1
+    sumaDias <= 0 ? sumaDias = 1 : sumaDias = sumaDias
+    this.generarOrdenServicios.controls['totalDias'].setValue(sumaDias);
   }
 
   cancelar() {
