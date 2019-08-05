@@ -69,6 +69,7 @@ export class ConsultarOrdenComponent implements OnInit {
   NumeroOrden: string;
   esConsultores: boolean = false;
   esAsociados: boolean = false;
+  recibido: boolean = false;
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService) { }
 
@@ -165,11 +166,9 @@ export class ConsultarOrdenComponent implements OnInit {
     this.IdRegistroOS = sessionStorage.getItem("IdServicio");
     this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
       (respuesta) => {
-        console.log(respuesta);
         this.orden = Orden.fromJsonList(respuesta);
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
         this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url;
-        console.log(this.cargarFirmajefe)
         this.cargarFirmaGerente = respuesta[0].FirmaGerenteAdministrativo.Url;
 
         if(this.orden[0].aprobadoDirector) {
@@ -333,5 +332,38 @@ export class ConsultarOrdenComponent implements OnInit {
       this.directorOperativo = this.orden[0].nombreDirectorOperativo;
       this.fechaAprobadoDirector = this.orden[0].fechaAprobadoDirector;
     }
+  }
+
+  recibir() {
+    this.recibido = true;
+    let id = this.orden[0].id
+    let objOrden = {
+      Estado: 'Pendiente de radicar factura'
+    }
+    this.servicio.ActualizarOrden(id, objOrden).then(
+      (respuesta)=> {
+        this.MensajeExitoso('Listo! La orden está pendiente de pago para finalizar el proceso.')
+      }
+    ).catch(
+      (err) => {
+        this.MensajeError('Error actualizando el estado de la orden')
+      }
+    )
+  }
+
+  MensajeExitoso(mensaje: string) {
+    this.toastr.successToastr(mensaje, 'Confirmado!');
+  }
+
+  MensajeError(mensaje: string) {
+    this.toastr.errorToastr(mensaje, 'Oops!');
+  }
+
+  MensajeAdvertencia(mensaje: string) {
+    this.toastr.warningToastr(mensaje, 'Alert!');
+  }
+
+  MensajeInfo(mensaje: string) {
+    this.toastr.infoToastr(mensaje, 'Info');
   }
 }

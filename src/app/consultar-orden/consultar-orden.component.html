@@ -12,6 +12,11 @@
             <div class="col-md-2 offset-10">
               <h3><strong>N° {{NumeroOrden}}</strong></h3>
             </div>
+            <ng-container *ngIf="expression">
+              <div class="col-md-3">
+                <button type="button" class="btn btn-success btn-block" (click)="recibir()">Recibir</button>
+              </div>
+            </ng-container>
           </div>
           <br>
           <div class="row">
