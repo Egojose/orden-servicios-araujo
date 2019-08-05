@@ -82,9 +82,7 @@ export class BandejaServiciosComponent implements OnInit {
     );
   }
 
-  VerServicio(id, estado) {
-  // ]console.log(event)
-    
+  VerServicio(id, estado) {    
     sessionStorage.setItem("IdServicio", id);
 
     if (estado !== 'Aprobado') {
@@ -93,6 +91,11 @@ export class BandejaServiciosComponent implements OnInit {
     else {
       this.router.navigate(["/consultar-orden"])
     }
+  }
+
+  verServicioEditar(id, estado) {
+    sessionStorage.setItem("IdServicio", id);
+    this.router.navigate(['/editar-orden']);
   }
 
   MensajeExitoso(mensaje: string) {

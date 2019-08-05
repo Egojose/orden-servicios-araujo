@@ -96,11 +96,17 @@
                   </ng-container>
     
                   <ng-container matColumnDef="Acciones">
-                      <th mat-header-cell *matHeaderCellDef> Acciones </th>
-                      <td mat-cell *matCellDef="let element"> 
-                        <button class="btn btn-primary" (click)="VerServicio(element.Id, element.Estado)">Ver Servicio</button>
+                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                    <!-- <td mat-cell *matCellDef="let element">
+                      <button class="btn btn-primary" (click)="VerServicio(element.Id, element.Estado)">Ver Servicio</button>
+                    </td> -->
+                    
+                      <td mat-cell *matCellDef="let element">
+                        <button class="btn btn-success" (click)="verServicioEditar(element.Id, element.Estado)">Editar orden</button>
                       </td>
-                    </ng-container>
+                   
+                    
+                  </ng-container>
           
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
