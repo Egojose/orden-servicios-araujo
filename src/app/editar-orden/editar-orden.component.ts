@@ -36,6 +36,7 @@ export class EditarOrdenComponent implements OnInit {
   unegocios: Unegocios [] = [];
   config : Configuracion [] = [];
   empresa: Empresas [] = [];
+  orden: Orden[] = [];
   esConsultores: boolean;
   esAsociados: boolean;
   ivaCalculado: number;
@@ -46,6 +47,15 @@ export class EditarOrdenComponent implements OnInit {
   pagoVarios: boolean;
   panelOpenState = false;
   panelOpenState1 = false;
+  IdRegistroOS: string;
+  emailSolicitante: any;
+  cargarFirmajefe: any[];
+  cargarFirmaGerente: any[];
+  cargarFirmaDirector: any[];
+  ordenNro: any;
+  NumeroOrden: any;
+  esResponsableActual: boolean = false;
+  mostrarGarantia: boolean;
 
 
   constructor(
@@ -53,6 +63,9 @@ export class EditarOrdenComponent implements OnInit {
 
   ngOnInit() {
     this.registrarControles();
+    this.obtenerUsuarios();
+    this.ObtenerUsuarioActual();
+    this.obtenerConsecutivoInicial();
   }
 
   private registrarControles() {
@@ -68,27 +81,27 @@ export class EditarOrdenComponent implements OnInit {
       unidadNegocios: [''],
       nombreCECO: [''],
       numeroCECO: [''],
-      razonSocial: [''],
-      nitProveedor: [''],
-      ciudadProveedor: [''],
-      telProveedor: [''],
-      direccionProveedor: [''],
-      contactoProveedor: [''],
-      regimen: ['',],
+      razonSocial: ['', Validators.required],
+      nitProveedor: ['', Validators.required],
+      ciudadProveedor: ['', Validators.required],
+      telProveedor: ['', Validators.required],
+      direccionProveedor: ['', Validators.required],
+      contactoProveedor: ['', Validators.required],
+      regimen: ['', Validators.required],
       rut: [''],
       camara: [''],
-      descripcionServicios: [''],
+      descripcionServicios: ['', Validators.required],
       cliente: [''],
       job: [''],
-      precio: [''],
+      precio: ['', Validators.required],
       tieneIva: [''],
       iva: [''],
       total: [''],
-      valorLetras: [''],
-      fechaInicio: [''],
-      fechaFinal: [''],
+      valorLetras: ['', Validators.required],
+      fechaInicio: ['', Validators.required],
+      fechaFinal: ['', Validators.required],
       totalDias: [''],
-      formaPago: [''],
+      formaPago: ['',Validators.required],
       fechaPago: [''],
       Pago1: [''],
       Pago2: [''],
@@ -96,8 +109,8 @@ export class EditarOrdenComponent implements OnInit {
       Pago4: [''],
       Pago5: [''],
       Pago6: [''],
-      ceco1: [''],
       distPago: [''],
+      ceco1: [''],
       porcentajeCeco1: [''],
       ceco2: [''],
       porcentajeCeco2: [''],
@@ -115,11 +128,17 @@ export class EditarOrdenComponent implements OnInit {
       mesesCalidad1: [''],
       mesesCalidad2: [''],
       polizaVida: [''],
-      polizaVehiculos: [''],
-      gerenteUnegocios: [''],
-      motivoRechazo: ['']
+      polizaVehiculos: ['']
     })
   }
+
+  obtenerUsuarios() {
+    this.servicio.ObtenerTodosLosUsuarios().subscribe(
+      (respuesta) => {
+        this.usuarios = Usuario.fromJsonList(respuesta);
+        this.DataSourceUsuarios();
+      });
+  };
 
   ObtenerUsuarioActual() {
     this.servicio.ObtenerUsuarioActual().subscribe(
@@ -128,7 +147,7 @@ export class EditarOrdenComponent implements OnInit {
         this.nombreUsuario = this.usuarioActual.nombre;
         this.idUsuario = this.usuarioActual.id;
         sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
-       
+        this. obtenerOrden();
       }, err => {
         console.log('Error obteniendo usuario: ' + err);
       }
@@ -183,108 +202,9 @@ export class EditarOrdenComponent implements OnInit {
     this.servicio.obtenerConsecutivoInciail().subscribe(
       (respuesta) => {
        this.config = Configuracion.fromJsonList(respuesta);
-      //  this.cargarNroOrden();
-      //  this.obtenerEmpresa()
-       console.log(this.config)
-       
       }
     )
   }; 
-
-  async obtenerConsecutivo(): Promise<any> {
-   
-    let RespuestaMensaje = "";
-    let RespuestaGurdado;
-    let numeroOrdenString = this.config[0].consecutivo.split('-')
-    let numeroOrdenStringAsociados = this.config[0].consecutivoAsociados.split('-');
-    let numeroOrdenNumber;
-
-    if(this.editarOrden.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
-      numeroOrdenNumber = parseInt(numeroOrdenString[1], 10)
-    }
-    else if(this.editarOrden.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
-      numeroOrdenNumber = parseInt(numeroOrdenStringAsociados[1], 10)
-    }
-    
-    await this.servicio.obtenerConsecutivo().then(
-      async (respuesta) => {
-        
-        this.config = Configuracion.fromJsonList(respuesta);
-        let ordenActual = numeroOrdenNumber 
-        let ordenValue;
-        if(this.editarOrden.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S' && ordenActual < 10) {
-          ordenValue = `C-00${ordenActual}`
-        }
-        else if(this.editarOrden.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S' && (ordenActual >= 10 && ordenActual < 100)) {
-          ordenValue = `C-0${ordenActual}`
-        }
-        else if(this.editarOrden.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S' && ordenActual > 99) {
-          ordenValue = `C-${ordenActual}`
-        }
-        else if(this.editarOrden.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S' && ordenActual < 10) {
-          ordenValue = `A-00${ordenActual}`
-        }
-        else if(this.editarOrden.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S' && (ordenActual >= 10 && ordenActual < 100 )) {
-          ordenValue = `A-0${ordenActual}`
-        }
-        else if(this.editarOrden.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S' && ordenActual > 99) {
-          ordenValue = `A-${ordenActual}`
-        }
-        this.editarOrden.controls['nroOrden'].setValue(ordenValue);
-        
-        let objConfig;
-        
-        let Consecutivo = ordenValue.split("-");
-        let suma = parseInt(Consecutivo[1])+1;
-        let sumaString;
-        if(suma < 10) {
-          sumaString = "00"+suma
-        }
-        else if(suma < 100) {
-          sumaString = "0"+suma;
-        }
-        else {
-          sumaString = suma
-        } 
-        Consecutivo = Consecutivo[0] + "-" + sumaString;
-        if (this.editarOrden.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
-          objConfig = { Consecutivo: Consecutivo }
-        }
-        else {
-          objConfig = { ConsecutivoAsociados: Consecutivo }          
-        }
-        RespuestaMensaje = "Exitoso";
-        RespuestaGurdado = await this.ActualizarConsecutivo(this.config[0].id, objConfig);
-        if (RespuestaGurdado === "Error") {
-          RespuestaMensaje = "Error";
-        }
-        
-      }
-    ).catch(
-      (error)=>{
-         console.log(error);
-         RespuestaMensaje = "Error";
-      }
-    )
-
-    return RespuestaMensaje
-  }
-
-  async ActualizarConsecutivo(id, Obj): Promise<any>{
-    let RespuestaMensaje = "";
-    await this.servicio.ActualizarNroOrden(id, Obj).then(
-      (res)=>{
-        RespuestaMensaje = "Exitoso";
-      }
-    ).catch(
-      (error)=>{
-        console.log(error);
-         RespuestaMensaje = "Error";
-      }
-    );
-
-    return RespuestaMensaje;
-  };
 
   obtenerEmpresa() {
     this.servicio.obtenerEmpresa().subscribe(
@@ -293,42 +213,6 @@ export class EditarOrdenComponent implements OnInit {
         console.log(this.empresa);
       }
     )
-  };
-
-  cargarNit() {
-    if(this.editarOrden.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
-      this.editarOrden.controls['nitSolicitante'].setValue(this.empresa[0].nit);
-      this.editarOrden.controls['nroOrden'].setValue(this.config[0].consecutivo);
-      this.esConsultores = true;
-      this.esAsociados = false;
-    }
-    else if(this.editarOrden.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
-      this.editarOrden.controls['nitSolicitante'].setValue(this.empresa[1].nit);
-      this.editarOrden.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados);
-      this.esConsultores = false;
-      this.esAsociados = true;
-    }
-  };
-
-  cargarNroOrden() {
-    if(this.editarOrden.get('empresaSolicitante').value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
-      this.editarOrden.controls['nroOrden'].setValue(this.config[0].consecutivo); 
-    }
-    else if(this.editarOrden.get('empresaSolicitante').value === 'Araujo Ibarra Asociados S.A.S') {
-      this.editarOrden.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados) 
-    }
-  };
-
-  changeEmpresa($event) {
-    this.cargarNit();
-  };
-
-  changeCiudad($event) {
-    console.log($event.value);
-    let direccion = $event.value.direccion;
-    let telefono = $event.value.telefono;
-    this.editarOrden.controls['direccionSolicitante'].setValue(direccion);
-    this.editarOrden.controls['telSolicitante'].setValue(telefono);
   };
 
   calcularIva() {
@@ -391,7 +275,7 @@ export class EditarOrdenComponent implements OnInit {
     }
   };
 
-  changeFecha($event) {
+  changeFecha() {
     this.calcularDias();
   }
 
@@ -403,4 +287,134 @@ export class EditarOrdenComponent implements OnInit {
     let calculo = fecha1 + fecha2
     this.editarOrden.controls['totalDias'].setValue(calculo);
   };
+
+  obtenerOrden() {
+    this.IdRegistroOS = sessionStorage.getItem("IdServicio");
+    this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
+      (respuesta) => {
+        this.orden = Orden.fromJsonList(respuesta);
+        this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
+        if( this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+          this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
+        }
+        else if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
+          this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
+          this.cargarFirmaGerente = respuesta[0].FirmaGerenteAdministrativo.Url
+        }
+        this.ordenNro = this.editarOrden.get('nroOrden').value;
+        this.valoresPorDefecto();
+      }
+    )
+  }
+
+  valoresPorDefecto() {
+    this.editarOrden.controls['nroOrden'].setValue(this.orden[0].nroOrden);
+    this.editarOrden.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
+    this.editarOrden.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
+    this.editarOrden.controls['ciudadSolicitante'].setValue(this.orden[0].ciudadSolicitante);
+    this.editarOrden.controls['telSolicitante'].setValue(this.orden[0].telSolicitante);
+    this.editarOrden.controls['direccionSolicitante'].setValue(this.orden[0].direccionSolicitante);
+    this.editarOrden.controls['contactoSolicitante'].setValue(this.orden[0].contactoSolicitante);
+    this.editarOrden.controls['emailSolicitante'].setValue(this.orden[0].emailSolicitante);
+    this.editarOrden.controls['unidadNegocios'].setValue(this.orden[0].uNegocios);
+    this.editarOrden.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
+    this.editarOrden.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
+    this.editarOrden.controls['razonSocial'].setValue(this.orden[0].razonSocial);
+    this.editarOrden.controls['nitProveedor'].setValue(this.orden[0].nitProveedor);
+    this.editarOrden.controls['ciudadProveedor'].setValue(this.orden[0].ciudadProveedor);
+    this.editarOrden.controls['telProveedor'].setValue(this.orden[0].telProveedor);
+    this.editarOrden.controls['direccionProveedor'].setValue(this.orden[0].direccionProveedor);
+    this.editarOrden.controls['contactoProveedor'].setValue(this.orden[0].contactoProveedor);
+    this.editarOrden.controls['regimen'].setValue(this.orden[0].regimen);
+    this.editarOrden.controls['rut'].setValue(this.orden[0].rut);
+    this.editarOrden.controls['camara'].setValue(this.orden[0].camara);
+    this.editarOrden.controls['descripcionServicios'].setValue(this.orden[0].descripcion);
+    this.editarOrden.controls['cliente'].setValue(this.orden[0].cliente);
+    this.editarOrden.controls['job'].setValue(this.orden[0].job);
+    this.editarOrden.controls['precio'].setValue(this.orden[0].precio);
+    this.editarOrden.controls['tieneIva'].setValue(this.orden[0].tieneIva);
+    this.editarOrden.controls['iva'].setValue(this.orden[0].iva);
+    this.editarOrden.controls['total'].setValue(this.orden[0].total);
+    this.editarOrden.controls['valorLetras'].setValue(this.orden[0].valorLetras);
+    this.editarOrden.controls['fechaInicio'].setValue(this.orden[0].fechaInicio);
+    this.editarOrden.controls['fechaFinal'].setValue(this.orden[0].fechaFin);
+    this.editarOrden.controls['totalDias'].setValue(this.orden[0].totalDias);
+    this.editarOrden.controls['formaPago'].setValue(this.orden[0].formaPago);
+    this.editarOrden.controls['fechaPago'].setValue(this.orden[0].fechaPago);
+    this.editarOrden.controls['Pago1'].setValue(this.orden[0].fecha1erPago);
+    this.editarOrden.controls['Pago2'].setValue(this.orden[0].fecha2doPago);
+    this.editarOrden.controls['Pago3'].setValue(this.orden[0].fecha3erPago);
+    this.editarOrden.controls['Pago4'].setValue(this.orden[0].fecha4toPago);
+    this.editarOrden.controls['Pago5'].setValue(this.orden[0].fecha5toPago);
+    this.editarOrden.controls['Pago6'].setValue(this.orden[0].fecha6toPago);
+    this.editarOrden.controls['ceco1'].setValue(this.orden[0].cecoResponsable1);
+    this.editarOrden.controls['ceco2'].setValue(this.orden[0].cecoResponsable2);
+    this.editarOrden.controls['ceco3'].setValue(this.orden[0].cecoResponsable3);
+    this.editarOrden.controls['porcentajeCeco1'].setValue(this.orden[0].porcentajeResponsable1);
+    this.editarOrden.controls['porcentajeCeco2'].setValue(this.orden[0].porcentajeResponsable2);
+    this.editarOrden.controls['porcentajeCeco3'].setValue(this.orden[0].porcentajeResponsable3);
+    this.editarOrden.controls['garantia'].setValue(this.orden[0].garantia);
+    this.editarOrden.controls['porcentajeCumplimiento'].setValue(this.orden[0].porcentajeCumplimiento);
+    this.editarOrden.controls['mesesCumplimiento'].setValue(this.orden[0].mesesCumplimiento);
+    this.editarOrden.controls['porcentajeAnticipos'].setValue(this.orden[0].porcentajeManejoAnticipos);
+    this.editarOrden.controls['mesesAnticipos'].setValue(this.orden[0].mesesManejoAnticipos);
+    this.editarOrden.controls['porcentajeSalarios'].setValue(this.orden[0].porcentajePagoSalarios);
+    this.editarOrden.controls['mesesSalarios'].setValue(this.orden[0].aniosPagoSalarios);
+    this.editarOrden.controls['porcentajeResponsabilidad'].setValue(this.orden[0].porcentajeResposabilidadCivil);
+    this.editarOrden.controls['porcentajeCalidad'].setValue(this.orden[0].porcentajeCalidad);
+    this.editarOrden.controls['mesesCalidad1'].setValue(this.orden[0].validezCalidad);
+    this.editarOrden.controls['mesesCalidad2'].setValue(this.orden[0].extensionCalidad);
+    this.editarOrden.controls['polizaVida'].setValue(this.orden[0].polizaColectiva);
+    this.editarOrden.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
+    this.editarOrden.controls['distPago'].setValue(this.orden[0].distPago);
+    this.NumeroOrden = this.orden[0].nroOrden;
+    if (this.orden[0].ResponsableActual === this.usuarioActual.id) {
+        this.esResponsableActual = true;
+    }
+    this.switchValores();
+  }
+
+  switchValores() {
+    console.log(this.editarOrden.controls['garantia'].value);
+    if(this.editarOrden.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+      this.esConsultores = true;
+    }
+    else {
+      this.esAsociados = true;
+    }
+    if (this.editarOrden.controls['formaPago'].value === 'Único') {
+      this.pagoUnico = true;
+      this.pagoVarios = false;
+    }
+    else {
+      this.pagoVarios = true;
+      this.pagoUnico = false;
+    }
+    if (this.editarOrden.controls['distPago'].value === true) {
+      this.editarOrden.controls['distPago'].setValue('true');
+      this.pagoCECO = true;
+    }
+    else {
+      this.editarOrden.controls['distPago'].setValue('false');
+    }
+    if (this.editarOrden.controls['garantia'].value === true) {
+      this.editarOrden.controls['garantia'].setValue('true');
+      this.mostrarGarantia = true;
+    }
+    else {
+      this.editarOrden.controls['garantia'].setValue('false');
+    }
+    if (this.editarOrden.controls['polizaVida'].value === true) {
+      this.editarOrden.controls['polizaVida'].setValue('true');
+    }
+    else {
+      this.editarOrden.controls['polizaVida'].setValue('false');
+    }
+    if (this.editarOrden.controls['polizaVehiculos'].value === true) {
+      this.editarOrden.controls['polizaVehiculos'].setValue('true');
+    }
+    else {
+      this.editarOrden.controls['polizaVehiculos'].setValue('false');
+    }
+  }
 }
