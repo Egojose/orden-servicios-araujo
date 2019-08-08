@@ -138,12 +138,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       Pago5: [''],
       Pago6: [''],
       ceco1: [''],
-      distPago: [''],
       porcentajeCeco1: [''],
-      ceco2: [''],
-      porcentajeCeco2: [''],
-      ceco3: [''],
-      porcentajeCeco3: [''],
       garantia: [''],
       porcentajeCumplimiento: [''],
       mesesCumplimiento: [''],
@@ -212,6 +207,15 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.valoresPorDefecto();
         this.cargarValoresFirma();
         this.obtenerfirmaUsuario();
+        this.obtenerParametroAprobacion();
+      }
+    )
+  }
+
+  obtenerParametroAprobacion() {
+    this.servicio.obtenerConsecutivoInciail().subscribe(
+      (respuesta) => {
+       this.config = Configuracion.fromJsonList(respuesta);
       }
     )
   }
@@ -221,7 +225,6 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['rut'].disable();
     this.aprobarOrdenServicios.controls['camara'].disable();
     this.aprobarOrdenServicios.controls['formaPago'].disable();
-    this.aprobarOrdenServicios.controls['distPago'].disable();
     this.aprobarOrdenServicios.controls['garantia'].disable();
     this.aprobarOrdenServicios.controls['polizaVida'].disable();
     this.aprobarOrdenServicios.controls['polizaVehiculos'].disable();
@@ -241,14 +244,11 @@ export class AprobarOrdenServicioComponent implements OnInit {
   obtenerDatosAprobadores() {
     this.servicio.obtenerAprobadores().then(
       (respuesta) => {
-        console.log(respuesta);
        this.emailGerenteAdministrativo = respuesta[0].GerenteAdministrativo.EMail;
        this.emailDirectorOperativo = respuesta[0].DirectorOperativo.EMail;
        this.emailAuxiliarContabilidad = respuesta[0].AuxiliarContabilidad.EMail;
        this.responsableGerenteAdminisitrativo = respuesta[0].GerenteAdministrativo.ID;
-       console.log(this.responsableGerenteAdminisitrativo);
        this.responsableDirectorOperativo = respuesta[0].DirectorOperativo.ID;
-       console.log(this.responsableDirectorOperativo)
        this.responsableAuxContabilidad = respuesta[0].AuxiliarContabilidad.ID;
       }
     )
@@ -295,11 +295,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['Pago5'].setValue(this.orden[0].fecha5toPago);
     this.aprobarOrdenServicios.controls['Pago6'].setValue(this.orden[0].fecha6toPago);
     this.aprobarOrdenServicios.controls['ceco1'].setValue(this.orden[0].cecoResponsable1);
-    this.aprobarOrdenServicios.controls['ceco2'].setValue(this.orden[0].cecoResponsable2);
-    this.aprobarOrdenServicios.controls['ceco3'].setValue(this.orden[0].cecoResponsable3);
     this.aprobarOrdenServicios.controls['porcentajeCeco1'].setValue(this.orden[0].porcentajeResponsable1);
-    this.aprobarOrdenServicios.controls['porcentajeCeco2'].setValue(this.orden[0].porcentajeResponsable2);
-    this.aprobarOrdenServicios.controls['porcentajeCeco3'].setValue(this.orden[0].porcentajeResponsable3);
     this.aprobarOrdenServicios.controls['garantia'].setValue(this.orden[0].garantia);
     this.aprobarOrdenServicios.controls['porcentajeCumplimiento'].setValue(this.orden[0].porcentajeCumplimiento);
     this.aprobarOrdenServicios.controls['mesesCumplimiento'].setValue(this.orden[0].mesesCumplimiento);
@@ -313,7 +309,6 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['mesesCalidad2'].setValue(this.orden[0].extensionCalidad);
     this.aprobarOrdenServicios.controls['polizaVida'].setValue(this.orden[0].polizaColectiva);
     this.aprobarOrdenServicios.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
-    this.aprobarOrdenServicios.controls['distPago'].setValue(this.orden[0].distPago);
     this.NumeroOrden = this.orden[0].nroOrden;
     if (this.orden[0].ResponsableActual === this.usuarioActual.id) {
         this.esResponsableActual = true;
@@ -325,13 +320,11 @@ export class AprobarOrdenServicioComponent implements OnInit {
   obtenerfirmaUsuario(): any {
     this.servicio.obtenerFirmas(this.usuarioActual.id).then(
       (respuesta)=>{
-        console.log(respuesta);
         this.nombre = respuesta[0].Title;
         this.emailUsuario = respuesta[0].usuario.EMail;
         this.idUsuario = respuesta[0].usuarioId;
         if (respuesta[0].UrlFirma !== null) {
           this.firmaUsuario = respuesta[0].UrlFirma.Url;
-          console.log(this.firmaUsuario);
         }       
       }
     ).catch(
@@ -358,13 +351,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       this.pagoVarios = true;
       this.pagoUnico = false;
     }
-    if (this.aprobarOrdenServicios.controls['distPago'].value === true) {
-      this.aprobarOrdenServicios.controls['distPago'].setValue('true');
-      this.pagoCECO = true;
-    }
-    else {
-      this.aprobarOrdenServicios.controls['distPago'].setValue('false');
-    }
+    
     if (this.aprobarOrdenServicios.controls['garantia'].value === true) {
       this.aprobarOrdenServicios.controls['garantia'].setValue('true');
       this.mostrarGarantia = true;
