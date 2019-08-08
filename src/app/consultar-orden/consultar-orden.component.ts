@@ -70,6 +70,8 @@ export class ConsultarOrdenComponent implements OnInit {
   esConsultores: boolean = false;
   esAsociados: boolean = false;
   recibido: boolean = false;
+  radicar: boolean = false;
+  pagar: boolean = false;
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService) { }
 
@@ -176,6 +178,12 @@ export class ConsultarOrdenComponent implements OnInit {
         }
         else {
           this.firmaDirector = null;
+        }
+        if(this.orden[0].estado === 'Aprobado') {
+          this.radicar = true;
+        }
+        if(this.orden[0].estado === 'Pendiente de radicar factura') {
+          this.pagar = true;
         }
         this.ordenNro = this.aprobarOrdenServicios.get('nroOrden').value;
         this.valoresPorDefecto();
@@ -337,12 +345,22 @@ export class ConsultarOrdenComponent implements OnInit {
   recibir() {
     this.recibido = true;
     let id = this.orden[0].id
-    let objOrden = {
-      Estado: 'Pendiente de radicar factura'
+    let objOrden;
+    if(this.orden[0].estado === 'Aprobado') {
+      objOrden = {
+        Estado: 'Pendiente de radicar factura'
+      }
     }
+    else {
+      objOrden = {
+        Estado: 'Pagado',
+        ResponsableActualId: null
+      }
+    }
+    
     this.servicio.ActualizarOrden(id, objOrden).then(
       (respuesta)=> {
-        this.MensajeExitoso('Listo! La orden está pendiente de pago para finalizar el proceso.')
+        this.orden[0].estado === 'Aprobado' ? this.MensajeExitoso('Listo! La orden está pendiente de pago para finalizar el proceso.') : this.MensajeExitoso('Listo! Esta orden ha finalizado el proceso');
       }
     ).catch(
       (err) => {
