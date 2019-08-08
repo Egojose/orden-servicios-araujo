@@ -85,11 +85,11 @@ export class BandejaServiciosComponent implements OnInit {
   VerServicio(id, estado) {    
     sessionStorage.setItem("IdServicio", id);
 
-    if (estado !== 'Aprobado') {
-      this.router.navigate(["/aprobar-orden-servicio"])
+    if (estado === 'Aprobado' || estado === 'Pendiente de radicar factura') {
+      this.router.navigate(["/consultar-orden"])
     }
     else {
-      this.router.navigate(["/consultar-orden"])
+      this.router.navigate(["/aprobar-orden-servicio"])
     }
   }
 
