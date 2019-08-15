@@ -116,7 +116,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                   <mat-label>Responsable</mat-label>
                   <mat-select formControlName="nombreCECO" (selectionChange)="changeCeco($event)">
@@ -130,7 +130,7 @@
                   <span *ngIf="!generarOrdenServicios.get('nombreCECO').valid && generarOrdenServicios.get('nombreCECO').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
               </mat-error>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Número CECO" formControlName="numeroCECO">
               </mat-form-field>
@@ -138,6 +138,14 @@
                   <span *ngIf="!generarOrdenServicios.get('numeroCECO').valid && generarOrdenServicios.get('numeroCECO').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
               </mat-error>
             </div>
+            <div class="col-md-4">
+                <mat-form-field>
+                  <input matInput placeholder="Porcentaje asumido" formControlName="porcentajeAsumido" type="number">
+                </mat-form-field>
+                <mat-error>
+                    <span *ngIf="!generarOrdenServicios.get('numeroCECO').valid && generarOrdenServicios.get('numeroCECO').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+                </mat-error>
+              </div>
           </div>
           <br>
           <h5 class="text-center">Datos del proveedor</h5>
@@ -426,9 +434,11 @@
                     <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1" type="number">
                   </mat-form-field>
                 </div>
+                
                 <div class="col-md-3">
                   <button class="btn btn-primary btn-block" type="button" (click)="agregarCecos()">Agregar</button>
                 </div>
+             
               </div>
               <br>
               <table class="table table-bordered">
