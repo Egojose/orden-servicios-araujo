@@ -42,13 +42,12 @@
               <ng-container matColumnDef="Acciones">
                 <th mat-header-cell *matHeaderCellDef> Acciones </th>
                 <td mat-cell *matCellDef="let element">
-                  <button class="btn btn-primary" (click)="VerServicio(element.Id, element.Estado)"
-                    *ngIf="element.Estado !== 'Rechazado'">Ver Servicio</button>
+                  <button class="btn btn-primary" (click)="VerServicio(element.Id, element.Estado)">Ver Servicio</button>
                 </td>
-                <td mat-cell *matCellDef="let element">
+                <!-- <td mat-cell *matCellDef="let element">
                   <button class="btn btn-primary" (click)="verServicioEditar(element.Id, element.Estado)"
                     *ngIf="element.Estado === 'Rechazado'">Editar orden</button>
-                </td>
+                </td> -->
               </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
