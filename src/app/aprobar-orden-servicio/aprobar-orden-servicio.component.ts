@@ -12,6 +12,7 @@ import { Aprobadores } from '../dominio/aprobadores';
 import { EmailProperties } from '@pnp/sp';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from "ngx-spinner";
+import { PorcentajeCecos } from '../dominio/porcentajeCecos'
 
 @Component({
   selector: 'app-aprobar-orden-servicio',
@@ -45,6 +46,8 @@ export class AprobarOrdenServicioComponent implements OnInit {
   cargarFirmajefe: any[];
   cargarFirmaGerente: any[];
   cargarFirmaDirector: any[];
+  firmaDirectorCeco: any[];
+  cargarFirmaDirectorCeco: any[];
   firmaUsuario: any[];
   firmaGerenteAdmin: any[];
   firmaDirector: any[];
@@ -77,7 +80,17 @@ export class AprobarOrdenServicioComponent implements OnInit {
   NumeroOrden: any;
   esConsultores: boolean = false;
   esAsociados: boolean = false;
-
+  solicitante: any;
+  participacionCecos: PorcentajeCecos[] = [];
+  porAprobar: any = [];
+  aprobado: any = [];
+  emailDirectorCeco: string;
+  directorResponsable: any;
+  nombreDirector: string;
+  fechaAprobado: string;
+  idParticipacion: number;
+  FirmasCECOS: any;
+  aprobadorActual: any = [];
 
 
   constructor(
@@ -137,12 +150,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       Pago5: [''],
       Pago6: [''],
       ceco1: [''],
-      distPago: [''],
       porcentajeCeco1: [''],
-      ceco2: [''],
-      porcentajeCeco2: [''],
-      ceco3: [''],
-      porcentajeCeco3: [''],
       garantia: [''],
       porcentajeCumplimiento: [''],
       mesesCumplimiento: [''],
@@ -157,7 +165,8 @@ export class AprobarOrdenServicioComponent implements OnInit {
       polizaVida: [''],
       polizaVehiculos: [''],
       gerenteUnegocios: [''],
-      motivoRechazo: ['']
+      motivoRechazo: [''],
+      porcentajeAsumido: ['']
     })
   }
 
@@ -183,12 +192,10 @@ export class AprobarOrdenServicioComponent implements OnInit {
 
   obtenerInfoEmpleado() {
     let idUser = this.usuarioActual.id;
-    console.log(idUser)
     this.servicio.obtenerInfoEmpleadoSeleccionado(idUser).subscribe(
       (respuesta) => {
         this.empleadoEditar = Empleado.fromJsonList(respuesta);
         this.jefe = respuesta[0].JefeId
-        // this.consultarOrden();
       }
     )
   }
@@ -198,8 +205,13 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
       (respuesta) => {
         this.orden = Orden.fromJsonList(respuesta);
+        console.log(respuesta)
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
+        this.solicitante = this.orden[0].usuarioSolicitante;
         if( this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
+          this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
+        }
+        else if(this.orden[0].estado === 'Pendiente de aprobación Director CECO') {
           this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
         }
         else if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
@@ -210,6 +222,42 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.valoresPorDefecto();
         this.cargarValoresFirma();
         this.obtenerfirmaUsuario();
+        this.obtenerParametroAprobacion();
+        this.obtenerParticipacionCecos();
+      }
+    )
+  }
+
+  obtenerParametroAprobacion() {
+    this.servicio.obtenerConsecutivoInciail().subscribe(
+      (respuesta) => {
+       this.config = Configuracion.fromJsonList(respuesta);
+      }
+    )
+  }
+
+  obtenerParticipacionCecos() {
+    this.servicio.obtenerParticipacion(this.IdRegistroOS).then(
+      (respuesta) => {
+        this.participacionCecos = PorcentajeCecos.fromJsonList(respuesta);
+        this.porAprobar =  this.participacionCecos.filter(x => x.aprobado === false && x.director.ID !== this.usuarioActual.id);
+        this.aprobado = this.participacionCecos.filter(x => x.aprobado === true)
+        // this.aprobadorActual = this.participacionCecos.filter(x => x.director.ID === this.usuarioActual.id)
+        console.log(this.aprobado);
+        console.log(this.porAprobar)
+        console.log(this.participacionCecos);
+        // console.log(this.aprobadorActual);
+        if (this.porAprobar.length > 0) {
+          this.emailDirectorCeco = this.porAprobar[0].director.EMail;
+          this.directorResponsable = this.porAprobar[0].director;
+        }
+        let arr;
+        arr = this.participacionCecos.filter(x => x.director.ID === this.usuarioActual.id);
+        console.log(arr)
+        if (arr.length > 0) {
+          this.idParticipacion = arr[0].id;
+          console.log(this.idParticipacion);
+        }
       }
     )
   }
@@ -219,7 +267,6 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['rut'].disable();
     this.aprobarOrdenServicios.controls['camara'].disable();
     this.aprobarOrdenServicios.controls['formaPago'].disable();
-    this.aprobarOrdenServicios.controls['distPago'].disable();
     this.aprobarOrdenServicios.controls['garantia'].disable();
     this.aprobarOrdenServicios.controls['polizaVida'].disable();
     this.aprobarOrdenServicios.controls['polizaVehiculos'].disable();
@@ -239,14 +286,11 @@ export class AprobarOrdenServicioComponent implements OnInit {
   obtenerDatosAprobadores() {
     this.servicio.obtenerAprobadores().then(
       (respuesta) => {
-        console.log(respuesta);
        this.emailGerenteAdministrativo = respuesta[0].GerenteAdministrativo.EMail;
        this.emailDirectorOperativo = respuesta[0].DirectorOperativo.EMail;
        this.emailAuxiliarContabilidad = respuesta[0].AuxiliarContabilidad.EMail;
        this.responsableGerenteAdminisitrativo = respuesta[0].GerenteAdministrativo.ID;
-       console.log(this.responsableGerenteAdminisitrativo);
        this.responsableDirectorOperativo = respuesta[0].DirectorOperativo.ID;
-       console.log(this.responsableDirectorOperativo)
        this.responsableAuxContabilidad = respuesta[0].AuxiliarContabilidad.ID;
       }
     )
@@ -293,11 +337,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['Pago5'].setValue(this.orden[0].fecha5toPago);
     this.aprobarOrdenServicios.controls['Pago6'].setValue(this.orden[0].fecha6toPago);
     this.aprobarOrdenServicios.controls['ceco1'].setValue(this.orden[0].cecoResponsable1);
-    this.aprobarOrdenServicios.controls['ceco2'].setValue(this.orden[0].cecoResponsable2);
-    this.aprobarOrdenServicios.controls['ceco3'].setValue(this.orden[0].cecoResponsable3);
     this.aprobarOrdenServicios.controls['porcentajeCeco1'].setValue(this.orden[0].porcentajeResponsable1);
-    this.aprobarOrdenServicios.controls['porcentajeCeco2'].setValue(this.orden[0].porcentajeResponsable2);
-    this.aprobarOrdenServicios.controls['porcentajeCeco3'].setValue(this.orden[0].porcentajeResponsable3);
     this.aprobarOrdenServicios.controls['garantia'].setValue(this.orden[0].garantia);
     this.aprobarOrdenServicios.controls['porcentajeCumplimiento'].setValue(this.orden[0].porcentajeCumplimiento);
     this.aprobarOrdenServicios.controls['mesesCumplimiento'].setValue(this.orden[0].mesesCumplimiento);
@@ -311,7 +351,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['mesesCalidad2'].setValue(this.orden[0].extensionCalidad);
     this.aprobarOrdenServicios.controls['polizaVida'].setValue(this.orden[0].polizaColectiva);
     this.aprobarOrdenServicios.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
-    this.aprobarOrdenServicios.controls['distPago'].setValue(this.orden[0].distPago);
+    this.aprobarOrdenServicios.controls['porcentajeAsumido'].setValue(this.orden[0].porcentajeAsumido);
     this.NumeroOrden = this.orden[0].nroOrden;
     if (this.orden[0].ResponsableActual === this.usuarioActual.id) {
         this.esResponsableActual = true;
@@ -356,13 +396,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       this.pagoVarios = true;
       this.pagoUnico = false;
     }
-    if (this.aprobarOrdenServicios.controls['distPago'].value === true) {
-      this.aprobarOrdenServicios.controls['distPago'].setValue('true');
-      this.pagoCECO = true;
-    }
-    else {
-      this.aprobarOrdenServicios.controls['distPago'].setValue('false');
-    }
+    
     if (this.aprobarOrdenServicios.controls['garantia'].value === true) {
       this.aprobarOrdenServicios.controls['garantia'].setValue('true');
       this.mostrarGarantia = true;
@@ -384,12 +418,26 @@ export class AprobarOrdenServicioComponent implements OnInit {
     }
   }
 
+  cambiarValoresAprobado() {
+    if (this.orden[0].estado === 'Pendiente de aprobación Director CECO') {
+      this.aprobado.push({ nombre: this.usuarioActual.nombre, firma: this.firmaUsuario, fechaAprobado: this.fechaAprobado });
+    }
+  }
+
   cargarValoresFirma() {
     if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
       this.firmaJefe = this.cargarFirmajefe;
       this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
       this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios;
     }
+
+    else if(this.orden[0].estado === 'Pendiente de aprobación Director CECO') {
+      this.firmaJefe = this.cargarFirmajefe;
+      console.log(this.firmaJefe);
+      this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
+      this.fechaAprobadoGerenteUnegocios = this.orden[0].fechaAprobadoGerenteUnegocios;
+    }
+
     else if(this.orden[0].estado === 'Pendiente aprobación director operativo') {
       this.firmaJefe = this.cargarFirmajefe;
       this.gerenteUnegocios = this.orden[0].nombreGerenteUnegocios;
@@ -404,11 +452,18 @@ export class AprobarOrdenServicioComponent implements OnInit {
     let fecha = new Date().toString();
     let fechaArray = fecha.split(' ');
     let fechaEdit = fechaArray[0] + ' ' + fechaArray[1] + ' ' + fechaArray[2] + ' ' + fechaArray[3];
+    this.fechaAprobado = fechaEdit
     
     if(this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
       this.firmaJefe = this.firmaUsuario;
       this.gerenteUnegocios = this.nombreUsuario;
       this.fechaAprobadoGerenteUnegocios = fechaEdit;
+    }
+    else if(this.orden[0].estado === 'Pendiente de aprobación Director CECO') {
+      this.firmaDirectorCeco = this.firmaUsuario;
+      this.nombreDirector = this.nombreUsuario;
+      this.fechaAprobado = fechaEdit;
+      
     }
     else if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
       this.firmaGerenteAdmin = this.firmaUsuario;
@@ -426,7 +481,8 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.usuarioAprueba = true;
     this.aprobarOrdenServicios.controls['motivoRechazo'].setValue(""); 
     this.valoresFirma();
-    this.MensajeInfo('La orden ha sido aprobada! Haga click en "Enviar" para terminar')
+    this.cambiarValoresAprobado();
+    this.MensajeInfo('La orden ha sido aprobada! Haga click en "Enviar" para terminar');
   }
 
   rechazar() {
@@ -437,7 +493,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     else {
       this.gerenteUnegocios = ""
       this.fechaAprobadoGerenteUnegocios = ""
-      this.firmaUsuario = null;
+      this.firmaJefe = null;
       this.rechazado = true;
       this.usuarioRechaza = true;
       this.MensajeInfo('La orden ha sido rechazada! Haga click en "Enviar" para terminar')
@@ -461,14 +517,10 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.spinner.show()
     let objOrden
     let id = this.orden[0].id
-    console.log(id);
     let AprobadoResponsableUnidadNegocios = "true";
     let AprobadoGerenteAdministrativo = "true";
     let ordenServ;
-    console.log(this.emailGerenteAdministrativo);
-    console.log(this.emailDirectorOperativo);
-    console.log(this.emailAuxiliarContabilidad);
-
+    let ObjPorcentaje;
     let emailProps: EmailProperties;
 
     let cuerpo = '<p>Cordial saludo</p>' +
@@ -498,10 +550,12 @@ export class AprobarOrdenServicioComponent implements OnInit {
         '<p>Si necesita más información por favor comuníquese con el responsable del rechazo.</p>'; 
 
     if(this.rechazado === true) {
+      let id = this.participacionCecos[0].id
+      let iDborrar = parseInt(this.IdRegistroOS);
       objOrden = {
         Estado: 'Rechazado',
         MotivoRechazo: this.aprobarOrdenServicios.get('motivoRechazo').value,
-        ResponsableActualId: null
+        ResponsableActualId: this.solicitante
       }
       emailProps = {
         To: [this.emailSolicitante],
@@ -509,37 +563,140 @@ export class AprobarOrdenServicioComponent implements OnInit {
         Body: cuerpoRechazado,
       };
       ordenServ = {
-        ResponsableActualId: null,
+        ResponsableActualId: this.solicitante,
         Estado: "Rechazado"
+      }
+      ObjPorcentaje = {
+    
+      }
+      if (this.participacionCecos.length > 0) {
+        this.servicio.obtenerParticipacion(iDborrar).then(
+          (respuesta) => {
+            console.log(respuesta)
+            respuesta.forEach(element => {
+              this.servicio.borrarCecos(element.ID);
+            });
+            this.MensajeInfo('Se eliminaron los cecos')
+          }
+        ).catch(
+            (error) => {
+              console.log(error);
+            }
+          );
       }
     }
 
     else if (this.orden[0].estado === 'Pendiente de aprobación gerente unidad de negocios') {
       let url = this.firmaUsuario
-      objOrden = {
-        Estado: 'Pendiente aprobación gerente administrativo y financiero',
-        ResponsableActualId: this.responsableGerenteAdminisitrativo,
-        AprobadoResponsableUnidadNegocio: AprobadoResponsableUnidadNegocios,
-        FechaAprobadoGerenteUnegocios: this.fechaAprobadoGerenteUnegocios,
-        NombreGerenteUnegocios: this.usuarioActual.nombre,
-        FirmaResponsableUnidadNegocios: {
-          "__metadata": { "type": "SP.FieldUrlValue" },
-          "Description": "Firma gerente unidad de negocios",
-          "Url": url
-         }
+      if(this.porAprobar.length > 0){
+        objOrden = {
+          Estado: 'Pendiente de aprobación Director CECO',
+          ResponsableActualId: this.directorResponsable.ID,
+          AprobadoResponsableUnidadNegocio: AprobadoResponsableUnidadNegocios,
+          FechaAprobadoGerenteUnegocios: this.fechaAprobadoGerenteUnegocios,
+          NombreGerenteUnegocios: this.usuarioActual.nombre,
+          FirmaResponsableUnidadNegocios: {
+            "__metadata": { "type": "SP.FieldUrlValue" },
+            "Description": "Firma gerente unidad de negocios",
+            "Url": url
+          }
+        }
+        emailProps = {
+          To: [this.directorResponsable.EMail],
+          Subject: 'Notificación orden de servicio',
+          Body: cuerpo
+        }
+        ordenServ = {
+          ResponsableActualId: this.directorResponsable.ID,
+          Estado: 'Pendiente de aprobación Director CECO'
+        }
+        ObjPorcentaje = {
+          Aprobado: true,
+          FirmaCeco: {
+            "__metadata": { "type": "SP.FieldUrlValue" },
+            "Description": "Firma director CECO",
+            "Url": url
+          }
+        }
       }
-      emailProps = {
-        To: [this.emailGerenteAdministrativo],
-        Subject: "Notificación de orden de servicio",
-        Body: cuerpo
-      };
-     ordenServ = {
-        ResponsableActualId: this.responsableGerenteAdminisitrativo,
-        Estado: "Pendiente aprobación gerente administrativo y financiero",
+      else {
+        objOrden = {
+          Estado: 'Pendiente aprobación gerente administrativo y financiero',
+          ResponsableActualId: this.responsableGerenteAdminisitrativo,
+          AprobadoResponsableUnidadNegocio: AprobadoResponsableUnidadNegocios,
+          FechaAprobadoGerenteUnegocios: this.fechaAprobadoGerenteUnegocios,
+          NombreGerenteUnegocios: this.usuarioActual.nombre,
+          FirmaResponsableUnidadNegocios: {
+            "__metadata": { "type": "SP.FieldUrlValue" },
+            "Description": "Firma gerente unidad de negocios",
+            "Url": url
+          }
+        }
+        emailProps = {
+          To: [this.emailGerenteAdministrativo],
+          Subject: "Notificación de orden de servicio",
+          Body: cuerpo
+        };
+        ordenServ = {
+          ResponsableActualId: this.responsableGerenteAdminisitrativo,
+          Estado: "Pendiente aprobación gerente administrativo y financiero",
+        }
       }
     }
 
-    else if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= 8000000) {
+    else if(this.orden[0].estado === 'Pendiente de aprobación Director CECO') {
+      let url = this.firmaUsuario
+      if(this.porAprobar.length > 0){
+        objOrden = {
+          Estado: 'Pendiente de aprobación Director CECO',
+          ResponsableActualId: this.directorResponsable.ID
+        }
+        emailProps = {
+          To: [this.directorResponsable.EMail],
+          Subject: 'Notificación orden de servicio',
+          Body: cuerpo
+        }
+        ordenServ = {
+          ResponsableActualId: this.directorResponsable.ID,
+          Estado: 'Pendiente de aprobación Director CECO'
+        }
+        ObjPorcentaje = {
+          Aprobado: 'true',
+          FirmaCeco: {
+            "__metadata": { "type": "SP.FieldUrlValue" },
+            "Description": "Firma director CECO",
+            "Url": url
+          },
+          FechaAprobacion: this.fechaAprobado
+        }
+      }
+      else {
+        objOrden = {
+          Estado: 'Pendiente aprobación gerente administrativo y financiero',
+          ResponsableActualId: this.responsableGerenteAdminisitrativo,
+        }
+        emailProps = {
+          To: [this.emailGerenteAdministrativo],
+          Subject: 'Notificación orden de servicio',
+          Body: cuerpo
+        }
+        ordenServ = {
+          ResponsableActualId: this.responsableGerenteAdminisitrativo,
+          Estado: 'Pendiente de aprobación Director CECO'
+        }
+        ObjPorcentaje = {
+          Aprobado: true,
+          FirmaCeco: {
+            "__metadata": { "type": "SP.FieldUrlValue" },
+            "Description": "Firma director CECO",
+            "Url": url
+          },
+          FechaAprobacion: this.fechaAprobado
+        }
+      }
+    }
+
+    else if (this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value >= this.config[0].parametroAprobacion) {
       let url = this.firmaGerenteAdmin;
       objOrden = {
         Estado: 'Pendiente aprobación director operativo',
@@ -564,7 +721,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       }
     }
 
-   else if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < 8000000) {
+   else if(this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero' && this.aprobarOrdenServicios.get('total').value < this.config[0].parametroAprobacion) {
       let url = this.firmaGerenteAdmin;
       objOrden = {
         Estado: 'Aprobado',
@@ -627,6 +784,9 @@ export class AprobarOrdenServicioComponent implements OnInit {
             console.log(respuesta1);
             this.servicio.ModificarServicio(ordenServ, respuesta1[0].ID ).then(
               (respuesta2) => {
+                if(this.orden[0].estado === 'Pendiente de aprobación Director CECO') {
+                  this.servicio.aprobarParticipacionPorCeco(this.idParticipacion, ObjPorcentaje)
+                }
                 if (this.orden[0].estado !== 'Aprobado') {
                   this.servicio.EnviarNotificacion(emailProps).then(
                     (res) => {

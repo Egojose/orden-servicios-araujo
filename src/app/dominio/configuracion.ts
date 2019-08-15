@@ -3,8 +3,7 @@ export class Configuracion{
         public consecutivo: string,
         public consecutivoAsociados: string,
         public iva: number,
-        public consultores: string,
-        public asociados: string,
+        public parametroAprobacion: number,
         public id: number) {}
 
     public static fromJson(element: any) {
@@ -12,8 +11,7 @@ export class Configuracion{
             element.Consecutivo,
             element.ConsecutivoAsociados,
             element.valorIva,
-            element.AraujoConsultores,
-            element.AraujoAsociados,
+            element.ParametroAprobacionDOperativo,
             element.Id);
     }
 

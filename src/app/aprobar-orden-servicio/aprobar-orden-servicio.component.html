@@ -72,16 +72,21 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Nombre CECO" formControlName="nombreCECO" readonly>
               </mat-form-field>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Número CECO" formControlName="numeroCECO" readonly>
               </mat-form-field>
             </div>
+            <div class="col-md-4">
+                <mat-form-field>
+                  <input matInput placeholder="PorcentajeAsumido" formControlName="porcentajeAsumido" readonly>
+                </mat-form-field>
+              </div>
           </div>
           <br>
           <h5 class="text-center">Datos del proveedor</h5>
@@ -286,52 +291,23 @@
               </div>
             </ng-container>
             <br>
-            <div class="row">
-              <div class="col-md-4 offset-4 text-center">
-                  <label for="Regimen" id="regimen">¿El pago se distribuye en 2 o más CECOs?</label>
-                  <mat-radio-group formControlName="distPago" aria-disabled="true">
-                    <mat-radio-button value="true">Sí</mat-radio-button>
-                    <mat-radio-button value="false">No</mat-radio-button>
-                  </mat-radio-group>
-              </div>
-            </div>
-            <ng-container *ngIf="pagoCECO">
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 1" formControlName="ceco1" readonly>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1" readonly>
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 2" formControlName="ceco2" readonly>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco2" readonly>
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 3" formControlName="ceco3" readonly>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco3" readonly>
-                  </mat-form-field>
-                </div>
-              </div>
+            <ng-container>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="cabezeraTblUnidadNegocio">
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Nro CECO</th>
+                          <th scope="col">Porcentaje</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let ceco of participacionCecos">
+                          <td>{{ceco.nombre}}</td>
+                          <td>{{ceco.ceco}}</td>
+                          <td>{{ceco.porcentaje}}</td>
+                        </tr>
+                      </tbody>
+                </table>
             </ng-container>
             <br>
             <ng-container *ngIf="esConsultores">
@@ -430,19 +406,19 @@
         <table class="table table-bordered">
           <tbody>
             <tr>
-              <td>
+              <td class="text-center">
                 <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
                 <img src="{{firmaJefe}}" alt=""><br>
                 <span>{{gerenteUnegocios}}</span><br>
                 <span>{{fechaAprobadoGerenteUnegocios}}</span>
               </td>
-              <td>
+              <td class="text-center">
                 <span class="text-center"><b>Gerente administrativo y finaciero</b></span><br><br>
                 <img src="{{firmaGerenteAdmin}}" alt=""><br>
                 <span>{{gerenteAdministrativo}}</span><br>
                 <span>{{fechaAprobadoGerenteAdministrativo}}</span>
               </td>
-              <td>
+              <td class="text-center">
                 <span class="text-center"><b>Director operativo</b></span><br><br>
                 <img src="{{firmaDirector}}" alt=""><br>
                 <span>{{directorOperativo}}</span><br>
@@ -451,6 +427,21 @@
             </tr>
           </tbody>
         </table>
+        <br>
+        <ng-container>
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td *ngFor="let item of aprobado" class="text-center">
+                  <span><b>Director CECO</b></span><br><br>
+                  <img src="{{item.firma}}" alt=""><br>
+                  <span>{{item.nombre}}</span><br>
+                  <span>{{item.fechaAprobado}}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-container>
         <button type="button" class="btn btn-success" (click)="aprobar()">Aprobar</button>
         <button type="button" class="btn btn-danger" (click)="openModal(template)">Rechazar</button>
         <ng-template #template>
@@ -490,5 +481,6 @@ size = "large"
 color = "#fff"
 type = "pacman"
 [fullScreen] = "true">
+<br>
 <p style="color: white" > No des otro click! Ya está procesando... </p>
 </ngx-spinner>

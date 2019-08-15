@@ -10,6 +10,7 @@ import { Usuario } from '../dominio/usuario';
 import { Empleado } from '../dominio/empleado';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { Aprobadores } from '../dominio/aprobadores';
+import { PorcentajeCecos } from '../dominio/porcentajeCecos';
 @Component({
   selector: 'app-consultar-orden',
   templateUrl: './consultar-orden.component.html',
@@ -32,6 +33,7 @@ export class ConsultarOrdenComponent implements OnInit {
   precio: number;
   orden: Orden[] = [];
   ordenConsulta: Orden[]= [];
+  participacionCecos: PorcentajeCecos[] = [];
   mostrarGarantia: boolean;
   nombreUsuario: any;
   emailUsuario: any;
@@ -69,6 +71,10 @@ export class ConsultarOrdenComponent implements OnInit {
   NumeroOrden: string;
   esConsultores: boolean = false;
   esAsociados: boolean = false;
+  recibido: boolean = false;
+  radicar: boolean = false;
+  pagar: boolean = false;
+  aprobado: any = [];
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService) { }
 
@@ -165,11 +171,9 @@ export class ConsultarOrdenComponent implements OnInit {
     this.IdRegistroOS = sessionStorage.getItem("IdServicio");
     this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
       (respuesta) => {
-        console.log(respuesta);
         this.orden = Orden.fromJsonList(respuesta);
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
         this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url;
-        console.log(this.cargarFirmajefe)
         this.cargarFirmaGerente = respuesta[0].FirmaGerenteAdministrativo.Url;
 
         if(this.orden[0].aprobadoDirector) {
@@ -178,9 +182,27 @@ export class ConsultarOrdenComponent implements OnInit {
         else {
           this.firmaDirector = null;
         }
+        if(this.orden[0].estado === 'Aprobado') {
+          this.radicar = true;
+        }
+        if(this.orden[0].estado === 'Pendiente de radicar factura') {
+          this.pagar = true;
+        }
         this.ordenNro = this.aprobarOrdenServicios.get('nroOrden').value;
         this.valoresPorDefecto();
         this.cargarValoresFirma();
+        this.obtenerParticipacionCecos();
+      }
+    )
+  }
+
+  obtenerParticipacionCecos() {
+    this.servicio.obtenerParticipacion(this.IdRegistroOS).then(
+      (respuesta) => {
+        this.participacionCecos = PorcentajeCecos.fromJsonList(respuesta);
+        this.aprobado = this.participacionCecos.filter(x => x.aprobado === true)
+        console.log(this.aprobado);
+        console.log(this.participacionCecos);
       }
     )
   }
@@ -333,5 +355,68 @@ export class ConsultarOrdenComponent implements OnInit {
       this.directorOperativo = this.orden[0].nombreDirectorOperativo;
       this.fechaAprobadoDirector = this.orden[0].fechaAprobadoDirector;
     }
+  }
+
+  recibir() {
+    this.recibido = true;
+    let id = this.orden[0].id
+    console.log(id)
+    let objOrden;
+    let ordenServ;
+    if(this.orden[0].estado === 'Aprobado') {
+      objOrden = {
+        Estado: 'Pendiente de radicar factura'
+      }
+      ordenServ = {
+        ResponsableActualId: this.usuarioActual.id,
+        Estado: 'Pendiente de radicar factura'
+      }
+    }
+    else {
+      objOrden = {
+        Estado: 'Pagado',
+        ResponsableActualId: null
+      }
+      ordenServ = {
+        ResponsableActualId: null,
+        Estado: 'Pagado'
+      }
+    }
+    
+    this.servicio.ActualizarOrden(id, objOrden).then(
+      (respuesta)=> {
+        this.servicio.ObtenerServicio(id).then(
+          (respuesta1) => {
+            console.log(respuesta1)
+            this.servicio.ModificarServicio(ordenServ, respuesta1[0].ID)
+            this.orden[0].estado === 'Aprobado' ? this.MensajeExitoso('Listo! La orden está pendiente de pago para finalizar el proceso.') : this.MensajeExitoso('Listo! Esta orden ha finalizado el proceso');
+            setTimeout(
+              () => {
+                window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+              }, 2000);
+          }
+        )
+      }
+    ).catch(
+      (err) => {
+        this.MensajeError('Error actualizando el estado de la orden')
+      }
+    )
+  }
+
+  MensajeExitoso(mensaje: string) {
+    this.toastr.successToastr(mensaje, 'Confirmado!');
+  }
+
+  MensajeError(mensaje: string) {
+    this.toastr.errorToastr(mensaje, 'Oops!');
+  }
+
+  MensajeAdvertencia(mensaje: string) {
+    this.toastr.warningToastr(mensaje, 'Alert!');
+  }
+
+  MensajeInfo(mensaje: string) {
+    this.toastr.infoToastr(mensaje, 'Info');
   }
 }

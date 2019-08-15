@@ -46,11 +46,14 @@ export class OrdenServiciosComponent implements OnInit {
   idUsuario: number;
   jefe;
   emailInvalido: boolean = false;
-  dataUsuarios = [
-    {value: 'Seleccione', label : 'Seleccione', email: 'email'}
-  ];
+  dataUsuarios = [];
   esConsultores: boolean = false;
   esAsociados: boolean = false;
+  arrayCecos: any = [];
+  sumaPorcentaje: number;
+  idOrden: number;
+  mostrarCecos: boolean;
+  porcentajeAsumidoNum: number;
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -64,6 +67,7 @@ export class OrdenServiciosComponent implements OnInit {
     this.pagoUnico = false;
     this.pagoVarios = false;
     this.pagoCECO = false;
+    this.mostrarCecos = true;
   }
 
   private registrarControles() {
@@ -99,7 +103,7 @@ export class OrdenServiciosComponent implements OnInit {
       fechaInicio: ['', Validators.required],
       fechaFinal: ['', Validators.required],
       totalDias: [''],
-      formaPago: ['',Validators.required],
+      formaPago: ['', Validators.required],
       fechaPago: [''],
       Pago1: [''],
       Pago2: [''],
@@ -107,7 +111,6 @@ export class OrdenServiciosComponent implements OnInit {
       Pago4: [''],
       Pago5: [''],
       Pago6: [''],
-      distPago: [''],
       ceco1: [''],
       porcentajeCeco1: [''],
       ceco2: [''],
@@ -126,7 +129,9 @@ export class OrdenServiciosComponent implements OnInit {
       mesesCalidad1: [''],
       mesesCalidad2: [''],
       polizaVida: [''],
-      polizaVehiculos: ['']
+      polizaVehiculos: [''],
+      numeroCecoPorcentaje: [''],
+      porcentajeAsumido: ['']
     })
   }
 
@@ -149,7 +154,7 @@ export class OrdenServiciosComponent implements OnInit {
         this.obtenerSedes();
         this.servicio.obtenerJefe(this.usuarioActual.id).then(
           (respuesta) => {
-            if(respuesta[0].JefeId !== null) {
+            if (respuesta[0].JefeId !== null) {
               console.log(respuesta[0]);
               this.usuarioActual.IdJefeDirecto = respuesta[0].JefeId;
               this.usuarioActual.NombreJefeDirecto = respuesta[0].Jefe.Title;
@@ -190,7 +195,7 @@ export class OrdenServiciosComponent implements OnInit {
     this.servicio.obtenerSedes().subscribe(
       (respuesta) => {
         this.sedes = Sede.fromJsonList(respuesta);
-        this. obtenerCeco();
+        this.obtenerCeco();
       }
     )
   }
@@ -199,20 +204,25 @@ export class OrdenServiciosComponent implements OnInit {
     this.servicio.obtenerCecos().subscribe(
       (respuesta) => {
         this.areas = CentroCosto.fromJsonList(respuesta);
+        console.log(this.areas)
       }
     )
   }
-  
+
   changeCeco($event) {
     let numeroCeco = $event.value.ceco
-    console.log($event);
     this.generarOrdenServicios.controls['numeroCECO'].setValue(numeroCeco);
   }
 
+  changeCecoPorcentaje($event) {
+    let numeroCeco = $event.value.ceco
+    this.generarOrdenServicios.controls['numeroCecoPorcentaje'].setValue(numeroCeco);
+  }
+
   changeContacto($event) {
-  console.log($event)
-  let email = $event.value.email
-  this.generarOrdenServicios.controls['emailSolicitante'].setValue(email)
+    console.log($event)
+    let email = $event.value.email
+    this.generarOrdenServicios.controls['emailSolicitante'].setValue(email)
   }
 
   obtenerUnegocios() {
@@ -222,108 +232,168 @@ export class OrdenServiciosComponent implements OnInit {
       }
     )
   }
-  
+
   obtenerConsecutivoInicial() {
     this.servicio.obtenerConsecutivoInciail().subscribe(
       (respuesta) => {
-       this.config = Configuracion.fromJsonList(respuesta);
-       this.cargarNroOrden();
-       this.obtenerEmpresa()
-       console.log(this.config)
-       
+        this.config = Configuracion.fromJsonList(respuesta);
+        this.cargarNroOrden();
+        this.obtenerEmpresa()
+        console.log(this.config);
       }
     )
   }
 
+  validarPorcentaje() {
+    this.porcentajeAsumidoNum = parseInt(this.generarOrdenServicios.get('porcentajeAsumido').value)
+    if (this.arrayCecos.length > 0) {
+      
+      let array: any = [];
+      this.arrayCecos.map((x) => {
+        x.porcentaje
+        array.push(x.porcentaje)
+      })
+      this.sumaPorcentaje = array.reduce((a, suma) => a + suma);
+      if(array.length === 0) {
+        this.sumaPorcentaje = 0
+      }
+      // if (this.sumaPorcentaje + this.porcentajeAsumidoNum !== 100) {
+      //   this.spinner.hide();
+      //   this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
+      //   return false;
+      // }
+    }
+    else if (this.porcentajeAsumidoNum !== 100) {
+      this.spinner.hide();
+      this.MensajeAdvertencia('El total del porcentaje debe ser equivalente al 100%');
+      return false;
+    }
+  }
+
+  agregarCecos() {
+    if (this.generarOrdenServicios.get('ceco1').value === "") {
+      this.MensajeAdvertencia('Por favor seleccione un CECO')
+      return false;
+    }
+    else {
+      if (this.generarOrdenServicios.get('porcentajeCeco1').value === "") {
+        this.MensajeAdvertencia('Debe agregar un porcentaje');
+        return false;
+      }
+      if (this.generarOrdenServicios.get('porcentajeCeco1').value > 100) {
+        this.MensajeAdvertencia('El porcentaje no debe superar el 100%');
+        return false;
+      }
+      this.arrayCecos.push({ ceco: this.generarOrdenServicios.get('ceco1').value.nombre, nroCeco: this.generarOrdenServicios.get('numeroCecoPorcentaje').value, porcentaje: this.generarOrdenServicios.get('porcentajeCeco1').value, director: this.generarOrdenServicios.get('ceco1').value.directorId });
+      this.generarOrdenServicios.controls['ceco1'].setValue("");
+      this.generarOrdenServicios.controls['numeroCecoPorcentaje'].setValue("");
+      this.generarOrdenServicios.controls['porcentajeCeco1'].setValue("");
+
+    }
+    this.validarPorcentaje();
+  }
+
+  // mostrarCecosFunc() {
+  //   console.log(this.generarOrdenServicios.get('porcentajeAsumido').value)
+  //   if(this.generarOrdenServicios.get('porcentajeAsumido').value === 100){
+     
+  //     this.mostrarCecos = false;
+  //   }
+  // }
+
+  borrarCecos(index) {
+    this.arrayCecos.splice(index, 1);
+  }
+
   async obtenerConsecutivo(): Promise<any> {
-   
+
     let RespuestaMensaje = "";
     let RespuestaGurdado;
     let numeroOrdenString = this.config[0].consecutivo.split('-')
     let numeroOrdenStringAsociados = this.config[0].consecutivoAsociados.split('-');
     let numeroOrdenNumber;
 
-    if(this.generarOrdenServicios.controls['empresaSolicitante'].value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+    if (this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores') {
       numeroOrdenNumber = parseInt(numeroOrdenString[1], 10)
     }
-    else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.') {
+    else if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados') {
       numeroOrdenNumber = parseInt(numeroOrdenStringAsociados[1], 10)
     }
-    
+
     await this.servicio.obtenerConsecutivo().then(
       async (respuesta) => {
-        
+
         this.config = Configuracion.fromJsonList(respuesta);
-        let ordenActual = numeroOrdenNumber 
+        let ordenActual = numeroOrdenNumber
         let ordenValue;
-        if(this.generarOrdenServicios.controls['empresaSolicitante'].value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S' && ordenActual < 10) {
+        if (this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores' && ordenActual < 10) {
           ordenValue = `C-00${ordenActual}`
         }
-        else if(this.generarOrdenServicios.controls['empresaSolicitante'].value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S' && (ordenActual >= 10 && ordenActual < 100)) {
+        else if (this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores' && (ordenActual >= 10 && ordenActual < 100)) {
           ordenValue = `C-0${ordenActual}`
         }
-        else if(this.generarOrdenServicios.controls['empresaSolicitante'].value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S' && ordenActual > 99) {
+        else if (this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores' && ordenActual > 99) {
           ordenValue = `C-${ordenActual}`
         }
-        else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.' && ordenActual < 10) {
+        else if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados' && ordenActual < 10) {
           ordenValue = `A-00${ordenActual}`
         }
-        else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.' && (ordenActual >= 10 && ordenActual < 100 )) {
+        else if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados' && (ordenActual >= 10 && ordenActual < 100)) {
           ordenValue = `A-0${ordenActual}`
         }
-        else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.' && ordenActual > 99) {
+        else if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados' && ordenActual > 99) {
           ordenValue = `A-${ordenActual}`
         }
         this.generarOrdenServicios.controls['nroOrden'].setValue(ordenValue);
-        
+
         let objConfig;
-        
+
         let Consecutivo = ordenValue.split("-");
-        let suma = parseInt(Consecutivo[1])+1;
+        let suma = parseInt(Consecutivo[1]) + 1;
         let sumaString;
-        if(suma < 10) {
-          sumaString = "00"+suma
+        if (suma < 10) {
+          sumaString = "00" + suma
         }
-        else if(suma < 100) {
-          sumaString = "0"+suma;
+        else if (suma < 100) {
+          sumaString = "0" + suma;
         }
         else {
           sumaString = suma
-        } 
+        }
         Consecutivo = Consecutivo[0] + "-" + sumaString;
-        if (this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S') {
+        if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Consultores') {
           objConfig = { Consecutivo: Consecutivo }
         }
         else {
-          objConfig = { ConsecutivoAsociados: Consecutivo }          
+          objConfig = { ConsecutivoAsociados: Consecutivo }
         }
         RespuestaMensaje = "Exitoso";
         RespuestaGurdado = await this.ActualizarConsecutivo(this.config[0].id, objConfig);
         if (RespuestaGurdado === "Error") {
           RespuestaMensaje = "Error";
         }
-        
+
       }
     ).catch(
-      (error)=>{
-         console.log(error);
-         RespuestaMensaje = "Error";
+      (error) => {
+        console.log(error);
+        RespuestaMensaje = "Error";
       }
     )
 
     return RespuestaMensaje
   }
 
-  async ActualizarConsecutivo(id, Obj): Promise<any>{
+  async ActualizarConsecutivo(id, Obj): Promise<any> {
     let RespuestaMensaje = "";
     await this.servicio.ActualizarNroOrden(id, Obj).then(
-      (res)=>{
+      (res) => {
         RespuestaMensaje = "Exitoso";
       }
     ).catch(
-      (error)=>{
+      (error) => {
         console.log(error);
-         RespuestaMensaje = "Error";
+        RespuestaMensaje = "Error";
       }
     );
 
@@ -339,23 +409,23 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   cargarNroOrden() {
-    if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra Consultores Internacionales S.A.S') {
-      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo); 
+    if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Consultores') {
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
     }
-    else if(this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Araujo Ibarra & Asociados S.A.') {
-      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados) 
+    else if (this.generarOrdenServicios.get('empresaSolicitante').value.nombre === 'Asociados') {
+      this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados)
     }
   }
 
   changeEmpresa($event) {
     console.log($event.value.nombre)
-    if($event.value.tipo === "Consultores") {
+    if ($event.value.tipo === "Consultores") {
       this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[0].nit);
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivo);
       this.esConsultores = true;
       this.esAsociados = false;
     }
-    else if($event.value.tipo === "Asociados") {
+    else if ($event.value.tipo === "Asociados") {
       this.generarOrdenServicios.controls['nitSolicitante'].setValue(this.empresa[1].nit);
       this.generarOrdenServicios.controls['nroOrden'].setValue(this.config[0].consecutivoAsociados);
       this.esConsultores = false;
@@ -363,7 +433,6 @@ export class OrdenServiciosComponent implements OnInit {
     }
   };
 
-  
   changeCiudad($event) {
     console.log($event.value);
     let direccion = $event.value.direccion;
@@ -396,8 +465,8 @@ export class OrdenServiciosComponent implements OnInit {
 
   changeIva($event) {
     let precio = this.generarOrdenServicios.controls['precio'].value
-    if($event.checked === true) {
-      this. calcularIva();
+    if ($event.checked === true) {
+      this.calcularIva();
     }
     else {
       this.generarOrdenServicios.controls['iva'].setValue(0);
@@ -417,8 +486,8 @@ export class OrdenServiciosComponent implements OnInit {
     if ($event.value === "Único") {
       this.pagoUnico = true;
       this.pagoVarios = false;
-    } 
-    else if($event.value === 'Varios') {
+    }
+    else if ($event.value === 'Varios') {
       this.pagoVarios = true;
       this.pagoUnico = false;
     }
@@ -432,17 +501,18 @@ export class OrdenServiciosComponent implements OnInit {
     }
   }
 
-  changeFecha($event) {
+  changeFecha() {
     this.calcularDias();
   }
 
   calcularDias() {
-    let arrayInicio = this.generarOrdenServicios.get('fechaInicio').value.split(' ');
-    let arrayFin = this.generarOrdenServicios.get('fechaFinal').value.split(' ');
-    let fecha1 = parseInt(arrayInicio[2], 10);
-    let fecha2 = parseInt(arrayFin[2], 10);
-    let calculo = fecha1 + fecha2
-    this.generarOrdenServicios.controls['totalDias'].setValue(calculo);
+    let arrInicio = new Date(this.generarOrdenServicios.get('fechaInicio').value)
+    let arrInicio1 = arrInicio.getDate();
+    let arrFinal = new Date(this.generarOrdenServicios.get('fechaFinal').value)
+    let arrFinal1 = arrFinal.getDate();
+    let sumaDias = arrFinal1 - arrInicio1
+    sumaDias <= 0 ? sumaDias = 1 : sumaDias = sumaDias
+    this.generarOrdenServicios.controls['totalDias'].setValue(sumaDias);
   }
 
   cancelar() {
@@ -452,18 +522,22 @@ export class OrdenServiciosComponent implements OnInit {
       }, 500);
   }
 
-
   async onSubmit() {
-    this.spinner.show()
+    this.spinner.show();
     console.log(this.empleadoEditar[0]);
     let RespuestaConsecutivo = await this.obtenerConsecutivo();
-      if (RespuestaConsecutivo === "Error") {
-        this.MensajeError("Error al obtener el consecutivo");
-        this.spinner.hide();
-        return false;
-      }
-    
-    
+    if (RespuestaConsecutivo === "Error") {
+      this.MensajeError("Error al obtener el consecutivo");
+      this.spinner.hide();
+      return false;
+    }
+
+    if (this.sumaPorcentaje + this.porcentajeAsumidoNum !== 100) {
+      this.spinner.hide();
+      this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
+      return false;
+    }
+
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value.nombre;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
@@ -502,13 +576,6 @@ export class OrdenServiciosComponent implements OnInit {
     let Pago4 = this.generarOrdenServicios.get('Pago4').value;
     let Pago5 = this.generarOrdenServicios.get('Pago5').value;
     let Pago6 = this.generarOrdenServicios.get('Pago6').value;
-    let ceco1 = this.generarOrdenServicios.get('ceco1').value;
-    let ceco2 = this.generarOrdenServicios.get('ceco2').value;
-    let ceco3 = this.generarOrdenServicios.get('ceco3').value;
-    let distPago = this.generarOrdenServicios.get('distPago').value;
-    let porcentajeCeco1 = this.generarOrdenServicios.get('porcentajeCeco1').value;
-    let porcentajeCeco2 = this.generarOrdenServicios.get('porcentajeCeco2').value;
-    let porcentajeCeco3 = this.generarOrdenServicios.get('porcentajeCeco3').value;
     let garantia = this.generarOrdenServicios.get('garantia').value;
     let porcentajeCumplimiento = this.generarOrdenServicios.get('porcentajeCumplimiento').value;
     let mesesCumplimiento = this.generarOrdenServicios.get('mesesCumplimiento').value;
@@ -528,6 +595,7 @@ export class OrdenServiciosComponent implements OnInit {
     let usuarioSolicitante = this.usuarioActual.id;
     let objOrden;
     let objServicio;
+    let porcentajeAsumido = this.generarOrdenServicios.get('porcentajeAsumido').value;
 
     if (regimen === "") {
       this.MensajeAdvertencia('debe seleccionar el regimen');
@@ -535,10 +603,10 @@ export class OrdenServiciosComponent implements OnInit {
       return false;
     }
 
-    if(garantia === "") {
+    if (garantia === "") {
       this.MensajeAdvertencia('Debe seleccionar si tiene garantías');
       this.spinner.hide()
-      return false; 
+      return false;
     }
 
     if (rut === "" && camara === "") {
@@ -547,16 +615,9 @@ export class OrdenServiciosComponent implements OnInit {
       return false;
     }
 
-    if (distPago === "") {
-      this.MensajeAdvertencia('Por favor especifique si si el pago se distribuye en 2 o más CECOs')
-      this.spinner.hide();
-    }
-
     tieneIva === "" ? tieneIva = false : tieneIva = true;
     rut === "" ? rut = false : rut = rut;
     camara === "" ? camara = false : camara = camara;
-    distPago === 'true' ? distPago = true : distPago = false;
-
     fechaPago === "" ? fechaPago = null : fechaPago = fechaPago;
     Pago1 === "" ? Pago1 = null : Pago1 = Pago1;
     Pago2 === "" ? Pago2 = null : Pago2 = Pago2;
@@ -565,37 +626,22 @@ export class OrdenServiciosComponent implements OnInit {
     Pago5 === "" ? Pago5 = null : Pago5 = Pago5;
     Pago6 === "" ? Pago6 = null : Pago6 = Pago6;
 
-    porcentajeCeco1 === "" ? porcentajeCeco1 = 0 : porcentajeCeco1 = porcentajeCeco1;
-    porcentajeCeco2 === "" ? porcentajeCeco2 = 0 : porcentajeCeco2 = porcentajeCeco2;
-    porcentajeCeco3 === "" ? porcentajeCeco3 = 0 : porcentajeCeco3 = porcentajeCeco3;
-
-    let pCeco1 = parseInt(porcentajeCeco1, 10);
-    let pCeco2 = parseInt(porcentajeCeco2, 10);
-    let pCeco3 = parseInt(porcentajeCeco3, 10);
-
-    if (this.pagoCECO === true && pCeco1 + pCeco2 + pCeco3 !== 100) {
-      this.MensajeAdvertencia('La suma de todos los porcentajes debe se igual a 100%, por favor verifique');
+    if (formaPago === 'Único' && fechaPago === null) {
+      this.MensajeAdvertencia('Seleccione la fecha de pago');
       this.spinner.hide();
       return false;
     }
 
-    if(formaPago === 'Único' && fechaPago === null) {
-      this.MensajeAdvertencia('Seleccione la fecha de pago');
-      this.spinner.hide();
-      return false; 
-    }
-
-    if(formaPago === 'Varios' && (Pago1 === null || Pago2 === null)) {
+    if (formaPago === 'Varios' && (Pago1 === null || Pago2 === null)) {
       this.MensajeAdvertencia('Se deben especificar al menos 2 fechas de pago cuando no es pago único');
       this.spinner.hide();
-      return false; 
+      return false;
     }
 
     garantia === 'true' ? garantia = true : garantia = false;
     polizaVida === 'true' ? polizaVida = true : polizaVida = false;
     polizaVehiculos === "true" ? polizaVehiculos = true : polizaVehiculos = false;
 
-    let id = 1
     let ordenA = nroOrden.split('-');
     let sumaOrden = parseInt(ordenA[1], 10) + 1
     let nroActualizadoAsociado: string;
@@ -616,7 +662,7 @@ export class OrdenServiciosComponent implements OnInit {
 
     objOrden = {
       Title: empresaSolicitante,
-      NroOrden: nroOrden,      
+      NroOrden: nroOrden,
       NitSolicitante: nitSolicitante,
       CiudadSolicitante: ciudadSolicitante,
       TelSolicitante: telSolicitante,
@@ -654,13 +700,6 @@ export class OrdenServiciosComponent implements OnInit {
       Fecha4toPago: Pago4,
       Fecha5toPago: Pago5,
       Fecha6toPago: Pago6,
-      DistribucionPago: distPago,
-      CECOResponsable1: ceco1,
-      CECOResponsable2: ceco2,
-      CECOResponsable3: ceco3,
-      PorcentajeCECO1: pCeco1,
-      PorcentajeCECO2: pCeco2,
-      PorcentajeCECO3: pCeco3,
       PorcentajeCumplimiento: porcentajeCumplimiento,
       MesesCumplimiento: mesesCumplimiento,
       PorcentajePagoSalarios: porcentajeSalarios,
@@ -676,41 +715,45 @@ export class OrdenServiciosComponent implements OnInit {
       Garantia: garantia,
       Estado: 'Pendiente de aprobación gerente unidad de negocios',
       ResponsableActualId: responsableActual,
-      UsuarioSolicitanteId: usuarioSolicitante
+      UsuarioSolicitanteId: usuarioSolicitante,
+      PorcentajeAsumido: parseInt(porcentajeAsumido)
     }
+
+
 
     if (this.generarOrdenServicios.invalid) {
       this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
       this.spinner.hide();
     }
     else {
-     let RespuestaConsecutivo = await this.obtenerConsecutivo();
-     if (RespuestaConsecutivo === "Error") {
-       this.MensajeError("Error al obtener el consecutivo");
-       this.spinner.hide();
+      let RespuestaConsecutivo = await this.obtenerConsecutivo();
+      if (RespuestaConsecutivo === "Error") {
+        this.MensajeError("Error al obtener el consecutivo");
+        this.spinner.hide();
         return false;
-     }
+      }
       this.servicio.AgregarOrden(objOrden).then(
         (item: ItemAddResult) => {
-          let idOrden = item.data.Id;
+          this.idOrden = item.data.Id
+          // let idOrden = item.data.Id;
           let numeroOrden = this.generarOrdenServicios.get('nroOrden').value
-          console.log(idOrden);
+          console.log(this.idOrden);
           objServicio = {
             TipoServicio: 'Orden de servicio',
             CodigoServicioId: 4,
             AutorId: usuarioSolicitante,
             ResponsableActualId: responsableActual,
             Estado: "Pendiente de aprobación gerente unidad de negocios",
-            idServicio: idOrden
+            idServicio: this.idOrden
           }
 
           let cuerpo = '<p>Cordial saludo</p>' +
             '<br>' +
             '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado una nueva orden de servicio con el número <strong>' + this.generarOrdenServicios.get('nroOrden').value + '</strong> para su aprobación</p>' +
             '<br>' +
-            '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' + 
-            '<p>En caso de que el acceso no lo dirija a página por favor copie la siguiente url en el navegador:</p>' + 
-            'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios'; 
+            '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
+            '<p>En caso de que el acceso no lo dirija a página por favor copie la siguiente url en el navegador:</p>' +
+            'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';
 
           const emailProps: EmailProperties = {
             To: [this.usuarioActual.EmailJefeDirecto],
@@ -718,7 +761,8 @@ export class OrdenServiciosComponent implements OnInit {
             Body: cuerpo,
           };
           this.servicio.GuardarServicio(objServicio).then(
-            (respuesta) => {
+            async (respuesta) => {
+              let ans = await this.guardarCecos();
               this.servicio.EnviarNotificacion(emailProps).then(
                 (res) => {
                   this.MensajeInfo("Se ha enviado una notificación para aprobación");
@@ -729,18 +773,7 @@ export class OrdenServiciosComponent implements OnInit {
                       // this.spinnerService.hide();
                     }, 2000);
                 }
-              ).catch(
-                (error) => {
-                  console.error(error);
-                  this.MensajeInfo("Error al enviar la notificacion, pero la orden se ha enviado con éxito");
-                  this.spinner.hide();
-                  setTimeout(
-                    () => {
-                      window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
-                      // this.spinnerService.hide();
-                    }, 2000);
-                }
-              );
+              )
             }
           )
           this.MensajeExitoso('El proceso finalizó con éxito');
@@ -757,6 +790,35 @@ export class OrdenServiciosComponent implements OnInit {
         }
       )
     }
+  }
+
+  async guardarCecos(): Promise<any> {
+    for (let index = 0; index < this.arrayCecos.length; index++) {
+      const element = this.arrayCecos[index];
+      let objCecos = {
+        Ceco: element.nroCeco,
+        Nombre: element.ceco,
+        PorcentajeAsumido: element.porcentaje,
+        OrdenServicioId: this.idOrden,
+        DirectorCecoId: element.director
+      }
+      let resultado = await this.enviarCecos(objCecos);
+    }
+    return "ok";
+  }
+
+  async enviarCecos(objCecos): Promise<any> {
+    let resultado = "";
+    await this.servicio.AgregarCecos(objCecos).then(
+      (respuesta) => {
+        resultado = 'OK';
+      }).catch(
+        (error) => {
+          console.log(error);
+          resultado = 'error';
+        }
+      );
+    return Promise.resolve(resultado);
   }
 
   MensajeExitoso(mensaje: string) {

@@ -44,7 +44,7 @@ export class SPServicio {
             headers: {
                 'Accept': 'application/json; odata=verbose',
                 'Content-Type': 'application/json;odata=verbose',
-                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InU0T2ZORlBId0VCb3NIanRyYXVPYlY4NExuWSIsImtpZCI6InU0T2ZORlBId0VCb3NIanRyYXVPYlY4NExuWSJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvYXJpYmFzYXMuc2hhcmVwb2ludC5jb21AM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwiaXNzIjoiMDAwMDAwMDEtMDAwMC0wMDAwLWMwMDAtMDAwMDAwMDAwMDAwQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsImlhdCI6MTU2MzU0MDY0OCwibmJmIjoxNTYzNTQwNjQ4LCJleHAiOjE1NjM1Njk3NDgsImlkZW50aXR5cHJvdmlkZXIiOiIwMDAwMDAwMS0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDBAM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwibmFtZWlkIjoiNTdjMWUwNjctOWM1My00MjQ4LWE2MmEtZmJhZGI3YWMwODUyQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsIm9pZCI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInN1YiI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInRydXN0ZWRmb3JkZWxlZ2F0aW9uIjoiZmFsc2UifQ.VufosIWhDog2p-e5gQ53ot9DVfDnaVXD1Iz8JpjCAAC2Sf9JJZsVLGgNWynxU12fWyumOYXA9RVET7EGzjciaz2t-5D3GEIHEXPrZBG9ekw-wNINXb0KcheaLwZhDhRDIkk_80Q4G7zCacTGivJDC7xdMtzYyoD7VwFlkynQKiKGDNCT--kv3LtoLFw7WRDf0C0tSAj7wzB03DNMPrMltOHfXTM4b7E2ggwBakeIfjY1athH2t-BTawnq-4if3OUJ4Jhv0eiXUiOJUolemmg8yfwJgciyPiq5vY7MykuPtEUrjh-9sbf3fCDKnQau-N2OfseRHAuFbj7jk9F6_sZ8w' 
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InU0T2ZORlBId0VCb3NIanRyYXVPYlY4NExuWSIsImtpZCI6InU0T2ZORlBId0VCb3NIanRyYXVPYlY4NExuWSJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvYXJpYmFzYXMuc2hhcmVwb2ludC5jb21AM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwiaXNzIjoiMDAwMDAwMDEtMDAwMC0wMDAwLWMwMDAtMDAwMDAwMDAwMDAwQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsImlhdCI6MTU2NTI2OTczNywibmJmIjoxNTY1MjY5NzM3LCJleHAiOjE1NjUyOTg4MzcsImlkZW50aXR5cHJvdmlkZXIiOiIwMDAwMDAwMS0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDBAM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwibmFtZWlkIjoiNTdjMWUwNjctOWM1My00MjQ4LWE2MmEtZmJhZGI3YWMwODUyQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsIm9pZCI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInN1YiI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInRydXN0ZWRmb3JkZWxlZ2F0aW9uIjoiZmFsc2UifQ.K_C1ww1d1Js9JRQk8Pv174Y97WDAYaoKZDqXgrG6gXayeIrJ6jD0pDuOT2x18b1M0tI-t_w7z4xSBJAhs86rYBegn1c2cO-WUNKX00K-GA40LFusRu0IE36nrbW55_yCxQr7ZNaH-MuoaDBxxQ-m9Clf9K8XNZOYvshwLiQVoykvtiTXc8N5vHlU8akyS8ZM3eWqILDu4pd9OzZ-OpRcCjK66ADvt-Fo6WU0WKdgfEV96CRS93bOwHc5-lPBZ2nRJqFYt4UARPzzWYc97PY3rrLPM3pUloFxBvbP2ASfC9J8E1FE-CpvSaFyKe36mhSn19KqxBNzuztsS78XFKcFGw' 
             }
         }, environment.urlWebGH);
 
@@ -105,8 +105,8 @@ export class SPServicio {
     }
 
 
-    async ActualizarNroOrden(id: number, objConfig): Promise<any> {
-         return await this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaConfiguracion).items.getById(id).update(objConfig);
+    async ActualizarNroOrden(idServicio: number, objConfig): Promise<any> {
+         return await this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaConfiguracion).items.getById(idServicio).update(objConfig);
     }
 
     ConsultarMisPendientes(idUsuario) {
@@ -159,6 +159,11 @@ export class SPServicio {
         return respuesta;
     }
 
+    // ActualizarServicio(id, objServicio) {
+    //     let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaServicios).items.getById(id).update(objServicio);
+    //     return respuesta;
+    // }
+
     ModificarServicio(ObjServicio, idServicio){
         let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaServicios).items.getById(idServicio).update(ObjServicio);
         return respuesta; 
@@ -167,6 +172,34 @@ export class SPServicio {
     ObtenerServicio(idSolicitud){
         let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaServicios).items.filter("idServicio eq "+idSolicitud+" and TipoServicio eq 'Orden de servicio'").getAll();
         return respuesta;
+    }
+
+    async AgregarCecos(ObjOrden){
+        return await this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.add(ObjOrden)
+    }
+
+    // ObtenerParticipacion(idOrden) {
+    //     let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCecos).items.select("*", 'DirectorCeco/Title', 'DirectorCeco/EMail', 'OrdenServicio/ID').expand('DirectorCeco', 'OrdenServicio').filter("OrdenServicioId eq "+idOrden).getAll();
+    //     return respuesta; 
+    // }
+
+    obtenerParticipacion(idOrden){
+        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.filter("OrdenServicioId eq '"+idOrden+"'").select("*","DirectorCeco/Title", "DirectorCeco/ID", "DirectorCeco/EMail").expand("DirectorCeco").get();
+        return respuesta;
+    }
+
+    ModificarParticipacion(id, objPorcentaje){
+        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.filter("OrdenServicioId eq '"+id+"'").getById(id).update(objPorcentaje);
+        return respuesta;
+    }
+
+    aprobarParticipacionPorCeco(id, objPorcentaje) {
+        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.filter("ID eq '"+id+"'").getById(id).update(objPorcentaje);
+        return respuesta;
+    }
+
+    borrarCecos(OrdenServicio: number){
+        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.getById(OrdenServicio).delete();
     }
 
 }

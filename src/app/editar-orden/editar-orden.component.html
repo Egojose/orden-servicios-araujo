@@ -1,4 +1,4 @@
-<h4 class="text-center">Orden de servicios</h4>
+<h4 class="text-center">Editar orden de servicios</h4>
 <form action="" autocomplete="off" [formGroup]="editarOrden" (ngSubmit)="onSubmit()" class="main">
   <div class="container">
     <mat-accordion>
@@ -11,26 +11,14 @@
           <div class="row">
             <div class="col-md-2 offset-md-10 text-center">
               <label for="Nro de orden">NÚMERO DE ORDEN</label>
-              <input matInput  formControlName="nroOrden" readonly id="nroOrden" class="text-center">
+              <input matInput  formControlName="nroOrden" readonly id="nroOrden" class="text-center" readonly>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12">
               <mat-form-field>
-                  <mat-label>Empresa solicitante</mat-label>
-                  <mat-select formControlName="empresaSolicitante" (selectionChange)="changeEmpresa($event)">
-                    <mat-option *ngFor="let empresas of empresa" [value]="empresas.nombre">
-                      {{empresas.nombre}}
-                    </mat-option>
-                  
-                    <!-- <mat-option value="Araujo Ibarra Consultores Internacionales S.A.S">Araujo Ibarra Consultores Internacionales S.A.S</mat-option>
-                                        <mat-option value="Araujo Ibarra Asociados S.A.S">Araujo Ibarra Asociados S.A.S</mat-option> -->
-                  </mat-select>
-                <!-- <input matInput placeholder="Empresa solicitante" formControlName="empresaSolicitante"> -->
+                <input matInput formControlName="empresaSolicitante" readonly>
               </mat-form-field>
-              <mat-error>
-                <span *ngIf="!editarOrden.get('empresaSolicitante').valid && editarOrden.get('empresaSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-            </mat-error>
             </div>
           </div>
           <div class="row">
@@ -38,24 +26,11 @@
               <mat-form-field>
                 <input matInput placeholder="Nit" formControlName="nitSolicitante" readonly>
               </mat-form-field>
-              <mat-error>
-                <span *ngIf="!editarOrden.get('nitSolicitante').valid && editarOrden.get('nitSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error>
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <mat-label>Ciudad</mat-label>
-                <mat-select formControlName="ciudadSolicitante" (selectionChange)="changeCiudad($event)">
-                  <mat-option *ngFor="let sede of sedes" [value]="sede">
-                    {{sede.nombre}}
-                  </mat-option>
-                </mat-select>
+                <input matInput placeholder="Ciudad" formControlName="ciudadSolicitante" readonly>
               </mat-form-field>
-              <mat-error>
-                <span
-                  *ngIf="!editarOrden.get('ciudadSolicitante').valid && editarOrden.get('ciudadSolicitante').touched"><small
-                    class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error>
             </div>
           </div>
           <div class="row">
@@ -63,79 +38,48 @@
               <mat-form-field>
                 <input matInput placeholder="Teléfono" formControlName="telSolicitante" readonly>
               </mat-form-field>
-              <!-- <mat-error>
-                  <span *ngIf="!editarOrden.get('telSolicitante').valid && editarOrden.get('telSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error>    -->
             </div>
             <div class="col-md-6">
               <mat-form-field>
                 <input matInput placeholder="Dirección" formControlName="direccionSolicitante" readonly>
               </mat-form-field>
-              <!-- <mat-error>
-                  <span *ngIf="!editarOrden.get('direccionSolicitante').valid && editarOrden.get('direccionSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error>  -->
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                  <mat-label>Contacto</mat-label>
-                  <mat-select formControlName="contactoSolicitante" (selectionChange)="changeContacto($event)">
-                      <mat-option *ngFor="let usuario of dataUsuarios" [value]="usuario">
-                        {{usuario.label}}                        
-                      </mat-option>
-                  </mat-select>
-                <!-- <input matInput placeholder="Contacto" formControlName="contactoSolicitante"> -->
+                <input matInput placeholder="Contacto" formControlName="contactoSolicitante" readonly>
               </mat-form-field>
-              <mat-error>
-                  <span *ngIf="!editarOrden.get('contactoSolicitante').valid && editarOrden.get('contactoSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error>
             </div>
             <div class="col-md-6">
               <mat-form-field>
                 <input matInput placeholder="Email" formControlName="emailSolicitante" readonly>
               </mat-form-field>
-              <mat-error>
-                  <span *ngIf="!editarOrden.get('emailSolicitante').valid && editarOrden.get('emailSolicitante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error>
             </div>
           </div>
           <div class="row">
             <div class="col-md-12">
               <mat-form-field>
-                <mat-label>Unidad de negocios</mat-label>
-                <mat-select formControlName="unidadNegocios">
-                    <mat-option *ngFor="let unegocios of unegocios" [value]="unegocios.nombre">
-                      {{unegocios.nombre}}                        
-                    </mat-option>
-                </mat-select>
+                <input matInput placeholder="Unidad de negocios" formControlName="unidadNegocios" readonly>
               </mat-form-field>
-              <mat-error>
-                  <span *ngIf="!editarOrden.get('unidadNegocios').valid && editarOrden.get('unidadNegocios').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
-                  <mat-label>Áreas</mat-label>
-                  <mat-select formControlName="nombreCECO" (selectionChange)="changeCeco($event)">
-                      <mat-option *ngFor="let area of areas" [value]="area">
-                        {{area.nombre}}                        
-                      </mat-option>
-                  </mat-select>
-                <!-- <input matInput placeholder="Área" formControlName="nombreCECO"> -->
+                <input matInput placeholder="Responsable" formControlName="nombreCECO" readonly>
               </mat-form-field>
-              <mat-error>
-                  <span *ngIf="!editarOrden.get('nombreCECO').valid && editarOrden.get('nombreCECO').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-              </mat-error>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
-                <input matInput placeholder="Número CECO" formControlName="numeroCECO">
+                <input matInput placeholder="Número CECO" formControlName="numeroCECO" readonly>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Porcentaje asumido" formControlName="porcentajeAsumido" type="number">
               </mat-form-field>
               <mat-error>
-                  <span *ngIf="!editarOrden.get('numeroCECO').valid && editarOrden.get('numeroCECO').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
               </mat-error>
             </div>
           </div>
@@ -311,7 +255,7 @@
               </div>
               <div class="col-md-4">
                 <mat-form-field>
-                  <input matInput placeholder="Total días del contrato" formControlName="totalDias">
+                  <input matInput placeholder="Total días del contrato" formControlName="totalDias" (click)="changeFecha()">
                 </mat-form-field>
                 <mat-error>
                   <span *ngIf="!editarOrden.get('totalDias').valid && editarOrden.get('totalDias').touched"><small
@@ -394,54 +338,54 @@
               </div>
             </ng-container>
             <br>
-            <div class="row">
-              <div class="col-md-4 offset-4 text-center">
-                  <label for="Regimen" id="regimen">¿El pago se distribuye en 2 o más CECOs?</label>
-                  <mat-radio-group (change)="pagoCECOchange($event)" formControlName="distPago">
-                    <mat-radio-button value='true'>Sí</mat-radio-button>
-                    <mat-radio-button value='false'>No</mat-radio-button>
-                  </mat-radio-group>
-              </div>
-            </div>
-            <ng-container *ngIf="pagoCECO">
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 1" formControlName="ceco1">
-                  </mat-form-field>
+            <ng-container id="contenedorTable">
+                <div class="row">
+                  <div class="col-md-3">
+                      <mat-form-field>
+                          <mat-label>CECO</mat-label>
+                          <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event)">
+                              <mat-option *ngFor="let ceco of areas" [value]="ceco">
+                                {{ceco.nombre}}                        
+                              </mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Nro Ceco" formControlName="numeroCecoPorcentaje">
+                    </mat-form-field>
+                  </div>
+                
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1" type="number">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <button class="btn btn-primary btn-block" type="button" (click)="agregarCecos()">Agregar</button>
+                  </div>
                 </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1">
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 2" formControlName="ceco2">
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco2">
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 3" formControlName="ceco3">
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco3">
-                  </mat-form-field>
-                </div>
-              </div>
-            </ng-container>
-            <br>
+                <br>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="cabezeraTblUnidadNegocio">
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Nro CECO</th>
+                          <th scope="col">Porcentaje</th>
+                          <th scope="col">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let ceco of arrayCecos; let i = index">
+                          <td>{{ceco.ceco}}</td>
+                          <td>{{ceco.nroCeco}}</td>
+                          <td>{{ceco.porcentaje}}</td>
+                          <td><button type="button" class="btn btn-danger" (click)="borrarCecos(i)">Borrar</button></td>
+                        </tr>
+                      </tbody>
+                </table>
+              </ng-container>
+            <hr>
             <ng-container *ngIf="esConsultores">
             <div class="row">
               <div class="col-md-12">

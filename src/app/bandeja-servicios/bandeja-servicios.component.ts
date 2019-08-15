@@ -57,6 +57,7 @@ export class BandejaServiciosComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.ObjServicios);
         this.dataSource.paginator = this.MisPendientesPaginador;
         this.dataSource.data.length === 0 ? this.empty = true : this.empty = false;
+        console.log(this.dataSource);
       }
     ).catch(
       (error)=>{
@@ -82,17 +83,23 @@ export class BandejaServiciosComponent implements OnInit {
     );
   }
 
-  VerServicio(id, estado) {
-  // ]console.log(event)
-    
+  VerServicio(id, estado) {    
     sessionStorage.setItem("IdServicio", id);
 
-    if (estado !== 'Aprobado') {
-      this.router.navigate(["/aprobar-orden-servicio"])
-    }
-    else {
+    if (estado === 'Aprobado' || estado === 'Pendiente de radicar factura') {
       this.router.navigate(["/consultar-orden"])
     }
+    else if(estado === 'Rechazado') {
+      this.router.navigate(["/editar-orden"])
+    }
+    else {
+      this.router.navigate(["/aprobar-orden-servicio"])
+    }
+  }
+
+  verServicioEditar(id, estado) {
+    sessionStorage.setItem("IdServicio", id);
+    this.router.navigate(['/editar-orden']);
   }
 
   MensajeExitoso(mensaje: string) {

@@ -1,8 +1,8 @@
 export class CentroCosto{
-    constructor(public nombre: string, public id: number, public ceco: string) {}
+    constructor(public nombre: string, public id: number, public ceco: string, public directorId: any) {}
 
     public static fromJson(element: any) {
-        return new CentroCosto(element.Title, element.ID, element.CentroCosto);
+        return new CentroCosto(element.Title, element.ID, element.CentroCosto, element.DirectorCecoId);
     }
 
     public static fromJsonList(elements: any) {
