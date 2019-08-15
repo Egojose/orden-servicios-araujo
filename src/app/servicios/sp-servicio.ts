@@ -175,7 +175,7 @@ export class SPServicio {
     }
 
     async AgregarCecos(ObjOrden){
-        return await this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.add(ObjOrden)
+        return await this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCecos).items.add(ObjOrden)
     }
 
     // ObtenerParticipacion(idOrden) {
