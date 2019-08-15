@@ -53,6 +53,7 @@ export class OrdenServiciosComponent implements OnInit {
   sumaPorcentaje: number;
   idOrden: number;
   mostrarCecos: boolean;
+  porcentajeAsumidoNum: number;
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -244,8 +245,7 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   validarPorcentaje() {
-    alert(this.arrayCecos.length)
-    let porcentajeAsumidoNum = parseInt(this.generarOrdenServicios.get('porcentajeAsumido').value)
+    this.porcentajeAsumidoNum = parseInt(this.generarOrdenServicios.get('porcentajeAsumido').value)
     if (this.arrayCecos.length > 0) {
       
       let array: any = [];
@@ -254,13 +254,16 @@ export class OrdenServiciosComponent implements OnInit {
         array.push(x.porcentaje)
       })
       this.sumaPorcentaje = array.reduce((a, suma) => a + suma);
-      if (this.sumaPorcentaje + porcentajeAsumidoNum !== 100) {
-        this.spinner.hide();
-        this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
-        return false;
+      if(array.length === 0) {
+        this.sumaPorcentaje = 0
       }
+      // if (this.sumaPorcentaje + this.porcentajeAsumidoNum !== 100) {
+      //   this.spinner.hide();
+      //   this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
+      //   return false;
+      // }
     }
-    else if (porcentajeAsumidoNum !== 100) {
+    else if (this.porcentajeAsumidoNum !== 100) {
       this.spinner.hide();
       this.MensajeAdvertencia('El total del porcentaje debe ser equivalente al 100%');
       return false;
@@ -287,6 +290,7 @@ export class OrdenServiciosComponent implements OnInit {
       this.generarOrdenServicios.controls['porcentajeCeco1'].setValue("");
 
     }
+    this.validarPorcentaje();
   }
 
   // mostrarCecosFunc() {
@@ -528,6 +532,12 @@ export class OrdenServiciosComponent implements OnInit {
       return false;
     }
 
+    if (this.sumaPorcentaje + this.porcentajeAsumidoNum !== 100) {
+      this.spinner.hide();
+      this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
+      return false;
+    }
+
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value.nombre;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
@@ -586,7 +596,6 @@ export class OrdenServiciosComponent implements OnInit {
     let objOrden;
     let objServicio;
     let porcentajeAsumido = this.generarOrdenServicios.get('porcentajeAsumido').value;
-    this.validarPorcentaje()
 
     if (regimen === "") {
       this.MensajeAdvertencia('debe seleccionar el regimen');

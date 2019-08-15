@@ -59,6 +59,8 @@ export class EditarOrdenComponent implements OnInit {
   arrayCecos: any = [];
   idOrden: number;
   idServicios: number;
+  porcentajeAsumidoNum: number;
+  sumaPorcentaje: number;
 
 
   constructor(
@@ -197,6 +199,27 @@ export class EditarOrdenComponent implements OnInit {
       }
     )
   };
+
+  validarPorcentaje() {
+    this.porcentajeAsumidoNum = parseInt(this.editarOrden.get('porcentajeAsumido').value)
+    if (this.arrayCecos.length > 0) {
+      
+      let array: any = [];
+      this.arrayCecos.map((x) => {
+        x.porcentaje
+        array.push(x.porcentaje)
+      })
+      this.sumaPorcentaje = array.reduce((a, suma) => a + suma);
+      if(array.length === 0) {
+        this.sumaPorcentaje = 0
+      }
+    }
+    else if (this.porcentajeAsumidoNum !== 100) {
+      this.spinner.hide();
+      this.MensajeAdvertencia('El total del porcentaje debe ser equivalente al 100%');
+      return false;
+    }
+  }
 
   changeCeco($event) {
     let numeroCeco = $event.value.ceco
@@ -468,8 +491,8 @@ export class EditarOrdenComponent implements OnInit {
       this.editarOrden.controls['ceco1'].setValue("");
       this.editarOrden.controls['numeroCecoPorcentaje'].setValue("");
       this.editarOrden.controls['porcentajeCeco1'].setValue("");
-
     }
+    this.validarPorcentaje();
   }
 
   borrarCecos(index) {
@@ -479,6 +502,12 @@ export class EditarOrdenComponent implements OnInit {
   onSubmit() {
     let id = parseInt(this.IdRegistroOS);
     let id1 = this.orden[0].id
+
+    if (this.sumaPorcentaje + this.porcentajeAsumidoNum !== 100) {
+      this.spinner.hide();
+      this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
+      return false;
+    }
     
     let nroOrden = this.editarOrden.get('nroOrden').value;
     let empresaSolicitante = this.editarOrden.get('empresaSolicitante').value.nombre;
