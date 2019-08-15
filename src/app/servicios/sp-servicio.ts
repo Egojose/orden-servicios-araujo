@@ -32,7 +32,7 @@ export class SPServicio {
             headers: {
                 'Accept': 'application/json; odata=verbose',
                 'Content-Type': 'application/json;odata=verbose',
-                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InU0T2ZORlBId0VCb3NIanRyYXVPYlY4NExuWSIsImtpZCI6InU0T2ZORlBId0VCb3NIanRyYXVPYlY4NExuWSJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvYXJpYmFzYXMuc2hhcmVwb2ludC5jb21AM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwiaXNzIjoiMDAwMDAwMDEtMDAwMC0wMDAwLWMwMDAtMDAwMDAwMDAwMDAwQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsImlhdCI6MTU2NTI2OTczNywibmJmIjoxNTY1MjY5NzM3LCJleHAiOjE1NjUyOTg4MzcsImlkZW50aXR5cHJvdmlkZXIiOiIwMDAwMDAwMS0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDBAM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwibmFtZWlkIjoiNTdjMWUwNjctOWM1My00MjQ4LWE2MmEtZmJhZGI3YWMwODUyQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsIm9pZCI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInN1YiI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInRydXN0ZWRmb3JkZWxlZ2F0aW9uIjoiZmFsc2UifQ.K_C1ww1d1Js9JRQk8Pv174Y97WDAYaoKZDqXgrG6gXayeIrJ6jD0pDuOT2x18b1M0tI-t_w7z4xSBJAhs86rYBegn1c2cO-WUNKX00K-GA40LFusRu0IE36nrbW55_yCxQr7ZNaH-MuoaDBxxQ-m9Clf9K8XNZOYvshwLiQVoykvtiTXc8N5vHlU8akyS8ZM3eWqILDu4pd9OzZ-OpRcCjK66ADvt-Fo6WU0WKdgfEV96CRS93bOwHc5-lPBZ2nRJqFYt4UARPzzWYc97PY3rrLPM3pUloFxBvbP2ASfC9J8E1FE-CpvSaFyKe36mhSn19KqxBNzuztsS78XFKcFGw'
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImllX3FXQ1hoWHh0MXpJRXN1NGM3YWNRVkduNCIsImtpZCI6ImllX3FXQ1hoWHh0MXpJRXN1NGM3YWNRVkduNCJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvYXJpYmFzYXMuc2hhcmVwb2ludC5jb21AM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwiaXNzIjoiMDAwMDAwMDEtMDAwMC0wMDAwLWMwMDAtMDAwMDAwMDAwMDAwQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsImlhdCI6MTU2NTg5OTkzOCwibmJmIjoxNTY1ODk5OTM4LCJleHAiOjE1NjU5MjkwMzgsImlkZW50aXR5cHJvdmlkZXIiOiIwMDAwMDAwMS0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDBAM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwibmFtZWlkIjoiNTdjMWUwNjctOWM1My00MjQ4LWE2MmEtZmJhZGI3YWMwODUyQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsIm9pZCI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInN1YiI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInRydXN0ZWRmb3JkZWxlZ2F0aW9uIjoiZmFsc2UifQ.IDoysRYDUwcQ_jzhnPYy2Z9PS4e5npUfgb7XOcjgNkqCX2ngoAR63doIeF6ymGopXbyBo_oDfDXOTVzk-VgNDZqQBw7F16HlTOuqiUGZmoK1JUaAirHD3po_vkBN6cVm18jw6SjBtXbpOJX8tyMIw2AxSTFnrfJ4pfW88PpQOiq5sYVy22UCtZFOJooNDM5l-bC1qfbKGHCSFvzJesDQTDpZTLQuHXe-xDeVxDYp6Bgh-m0LQCrRnFxYZ-8NHTB9Uivjj_d0zIQ32qi49mPL59pwiQvdcOiikethGWVPP3RoDSW9RgdY3Kjv1L81vBhNvhqO4IzjVXWUD_cI7FRysQ'
             }
         }, environment.urlWeb);
 
@@ -105,8 +105,8 @@ export class SPServicio {
     }
 
 
-    async ActualizarNroOrden(id: number, objConfig): Promise<any> {
-         return await this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaConfiguracion).items.getById(id).update(objConfig);
+    async ActualizarNroOrden(idServicio: number, objConfig): Promise<any> {
+         return await this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaConfiguracion).items.getById(idServicio).update(objConfig);
     }
 
     ConsultarMisPendientes(idUsuario) {
@@ -159,6 +159,11 @@ export class SPServicio {
         return respuesta;
     }
 
+    // ActualizarServicio(id, objServicio) {
+    //     let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaServicios).items.getById(id).update(objServicio);
+    //     return respuesta;
+    // }
+
     ModificarServicio(ObjServicio, idServicio){
         let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaServicios).items.getById(idServicio).update(ObjServicio);
         return respuesta; 
@@ -171,6 +176,30 @@ export class SPServicio {
 
     async AgregarCecos(ObjOrden){
         return await this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.add(ObjOrden)
+    }
+
+    // ObtenerParticipacion(idOrden) {
+    //     let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCecos).items.select("*", 'DirectorCeco/Title', 'DirectorCeco/EMail', 'OrdenServicio/ID').expand('DirectorCeco', 'OrdenServicio').filter("OrdenServicioId eq "+idOrden).getAll();
+    //     return respuesta; 
+    // }
+
+    obtenerParticipacion(idOrden){
+        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.filter("OrdenServicioId eq '"+idOrden+"'").select("*","DirectorCeco/Title", "DirectorCeco/ID", "DirectorCeco/EMail").expand("DirectorCeco").get();
+        return respuesta;
+    }
+
+    ModificarParticipacion(id, objPorcentaje){
+        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.filter("OrdenServicioId eq '"+id+"'").getById(id).update(objPorcentaje);
+        return respuesta;
+    }
+
+    aprobarParticipacionPorCeco(id, objPorcentaje) {
+        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.filter("ID eq '"+id+"'").getById(id).update(objPorcentaje);
+        return respuesta;
+    }
+
+    borrarCecos(OrdenServicio: number){
+        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.getById(OrdenServicio).delete();
     }
 
 }
