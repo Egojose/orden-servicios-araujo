@@ -56,6 +56,9 @@ export class EditarOrdenComponent implements OnInit {
   NumeroOrden: any;
   esResponsableActual: boolean = false;
   mostrarGarantia: boolean;
+  arrayCecos: any = [];
+  idOrden: number;
+  idServicios: number;
 
 
   constructor(
@@ -65,7 +68,6 @@ export class EditarOrdenComponent implements OnInit {
     this.registrarControles();
     this.obtenerUsuarios();
     this.ObtenerUsuarioActual();
-    this.obtenerConsecutivoInicial();
   }
 
   private registrarControles() {
@@ -128,7 +130,9 @@ export class EditarOrdenComponent implements OnInit {
       mesesCalidad1: [''],
       mesesCalidad2: [''],
       polizaVida: [''],
-      polizaVehiculos: ['']
+      polizaVehiculos: [''],
+      numeroCecoPorcentaje: [''],
+      porcentajeAsumido: ['']
     })
   }
 
@@ -147,7 +151,23 @@ export class EditarOrdenComponent implements OnInit {
         this.nombreUsuario = this.usuarioActual.nombre;
         this.idUsuario = this.usuarioActual.id;
         sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
-        this. obtenerOrden();
+        this.obtenerSedes();
+        this.obtenerOrden();
+        this.servicio.obtenerJefe(this.usuarioActual.id).then(
+          (respuesta) => {
+            if (respuesta[0].JefeId !== null) {
+              console.log(respuesta[0]);
+              this.usuarioActual.IdJefeDirecto = respuesta[0].JefeId;
+              this.usuarioActual.NombreJefeDirecto = respuesta[0].Jefe.Title;
+              this.usuarioActual.EmailJefeDirecto = respuesta[0].Jefe.EMail;
+              console.log(this.usuarioActual.EmailJefeDirecto);
+            }
+          }
+        ).catch(
+          (error) => {
+            console.log(error)
+          }
+        );
       }, err => {
         console.log('Error obteniendo usuario: ' + err);
       }
@@ -165,7 +185,7 @@ export class EditarOrdenComponent implements OnInit {
     this.servicio.obtenerSedes().subscribe(
       (respuesta) => {
         this.sedes = Sede.fromJsonList(respuesta);
-        // this. obtenerCeco();
+        this. obtenerCeco();
       }
     )
   };
@@ -198,13 +218,13 @@ export class EditarOrdenComponent implements OnInit {
     )
   }; 
 
-  obtenerConsecutivoInicial() {
-    this.servicio.obtenerConsecutivoInciail().subscribe(
-      (respuesta) => {
-       this.config = Configuracion.fromJsonList(respuesta);
-      }
-    )
-  }; 
+  // obtenerConsecutivoInicial() {
+  //   this.servicio.obtenerConsecutivoInciail().subscribe(
+  //     (respuesta) => {
+  //      this.config = Configuracion.fromJsonList(respuesta);
+  //     }
+  //   )
+  // }; 
 
   obtenerEmpresa() {
     this.servicio.obtenerEmpresa().subscribe(
@@ -290,9 +310,15 @@ export class EditarOrdenComponent implements OnInit {
 
   obtenerOrden() {
     this.IdRegistroOS = sessionStorage.getItem("IdServicio");
+    
+    console.log(this.IdRegistroOS);
     this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
       (respuesta) => {
+        console.log(respuesta);
         this.orden = Orden.fromJsonList(respuesta);
+        this.idOrden = respuesta[0].ID;
+        this.idServicios = respuesta[0].idServicio;
+        console.log(this.idServicios);
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
         if( this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
           this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
@@ -367,6 +393,7 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['polizaVida'].setValue(this.orden[0].polizaColectiva);
     this.editarOrden.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
     this.editarOrden.controls['distPago'].setValue(this.orden[0].distPago);
+    this.editarOrden.controls['porcentajeAsumido'].setValue(this.orden[0].porcentajeAsumido);
     this.NumeroOrden = this.orden[0].nroOrden;
     if (this.orden[0].ResponsableActual === this.usuarioActual.id) {
         this.esResponsableActual = true;
@@ -417,4 +444,305 @@ export class EditarOrdenComponent implements OnInit {
       this.editarOrden.controls['polizaVehiculos'].setValue('false');
     }
   }
+
+  changeCecoPorcentaje($event) {
+    let numeroCeco = $event.value.ceco
+    this.editarOrden.controls['numeroCecoPorcentaje'].setValue(numeroCeco);
+  }
+
+  agregarCecos() {
+    if (this.editarOrden.get('ceco1').value === "") {
+      this.MensajeAdvertencia('Por favor seleccione un CECO')
+      return false;
+    }
+    else {
+      if (this.editarOrden.get('porcentajeCeco1').value === "") {
+        this.MensajeAdvertencia('Debe agregar un porcentaje');
+        return false;
+      }
+      if (this.editarOrden.get('porcentajeCeco1').value > 100) {
+        this.MensajeAdvertencia('El porcentaje no debe superar el 100%');
+        return false;
+      }
+      this.arrayCecos.push({ ceco: this.editarOrden.get('ceco1').value.nombre, nroCeco: this.editarOrden.get('numeroCecoPorcentaje').value, porcentaje: this.editarOrden.get('porcentajeCeco1').value, director: this.editarOrden.get('ceco1').value.directorId });
+      this.editarOrden.controls['ceco1'].setValue("");
+      this.editarOrden.controls['numeroCecoPorcentaje'].setValue("");
+      this.editarOrden.controls['porcentajeCeco1'].setValue("");
+
+    }
+  }
+
+  borrarCecos(index) {
+    this.arrayCecos.splice(index, 1);
+  }
+
+  onSubmit() {
+    let id = parseInt(this.IdRegistroOS);
+    let id1 = this.orden[0].id
+    
+    let nroOrden = this.editarOrden.get('nroOrden').value;
+    let empresaSolicitante = this.editarOrden.get('empresaSolicitante').value.nombre;
+    let nitSolicitante = this.editarOrden.get('nitSolicitante').value;
+    let ciudadSolicitante = this.editarOrden.get('ciudadSolicitante').value.nombre;
+    let telSolicitante = this.editarOrden.get('telSolicitante').value;
+    let direccionSolicitante = this.editarOrden.get('direccionSolicitante').value;
+    let contactoSolicitante = this.editarOrden.get('contactoSolicitante').value.label;
+    let emailSolicitante = this.editarOrden.get('emailSolicitante').value;
+    let unidadNegocios = this.editarOrden.get('unidadNegocios').value;
+    let nombreCECO = this.editarOrden.get('nombreCECO').value.nombre;
+    let numeroCECO = this.editarOrden.get('numeroCECO').value;
+    let razonSocial = this.editarOrden.get('razonSocial').value;
+    let nitProveedor = this.editarOrden.get('nitProveedor').value;
+    let ciudadProveedor = this.editarOrden.get('ciudadProveedor').value;
+    let telProveedor = this.editarOrden.get('telProveedor').value;
+    let direccionProveedor = this.editarOrden.get('direccionProveedor').value;
+    let contactoProveedor = this.editarOrden.get('contactoProveedor').value;
+    let regimen = this.editarOrden.get('regimen').value;
+    let rut = this.editarOrden.get('rut').value;
+    let camara = this.editarOrden.get('camara').value;
+    let descripcionServicios = this.editarOrden.get('descripcionServicios').value;
+    let cliente = this.editarOrden.get('cliente').value;
+    let job = this.editarOrden.get('job').value;
+    let precio = this.editarOrden.get('precio').value;
+    let iva = this.editarOrden.get('iva').value;
+    let total = this.editarOrden.get('total').value;
+    let valorLetras = this.editarOrden.get('valorLetras').value;
+    let fechaInicio = this.editarOrden.get('fechaInicio').value;
+    let fechaFinal = this.editarOrden.get('fechaFinal').value;
+    let totalDias = this.editarOrden.get('totalDias').value;
+    let formaPago = this.editarOrden.get('formaPago').value;
+    let fechaPago = this.editarOrden.get('fechaPago').value;
+    let Pago1 = this.editarOrden.get('Pago1').value;
+    let Pago2 = this.editarOrden.get('Pago2').value;
+    let Pago3 = this.editarOrden.get('Pago3').value;
+    let Pago4 = this.editarOrden.get('Pago4').value;
+    let Pago5 = this.editarOrden.get('Pago5').value;
+    let Pago6 = this.editarOrden.get('Pago6').value;
+    let garantia = this.editarOrden.get('garantia').value;
+    let porcentajeCumplimiento = this.editarOrden.get('porcentajeCumplimiento').value;
+    let mesesCumplimiento = this.editarOrden.get('mesesCumplimiento').value;
+    let porcentajeAnticipos = this.editarOrden.get('porcentajeAnticipos').value;
+    let mesesAnticipos = this.editarOrden.get('mesesAnticipos').value;
+    let porcentajeSalarios = this.editarOrden.get('porcentajeSalarios').value;
+    let mesesSalarios = this.editarOrden.get('mesesSalarios').value;
+    let porcentajeResponsabilidad = this.editarOrden.get('porcentajeResponsabilidad').value;
+    let porcentajeCalidad = this.editarOrden.get('porcentajeCalidad').value;
+    let mesesCalidad1 = this.editarOrden.get('mesesCalidad1').value;
+    let mesesCalidad2 = this.editarOrden.get('mesesCalidad2').value;
+    let polizaVida = this.editarOrden.get('polizaVida').value;
+    let polizaVehiculos = this.editarOrden.get('polizaVehiculos').value;
+    let tieneIva = this.editarOrden.get('tieneIva').value;
+    let responsableActual = this.usuarioActual.IdJefeDirecto;
+    let usuarioSolicitante = this.usuarioActual.id;
+    let objOrden;
+    let objServicio;
+    let porcentajeAsumido = this.editarOrden.get('porcentajeAsumido').value;
+
+    if (regimen === "") {
+      this.MensajeAdvertencia('debe seleccionar el regimen');
+      this.spinner.hide();
+      return false;
+    }
+
+    if (garantia === "") {
+      this.MensajeAdvertencia('Debe seleccionar si tiene garantías');
+      this.spinner.hide()
+      return false;
+    }
+
+    if (rut === "" && camara === "") {
+      this.MensajeAdvertencia('Debe seleccionar el RUT o la Cámara de comercio')
+      this.spinner.hide();
+      return false;
+    }
+
+    tieneIva === "" ? tieneIva = false : tieneIva = true;
+    rut === "" ? rut = false : rut = rut;
+    camara === "" ? camara = false : camara = camara;
+    fechaPago === "" ? fechaPago = null : fechaPago = fechaPago;
+    Pago1 === "" ? Pago1 = null : Pago1 = Pago1;
+    Pago2 === "" ? Pago2 = null : Pago2 = Pago2;
+    Pago3 === "" ? Pago3 = null : Pago3 = Pago3;
+    Pago4 === "" ? Pago4 = null : Pago4 = Pago4;
+    Pago5 === "" ? Pago5 = null : Pago5 = Pago5;
+    Pago6 === "" ? Pago6 = null : Pago6 = Pago6;
+
+    if (formaPago === 'Único' && fechaPago === null) {
+      this.MensajeAdvertencia('Seleccione la fecha de pago');
+      this.spinner.hide();
+      return false;
+    }
+
+    if (formaPago === 'Varios' && (Pago1 === null || Pago2 === null)) {
+      this.MensajeAdvertencia('Se deben especificar al menos 2 fechas de pago cuando no es pago único');
+      this.spinner.hide();
+      return false;
+    }
+
+    garantia === 'true' ? garantia = true : garantia = false;
+    polizaVida === 'true' ? polizaVida = true : polizaVida = false;
+    polizaVehiculos === "true" ? polizaVehiculos = true : polizaVehiculos = false;
+
+    objOrden = {
+      Title: empresaSolicitante,
+      NroOrden: nroOrden,
+      NitSolicitante: nitSolicitante,
+      CiudadSolicitante: ciudadSolicitante,
+      TelSolicitante: telSolicitante,
+      DireccionSolicitante: direccionSolicitante,
+      ContactoSolicitante: contactoSolicitante,
+      EmailContactoSolicitante: emailSolicitante,
+      UnidadNegocios: unidadNegocios,
+      NombreCECO: nombreCECO,
+      NumeroCECO: numeroCECO,
+      RazonSocial: razonSocial,
+      NitProveedor: nitProveedor,
+      CiudadProveedor: ciudadProveedor,
+      TelProveedor: telProveedor,
+      DireccionProveedor: direccionProveedor,
+      ContactoProveedor: contactoProveedor,
+      Regimen: regimen,
+      Rut: rut,
+      CamaraComercio: camara,
+      DescripcionServicio: descripcionServicios,
+      Cliente: cliente,
+      NroJob: job,
+      Precio: precio,
+      TieneIva: tieneIva,
+      Iva: iva,
+      Total: total,
+      FechaInicio: fechaInicio,
+      FechaFin: fechaFinal,
+      TotalDias: totalDias,
+      ValorLetras: valorLetras,
+      FormaPago: formaPago,
+      FechaPago: fechaPago,
+      Fecha1erPago: Pago1,
+      Fecha2doPago: Pago2,
+      Fecha3erPago: Pago3,
+      Fecha4toPago: Pago4,
+      Fecha5toPago: Pago5,
+      Fecha6toPago: Pago6,
+      PorcentajeCumplimiento: porcentajeCumplimiento,
+      MesesCumplimiento: mesesCumplimiento,
+      PorcentajePagoSalarios: porcentajeSalarios,
+      AniosPagoSalarios: mesesSalarios,
+      PorcentajeResponsabilidadCivil: porcentajeResponsabilidad,
+      PorcentajeManejoAnticipos: porcentajeAnticipos,
+      MesesManejoAnticipos: mesesAnticipos,
+      PorcentajeCalidadServicio: porcentajeCalidad,
+      ValidezCalidadServicio: mesesCalidad1,
+      ExtensionCalidadServicio: mesesCalidad2,
+      PolizaColectiva: polizaVida,
+      PolizaVehiculos: polizaVehiculos,
+      Garantia: garantia,
+      Estado: 'Pendiente de aprobación gerente unidad de negocios',
+      ResponsableActualId: responsableActual,
+      UsuarioSolicitanteId: usuarioSolicitante,
+      PorcentajeAsumido: parseInt(porcentajeAsumido),
+      MotivoRechazo: ""
+    }
+
+    objServicio = {
+      TipoServicio: 'Orden de servicio',
+      CodigoServicioId: 4,
+      AutorId: usuarioSolicitante,
+      ResponsableActualId: responsableActual,
+      Estado: "Pendiente de aprobación gerente unidad de negocios",
+      idServicio: id
+    }
+
+    if (this.editarOrden.invalid) {
+      this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
+      this.spinner.hide();
+    }
+        let cuerpo = '<p>Cordial saludo</p>' +
+        '<br>' +
+        '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado una nueva orden de servicio con el número <strong>' + this.editarOrden.get('nroOrden').value + '</strong> para su aprobación</p>' +
+        '<br>' +
+        '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
+        '<p>En caso de que el acceso no lo dirija a página por favor copie la siguiente url en el navegador:</p>' +
+        'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';
+
+      const emailProps: EmailProperties = {
+        To: [this.usuarioActual.EmailJefeDirecto],
+        Subject: "Notificación de orden de servicio",
+        Body: cuerpo,
+      };
+      this.servicio.ActualizarOrden(id, objOrden).then(
+        (respuesta) => {
+          this.servicio.ObtenerServicio(id).then(
+            (respuesta1) => {
+              this.servicio.ModificarServicio(objServicio, respuesta1[0].ID).then(
+                async (respuesta) => {
+                  let ans = await this.guardarCecos();
+                  this.servicio.EnviarNotificacion(emailProps).then(
+                    (res) => {
+                      this.MensajeInfo("Se ha enviado una notificación para aprobación");
+                      this.spinner.hide();
+                      setTimeout(
+                        () => {
+                          window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                          // this.spinnerService.hide();
+                        }, 2000);
+                    }
+                  )
+                }
+              )
+            }
+          )
+        }
+      )
+      
+      
+    
+  }
+
+  async guardarCecos(): Promise<any> {
+    for (let index = 0; index < this.arrayCecos.length; index++) {
+      const element = this.arrayCecos[index];
+      let objCecos = {
+        Ceco: element.nroCeco,
+        Nombre: element.ceco,
+        PorcentajeAsumido: element.porcentaje,
+        OrdenServicioId: parseInt(this.IdRegistroOS),
+        DirectorCecoId: element.director
+      }
+      let resultado = await this.enviarCecos(objCecos);
+    }
+    return "ok";
+  }
+
+  async enviarCecos(objCecos): Promise<any> {
+    let resultado = "";
+    await this.servicio.AgregarCecos(objCecos).then(
+      (respuesta) => {
+        resultado = 'OK';
+      }).catch(
+        (error) => {
+          console.log(error);
+          resultado = 'error';
+        }
+      );
+    return Promise.resolve(resultado);
+  }
+
+  
+
+  MensajeExitoso(mensaje: string) {
+    this.toastr.successToastr(mensaje, 'Confirmado!');
+  }
+
+  MensajeError(mensaje: string) {
+    this.toastr.errorToastr(mensaje, 'Oops!');
+  }
+
+  MensajeAdvertencia(mensaje: string) {
+    this.toastr.warningToastr(mensaje, 'Alert!');
+  }
+
+  MensajeInfo(mensaje: string) {
+    this.toastr.infoToastr(mensaje, 'Info');
+  }
+
 }

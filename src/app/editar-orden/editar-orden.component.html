@@ -1,4 +1,4 @@
-<h4 class="text-center">Orden de servicios</h4>
+<h4 class="text-center">Editar orden de servicios</h4>
 <form action="" autocomplete="off" [formGroup]="editarOrden" (ngSubmit)="onSubmit()" class="main">
   <div class="container">
     <mat-accordion>
@@ -65,15 +65,22 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Responsable" formControlName="nombreCECO" readonly>
               </mat-form-field>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Número CECO" formControlName="numeroCECO" readonly>
               </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Porcentaje asumido" formControlName="porcentajeAsumido" type="number">
+              </mat-form-field>
+              <mat-error>
+              </mat-error>
             </div>
           </div>
           <br>
@@ -331,54 +338,54 @@
               </div>
             </ng-container>
             <br>
-            <div class="row">
-              <div class="col-md-4 offset-4 text-center">
-                  <label for="Regimen" id="regimen">¿El pago se distribuye en 2 o más CECOs?</label>
-                  <mat-radio-group (change)="pagoCECOchange($event)" formControlName="distPago">
-                    <mat-radio-button value='true'>Sí</mat-radio-button>
-                    <mat-radio-button value='false'>No</mat-radio-button>
-                  </mat-radio-group>
-              </div>
-            </div>
-            <ng-container *ngIf="pagoCECO">
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 1" formControlName="ceco1">
-                  </mat-form-field>
+            <ng-container id="contenedorTable">
+                <div class="row">
+                  <div class="col-md-3">
+                      <mat-form-field>
+                          <mat-label>CECO</mat-label>
+                          <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event)">
+                              <mat-option *ngFor="let ceco of areas" [value]="ceco">
+                                {{ceco.nombre}}                        
+                              </mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Nro Ceco" formControlName="numeroCecoPorcentaje">
+                    </mat-form-field>
+                  </div>
+                
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1" type="number">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <button class="btn btn-primary btn-block" type="button" (click)="agregarCecos()">Agregar</button>
+                  </div>
                 </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1">
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 2" formControlName="ceco2">
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco2">
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="CECO 3" formControlName="ceco3">
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco3">
-                  </mat-form-field>
-                </div>
-              </div>
-            </ng-container>
-            <br>
+                <br>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="cabezeraTblUnidadNegocio">
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Nro CECO</th>
+                          <th scope="col">Porcentaje</th>
+                          <th scope="col">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let ceco of arrayCecos; let i = index">
+                          <td>{{ceco.ceco}}</td>
+                          <td>{{ceco.nroCeco}}</td>
+                          <td>{{ceco.porcentaje}}</td>
+                          <td><button type="button" class="btn btn-danger" (click)="borrarCecos(i)">Borrar</button></td>
+                        </tr>
+                      </tbody>
+                </table>
+              </ng-container>
+            <hr>
             <ng-container *ngIf="esConsultores">
             <div class="row">
               <div class="col-md-12">
