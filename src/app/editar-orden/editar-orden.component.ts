@@ -322,6 +322,13 @@ export class EditarOrdenComponent implements OnInit {
     this.calcularDias();
   }
 
+  cancelar() {
+    setTimeout(
+      () => {
+        window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+      }, 500);
+  }
+
   calcularDias() {
     let arrayInicio = this.editarOrden.get('fechaInicio').value.split(' ');
     let arrayFin = this.editarOrden.get('fechaFinal').value.split(' ');
