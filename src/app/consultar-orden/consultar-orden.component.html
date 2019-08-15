@@ -305,7 +305,25 @@
             </div>
           </ng-container>
           <br>
-          <div class="row">
+          <ng-container>
+              <table class="table table-bordered">
+                  <thead>
+                      <tr class="cabezeraTblUnidadNegocio">
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Nro CECO</th>
+                        <th scope="col">Porcentaje</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let ceco of participacionCecos">
+                        <td>{{ceco.nombre}}</td>
+                        <td>{{ceco.ceco}}</td>
+                        <td>{{ceco.porcentaje}}</td>
+                      </tr>
+                    </tbody>
+              </table>
+          </ng-container>
+          <!-- <div class="row">
             <div class="col-md-4 offset-4 text-center">
               <label for="Regimen" id="regimen">¿El pago se distribuye en 2 o más CECOs?</label>
               <mat-radio-group formControlName="distPago">
@@ -351,7 +369,7 @@
                 </mat-form-field>
               </div>
             </div>
-          </ng-container>
+          </ng-container> -->
           <br>
           <ng-container *ngIf="esConsultores">
             <div class="row">
@@ -480,6 +498,21 @@
             </tr>
           </tbody>
         </table>
+        <br>
+        <ng-container>
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td *ngFor="let item of aprobado" class="text-center">
+                    <span><b>Director CECO</b></span><br><br>
+                    <img src="{{item.firma}}" alt=""><br>
+                    <span>{{item.nombre}}</span><br>
+                    <span>{{item.fechaAprobado}}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </ng-container>
       </mat-expansion-panel>
     </mat-accordion>
     <br>
