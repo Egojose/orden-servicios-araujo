@@ -50,7 +50,7 @@ export class OrdenServiciosComponent implements OnInit {
   esConsultores: boolean = false;
   esAsociados: boolean = false;
   arrayCecos: any = [];
-  sumaPorcentaje: number;
+  sumaPorcentaje: number = 0;
   idOrden: number;
   mostrarCecos: boolean;
   porcentajeAsumidoNum: number;
@@ -245,7 +245,7 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   validarPorcentaje() {
-    this.porcentajeAsumidoNum = parseInt(this.generarOrdenServicios.get('porcentajeAsumido').value)
+    this.porcentajeAsumidoNum = parseInt(this.generarOrdenServicios.get('porcentajeAsumido').value, 10)
     if (this.arrayCecos.length > 0) {
       let array: any = [];
       this.arrayCecos.map((x) => {
@@ -257,11 +257,6 @@ export class OrdenServiciosComponent implements OnInit {
         this.sumaPorcentaje = 0
       }
     }
-    // else if (this.porcentajeAsumidoNum !== 100) {
-    //   this.spinner.hide();
-    //   this.MensajeAdvertencia('El total del porcentaje debe ser equivalente al 100%');
-    //   return false;
-    // }
   }
 
   agregarCecos() {
@@ -285,14 +280,6 @@ export class OrdenServiciosComponent implements OnInit {
 
     }
   }
-
-  // mostrarCecosFunc() {
-  //   console.log(this.generarOrdenServicios.get('porcentajeAsumido').value)
-  //   if(this.generarOrdenServicios.get('porcentajeAsumido').value === 100){
-     
-  //     this.mostrarCecos = false;
-  //   }
-  // }
 
   borrarCecos(index) {
     this.arrayCecos.splice(index, 1);
@@ -524,12 +511,6 @@ export class OrdenServiciosComponent implements OnInit {
       return false;
     }
     
-    let RespuestaConsecutivo = await this.obtenerConsecutivo();
-    if (RespuestaConsecutivo === "Error") {
-      this.MensajeError("Error al obtener el consecutivo");
-      this.spinner.hide();
-      return false;
-    }
     let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value.nombre;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
@@ -651,6 +632,13 @@ export class OrdenServiciosComponent implements OnInit {
       nroActualizadoAsociado = 'A-' + `${sumaOrden}`;
       nroActualizadoConsultores = 'C-' + `${sumaOrden}`
     }
+
+    // let RespuestaConsecutivo = await this.obtenerConsecutivo();
+    // if (RespuestaConsecutivo === "Error") {
+    //   this.MensajeError("Error al obtener el consecutivo");
+    //   this.spinner.hide();
+    //   return false;
+    // }
 
     objOrden = {
       Title: empresaSolicitante,
