@@ -319,7 +319,7 @@
               </div>
               <div class="col-md-4">
                 <mat-form-field>
-                  <input matInput placeholder="Total días del contrato" formControlName="totalDias" (click)="changeFecha()">
+                  <input matInput placeholder="Total días del contrato" formControlName="totalDias" (click)="changeFecha()" type="number">
                 </mat-form-field>
                 <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('totalDias').valid && generarOrdenServicios.get('totalDias').touched"><small
