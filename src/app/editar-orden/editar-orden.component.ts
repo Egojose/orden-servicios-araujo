@@ -203,7 +203,6 @@ export class EditarOrdenComponent implements OnInit {
   validarPorcentaje() {
     this.porcentajeAsumidoNum = parseInt(this.editarOrden.get('porcentajeAsumido').value)
     if (this.arrayCecos.length > 0) {
-      
       let array: any = [];
       this.arrayCecos.map((x) => {
         x.porcentaje
@@ -213,11 +212,6 @@ export class EditarOrdenComponent implements OnInit {
       if(array.length === 0) {
         this.sumaPorcentaje = 0
       }
-    }
-    else if (this.porcentajeAsumidoNum !== 100) {
-      this.spinner.hide();
-      this.MensajeAdvertencia('El total del porcentaje debe ser equivalente al 100%');
-      return false;
     }
   }
 
@@ -340,15 +334,11 @@ export class EditarOrdenComponent implements OnInit {
 
   obtenerOrden() {
     this.IdRegistroOS = sessionStorage.getItem("IdServicio");
-    
-    console.log(this.IdRegistroOS);
     this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
       (respuesta) => {
-        console.log(respuesta);
         this.orden = Orden.fromJsonList(respuesta);
         this.idOrden = respuesta[0].ID;
         this.idServicios = respuesta[0].idServicio;
-        console.log(this.idServicios);
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
         if( this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
           this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
@@ -432,7 +422,6 @@ export class EditarOrdenComponent implements OnInit {
   }
 
   switchValores() {
-    console.log(this.editarOrden.controls['garantia'].value);
     if(this.editarOrden.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
       this.esConsultores = true;
     }
@@ -499,7 +488,6 @@ export class EditarOrdenComponent implements OnInit {
       this.editarOrden.controls['numeroCecoPorcentaje'].setValue("");
       this.editarOrden.controls['porcentajeCeco1'].setValue("");
     }
-    this.validarPorcentaje();
   }
 
   borrarCecos(index) {
@@ -507,15 +495,16 @@ export class EditarOrdenComponent implements OnInit {
   }
 
   onSubmit() {
-    let id = parseInt(this.IdRegistroOS);
-    let id1 = this.orden[0].id
-
+    this.spinner.show()
+    this.validarPorcentaje();
     if (this.sumaPorcentaje + this.porcentajeAsumidoNum !== 100) {
       this.spinner.hide();
       this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
+      this.spinner.hide();
       return false;
     }
-    
+    let id = parseInt(this.IdRegistroOS);
+    let id1 = this.orden[0].id
     let nroOrden = this.editarOrden.get('nroOrden').value;
     let empresaSolicitante = this.editarOrden.get('empresaSolicitante').value.nombre;
     let nitSolicitante = this.editarOrden.get('nitSolicitante').value;
@@ -712,6 +701,7 @@ export class EditarOrdenComponent implements OnInit {
               this.servicio.ModificarServicio(objServicio, respuesta1[0].ID).then(
                 async (respuesta) => {
                   let ans = await this.guardarCecos();
+                  this.MensajeExitoso('La orden se guardó con éxito');
                   this.servicio.EnviarNotificacion(emailProps).then(
                     (res) => {
                       this.MensajeInfo("Se ha enviado una notificación para aprobación");
@@ -728,10 +718,7 @@ export class EditarOrdenComponent implements OnInit {
             }
           )
         }
-      )
-      
-      
-    
+      )  
   }
 
   async guardarCecos(): Promise<any> {
@@ -762,8 +749,6 @@ export class EditarOrdenComponent implements OnInit {
       );
     return Promise.resolve(resultado);
   }
-
-  
 
   MensajeExitoso(mensaje: string) {
     this.toastr.successToastr(mensaje, 'Confirmado!');
