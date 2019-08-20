@@ -1,16 +1,13 @@
 <h4 class="text-center">Consultar orden de servicios</h4>
-<form action="" autocomplete="off" [formGroup]="aprobarOrdenServicios" class="main" id="ordenServicio">
+<form action="" autocomplete="off" [formGroup]="aprobarOrdenServicios" class="main" id="formatoExportar">
   <div class="container">
-    <mat-accordion>
-      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-        <mat-expansion-panel-header>
-          <mat-panel-title><strong>Información de la orden</strong></mat-panel-title>
-          <mat-panel-description>{{panelOpenState ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
-        </mat-expansion-panel-header>
         <mat-card>
+          <div style="background: url('assets/images/araujo.png'); width: 250px; height: 50px;">
+
+          </div>
           <div class="row">
-            <div class="col-md-2 offset-10">
-              <h3><strong>N° {{NumeroOrden}}</strong></h3>
+            <div class="col-md-4 offset-8">
+              <h4>Orden de servicio N° <strong>{{NumeroOrden}}</strong></h4>
             </div>
             <ng-container *ngIf="radicar">
               <div class="col-md-3">
@@ -22,30 +19,27 @@
                 <button type="button" class="btn btn-success btn-block" (click)="recibir()">Pagar</button>
               </div>
             </ng-container>
-            
           </div>
           <br>
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
               <mat-form-field>
                 <input matInput placeholder="Empresa solicitante" formControlName="empresaSolicitante" readonly>
               </mat-form-field>
             </div>
-          </div>
-          <div class="row">
             <div class="col-md-6">
               <mat-form-field>
                 <input matInput placeholder="Nit" formControlName="nitSolicitante" readonly>
               </mat-form-field>
             </div>
-            <div class="col-md-6">
+          </div>
+          <div class="row">
+            <div class="col-md-3">
               <mat-form-field>
                 <input matInput placeholder="Ciudad" formControlName="ciudadSolicitante" readonly>
               </mat-form-field>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-3">
               <mat-form-field>
                 <input matInput placeholder="Teléfono" formControlName="telSolicitante" readonly>
               </mat-form-field>
@@ -57,19 +51,17 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Contacto" formControlName="contactoSolicitante" readonly>
               </mat-form-field>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Email" formControlName="emailSolicitante" readonly>
               </mat-form-field>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Unidad de negocios" formControlName="unidadNegocios" readonly>
               </mat-form-field>
@@ -90,38 +82,34 @@
           <br>
           <h5 class="text-center">Datos del proveedor</h5>
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Razón social" formControlName="razonSocial" readonly>
               </mat-form-field>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="C.C/Nit" formControlName="nitProveedor" readonly>
               </mat-form-field>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Ciudad" formControlName="ciudadProveedor" readonly>
               </mat-form-field>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Teléfono" formControlName="telProveedor" readonly>
               </mat-form-field>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Dirección" formControlName="direccionProveedor" readonly>
               </mat-form-field>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-4">
               <mat-form-field>
                 <input matInput placeholder="Contacto" formControlName="contactoProveedor" readonly>
               </mat-form-field>
@@ -390,19 +378,9 @@
             </div>
           </ng-container>
         </mat-card>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <br>
-    <mat-accordion>
-      <mat-expansion-panel (opened)="panelOpenState1 = true" (closed)="panelOpenState1 = false">
-        <mat-expansion-panel-header>
-          <mat-panel-title><strong>Hitos de pago (radicación de facturas)</strong></mat-panel-title>
-          <mat-panel-description>{{panelOpenState1 ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
-        </mat-expansion-panel-header>
         <mat-card>
           <h6 class="text-center">CALCULO DE PAGO PARA CUMPLIMIENTO DE PAGOS A LA SEGURIDAD SOCIAL Y PENSIONES (solo
             personas naturales)</h6>
-          <br>
           <div class="row">
             <div class="col-md-4 offset-4">
               <label for="Regimen" id="regimen">GARANTÍAS Y SEGUROS</label>
@@ -465,18 +443,10 @@
             </div>
           </ng-container>
         </mat-card>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <br>
-    <mat-accordion>
-      <mat-expansion-panel (opened)="panelOpenState2 = true" (closed)="panelOpenState2 = false">
-        <mat-expansion-panel-header>
-          <mat-panel-title><strong>Firmas y aprobación</strong></mat-panel-title>
-          <mat-panel-description>{{panelOpenState2 ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
-        </mat-expansion-panel-header>
+        <mat-card>
         <table class="table table-bordered">
           <tbody>
-            <tr>
+            <tr class="text-center">
               <td>
                 <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
                 <img src="{{firmaJefe}}" alt=""><br>
@@ -489,16 +459,17 @@
                 <span>{{gerenteAdministrativo}}</span><br>
                 <span>{{fechaAprobadoGerenteAdministrativo}}</span>
               </td>
-              <td>
-                <span class="text-center"><b>Director operativo</b></span><br><br>
-                <img src="{{firmaDirector}}" alt=""><br>
-                <span>{{directorOperativo}}</span><br>
-                <span>{{fechaAprobadoDirector}}</span>
-              </td>
+              <ng-container *ngIf="mostrarFirmaDirector">
+                <td>
+                  <span class="text-center"><b>Director operativo</b></span><br><br>
+                  <img src="{{firmaDirector}}" alt=""><br>
+                  <span>{{directorOperativo}}</span><br>
+                  <span>{{fechaAprobadoDirector}}</span>
+                </td>
+              </ng-container>
             </tr>
           </tbody>
         </table>
-        <br>
         <ng-container>
             <table class="table table-bordered">
               <tbody>
@@ -513,8 +484,322 @@
               </tbody>
             </table>
           </ng-container>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <br>
+          <br>
+          <br>
+        </mat-card>
   </div>
 </form>
+<ng-container>
+  <div class="col-md-4 offset-4">
+      <button type="button" style="margin-top: 20px; margin-bottom: 20px;" class="btn btn-primary btn-block" (click)="exportarPdf()">Exportar a pdf</button>
+  </div>
+</ng-container>
+
+<!-- vista impresión -->
+<ng-container *ngIf="expression">
+<form [formGroup]="aprobarOrdenServicios">
+  <div class="container">
+  <mat-card>
+  <div class="row">
+    <div class="col-md-2 offset-10">
+      <h3><strong>N° {{NumeroOrden}}</strong></h3>
+    </div>
+    <ng-container *ngIf="radicar">
+      <div class="col-md-3">
+        <button type="button" class="btn btn-success btn-block" (click)="recibir()">Recibir</button>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="pagar">
+      <div class="col-md-3">
+        <button type="button" class="btn btn-success btn-block" (click)="recibir()">Pagar</button>
+      </div>
+    </ng-container>
+  </div>
+  <table class="table table-bordered" style="background: #fff;">
+    <thead>
+      <tr style="background: #1F2547; color: #fff;">
+        <td>Empresa solicitante</td>
+        <td>Datos del proveedor</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                  <td><b>Empresa solicitante:</b> {{empresaSolicitante}}</td>
+                  <td><b>Nit:</b> {{nitSolicitante}}</td>
+              </tr>
+              <tr>
+                  <td><b>Ciudad:</b> {{ciudadSolicitante}}</td>
+                  <td><b>Teléfono:</b> {{telSolicitante}}</td>
+              </tr>
+              <tr>
+                <td><b>Direccion:</b> {{direccionSolicitante}}</td>
+                <td><b>Contacto:</b> {{contactoSolicitante}}</td>
+              </tr>
+              <tr>
+                <td><b>Email:</b> {{emailSolicitanteAr}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+        <td>
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                  <td><b>Razón social:</b> esta es una Razón social</td>
+                  <td><b>Nit:</b> Nit</td>
+              </tr>
+              <tr>
+                  <td><b>Ciudad:</b> Ciudad</td>
+                  <td><b>Teléfono:</b> Teléfono</td>
+              </tr>
+              <tr>
+                  <td><b>Dirección:</b> Dirección</td>
+                  <td><b>Contacto:</b> Contacto</td>
+              </tr>
+              <tr>
+                <td>
+                    <div class="row">
+                        <div class="col-md-6">
+                          <label for="Regimen" id="regimen">Regimen</label>
+                          <mat-radio-group formControlName="regimen">
+                            <mat-radio-button value="Común">Común</mat-radio-button>
+                            <mat-radio-button value="Simplificado">Simplificado</mat-radio-button>
+                          </mat-radio-group>
+                        </div>
+                    </div>
+                    </td>
+                    <td>
+                      <div class="row">
+                        <div class="col-md-12">
+                            <label for="Regimen" id="regimen"></label>
+                          <section class="example-section">
+                            <mat-checkbox class="example-margin" value="true" formControlName="rut">RUT</mat-checkbox>
+                            <mat-checkbox class="example-margin" value="true" formControlName="camara">Cámara de comercio
+                            </mat-checkbox>
+                          </section>
+                        </div>
+                      </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="row">
+      <div class="col-md-6">
+        <mat-form-field>
+          <input matInput placeholder="Nombre CECO" formControlName="nombreCECO" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field>
+          <input matInput placeholder="Número CECO" formControlName="numeroCECO" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+  <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="Descripción general del servicio">Descripción general del servicio</label>
+          <textarea class="form-control" rows="3" formControlName="descripcionServicios" readonly></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field>
+          <input matInput placeholder="Cliente" formControlName="cliente" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field>
+          <input matInput placeholder="Nro Job" formControlName="job" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+</mat-card>
+<br>
+<mat-card>
+  <table class="table table-bordered">
+    <thead>
+      <tr  style="background: #1F2547; color: #fff;">
+        <td>Información económica</td>
+        <td>Plazo de ejecución</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <td><b>Precio:</b> {{precioAr}}</td>
+                <td><b>IVA:</b> {{iva}}</td>
+                <td><b>Total:</b> {{totalAr}}</td>
+              </tr>
+              <tr>
+                <td><b>Valor en letras:</b> {{valorLetras}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+        <td>
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <td><b>Inicio:</b> {{fechaInicio}}</td>
+                <td><b>Fin: </b> {{fechaFinal}}</td>
+                <td><b>Total días contrato:</b> {{totalDias}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</mat-card>
+<br>
+<mat-card>
+  <h4 class="text-center">Fechas de pago</h4>
+  <ng-container *ngIf="pagoUnico">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field>
+            <input matInput [matDatepicker]="picker3" placeholder="Fecha de pago" formControlName="fechaPago"
+              readonly>
+            <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+            <mat-datepicker #picker3></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="pagoVarios">
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker4" placeholder="Fecha de pago 1" formControlName="Pago1"
+                readonly>
+              <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+              <mat-datepicker #picker4></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker5" placeholder="Fecha de pago 2" formControlName="Pago2"
+                readonly>
+              <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
+              <mat-datepicker #picker5></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker6" placeholder="Fecha de pago 3" formControlName="Pago3"
+                readonly>
+              <mat-datepicker-toggle matSuffix [for]="picker6"></mat-datepicker-toggle>
+              <mat-datepicker #picker6></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker7" placeholder="Fecha de pago 4" formControlName="Pago4"
+                readonly>
+              <mat-datepicker-toggle matSuffix [for]="picker7"></mat-datepicker-toggle>
+              <mat-datepicker #picker7></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker8" placeholder="Fecha de pago 5" formControlName="Pago5"
+                readonly>
+              <mat-datepicker-toggle matSuffix [for]="picker8"></mat-datepicker-toggle>
+              <mat-datepicker #picker8></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker9" placeholder="Fecha de pago 6" formControlName="Pago6"
+                readonly>
+              <mat-datepicker-toggle matSuffix [for]="picker9"></mat-datepicker-toggle>
+              <mat-datepicker #picker9></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+      <br>
+      <ng-container *ngIf="esConsultores">
+        <div class="row">
+          <div class="col-md-12">
+            <h6 class="text-center">
+              NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA
+              CONSULTORES INTERNACIONALES S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
+            </h6>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="esAsociados">
+        <div class="row">
+          <div class="col-md-12">
+            <h6 class="text-center">
+              NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA
+              ASOCIADOS S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
+            </h6>
+          </div>
+        </div>
+      </ng-container>
+</mat-card>
+<br>
+<mat-card>
+    <h4 class="text-center">Firmas y aprobación</h4>
+    <table class="table table-bordered">
+      <tbody>
+        <tr class="text-center">
+          <td>
+            <span class="text-center"><b>Gerente unidad de negocios</b></span><br><br>
+            <img src="{{firmaJefe}}" alt=""><br>
+            <span>{{gerenteUnegocios}}</span><br>
+            <span>{{fechaAprobadoGerenteUnegocios}}</span>
+          </td>
+          <td>
+            <span class="text-center"><b>Gerente administrativo y finaciero</b></span><br><br>
+            <img src="{{firmaGerenteAdmin}}" alt=""><br>
+            <span>{{gerenteAdministrativo}}</span><br>
+            <span>{{fechaAprobadoGerenteAdministrativo}}</span>
+          </td>
+          <ng-container *ngIf="mostrarFirmaDirector">
+          <td>
+            <span class="text-center"><b>Director operativo</b></span><br><br>
+            <img src="{{firmaDirector}}" alt=""><br>
+            <span>{{directorOperativo}}</span><br>
+            <span>{{fechaAprobadoDirector}}</span>
+          </td>
+        </ng-container>
+        </tr>
+      </tbody>
+    </table>
+    <ng-container>
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <td *ngFor="let item of aprobado" class="text-center">
+                <span><b>Director CECO</b></span><br><br>
+                <img src="{{item.firma}}" alt=""><br>
+                <span>{{item.nombre}}</span><br>
+                <span>{{item.fechaAprobado}}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </mat-card>
+</div>
+</form>
+</ng-container>
+

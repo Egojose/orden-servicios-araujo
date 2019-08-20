@@ -11,6 +11,9 @@ import { Empleado } from '../dominio/empleado';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { Aprobadores } from '../dominio/aprobadores';
 import { PorcentajeCecos } from '../dominio/porcentajeCecos';
+import { NgxSpinnerService } from "ngx-spinner";
+import domtoimage from 'dom-to-image';
+import * as jsPDF from 'jspdf';
 @Component({
   selector: 'app-consultar-orden',
   templateUrl: './consultar-orden.component.html',
@@ -75,8 +78,23 @@ export class ConsultarOrdenComponent implements OnInit {
   radicar: boolean = false;
   pagar: boolean = false;
   aprobado: any = [];
+  mostrarFirmaDirector: boolean;
+  empresaSolicitante;
+  nitSolicitante;
+  ciudadSolicitante;
+  telSolicitante;
+  direccionSolicitante;
+  contactoSolicitante;
+  emailSolicitanteAr;
+  precioAr;
+  iva;
+  totalAr;
+  fechaInicio;
+  fechaFinal;
+  totalDias;
+  valorLetras;
 
-  constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService) { }
+  constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     this.pagoUnico = false;
@@ -89,37 +107,37 @@ export class ConsultarOrdenComponent implements OnInit {
   private registrarControles() {
     this.aprobarOrdenServicios = this.fb.group({
       nroOrden: [''],
-      empresaSolicitante: ['', Validators.required],
-      nitSolicitante: ['', Validators.required],
-      ciudadSolicitante: ['', Validators.required],
-      telSolicitante: ['', Validators.required],
-      direccionSolicitante: ['', Validators.required],
-      contactoSolicitante: ['', Validators.required],
-      emailSolicitante: ['', Validators.required],
-      unidadNegocios: ['', Validators.required],
-      nombreCECO: ['', Validators.required],
-      numeroCECO: ['', Validators.required],
-      razonSocial: ['', Validators.required],
-      nitProveedor: ['', Validators.required],
-      ciudadProveedor: ['', Validators.required],
-      telProveedor: ['', Validators.required],
-      direccionProveedor: ['', Validators.required],
-      contactoProveedor: ['', Validators.required],
-      regimen: ['', Validators.required],
+      empresaSolicitante: [''],
+      nitSolicitante: [''],
+      ciudadSolicitante: [''],
+      telSolicitante: [''],
+      direccionSolicitante: [''],
+      contactoSolicitante: [''],
+      emailSolicitante: [''],
+      unidadNegocios: [''],
+      nombreCECO: [''],
+      numeroCECO: [''],
+      razonSocial: [''],
+      nitProveedor: [''],
+      ciudadProveedor: [''],
+      telProveedor: [''],
+      direccionProveedor: [''],
+      contactoProveedor: [''],
+      regimen: [''],
       rut: [''],
       camara: [''],
-      descripcionServicios: ['', Validators.required],
-      cliente: ['', Validators.required],
-      job: ['', Validators.required],
-      precio: ['', Validators.required],
+      descripcionServicios: [''],
+      cliente: [''],
+      job: [''],
+      precio: [''],
       tieneIva: [''],
       iva: [''],
       total: [''],
-      valorLetras: ['', Validators.required],
-      fechaInicio: ['', Validators.required],
-      fechaFinal: ['', Validators.required],
+      valorLetras: [''],
+      fechaInicio: [''],
+      fechaFinal: [''],
       totalDias: [''],
-      formaPago: ['',Validators.required],
+      formaPago: [''],
       fechaPago: [''],
       Pago1: [''],
       Pago2: [''],
@@ -177,9 +195,11 @@ export class ConsultarOrdenComponent implements OnInit {
         this.cargarFirmaGerente = respuesta[0].FirmaGerenteAdministrativo.Url;
 
         if(this.orden[0].aprobadoDirector) {
+          this.mostrarFirmaDirector = true;
           this.cargarFirmaDirector = respuesta[0].FirmaDirectorOperativo.Url;
         }
         else {
+          this.mostrarFirmaDirector = false;
           this.firmaDirector = null;
         }
         if(this.orden[0].estado === 'Aprobado') {
@@ -229,8 +249,42 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['Pago1'].disable();
   }
 
+  // valoresTabla() {
+  //   this.empresaSolicitante = this.orden[0].empresaSolicitante;
+  //   this.nitSolicitante = this.orden[0].nitSolicitante;
+  //   this.ciudadSolicitante = this.orden[0].ciudadSolicitante;
+  //   this.telSolicitante = this.orden[0].telSolicitante;
+  //   this.direccionSolicitante = this.orden[0].direccionSolicitante;
+  // }
+
+  formatoFecha() {
+    let fecha_inicial = this.orden[0].fechaInicio.split('-');
+    let fechaA = fecha_inicial[2].split('T');
+    let fecha1 = fechaA[0] + '/' + fecha_inicial[1] + '/' + fecha_inicial[0]
+    this.fechaInicio = fecha1;
+    let fecha_final = this.orden[0].fechaFin.split('-')
+    let fechaB = fecha_final[2].split('T');
+    this.fechaFinal = fechaB[0] + '/' + fecha_final[1] + '/' + fecha_final[0]
+  }
+
   valoresPorDefecto() {
     // this.aprobarOrdenServicios.controls['nroOrden'].setValue(this.orden[0].nroOrden);
+    this.empresaSolicitante = this.orden[0].empresaSolicitante;
+    this.nitSolicitante = this.orden[0].nitSolicitante;
+    this.ciudadSolicitante = this.orden[0].ciudadSolicitante;
+    this.telSolicitante = this.orden[0].telSolicitante;
+    this.direccionSolicitante = this.orden[0].direccionSolicitante;
+    this.contactoSolicitante = this.orden[0].contactoSolicitante;
+    this.emailSolicitanteAr = this.orden[0].emailSolicitante;
+    this.precioAr = this.orden[0].precio;
+    this.iva = this.orden[0].iva;
+    this.totalAr = this.orden[0].total;
+    this.totalDias = this.orden[0].totalDias;
+    this.valorLetras = this.orden[0].valorLetras;
+
+
+
+
     this.aprobarOrdenServicios.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
     this.aprobarOrdenServicios.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
     this.aprobarOrdenServicios.controls['ciudadSolicitante'].setValue(this.orden[0].ciudadSolicitante);
@@ -292,6 +346,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.NumeroOrden = this.orden[0].nroOrden;
     this.switchValores();
     this.disableButtons(); 
+    this.formatoFecha();
   }
 
   switchValores() {
@@ -403,6 +458,43 @@ export class ConsultarOrdenComponent implements OnInit {
       }
     )
   }
+
+  exportarPdf() {
+    var node = document.getElementById('formatoExportar');
+    var img;
+    var filename;
+    var newImage;
+    this.spinner.show();
+    domtoimage.toJpeg(node, { bgcolor: '#fff', quality: 1 }).then(function (dataUrl) {
+      img = new Image();
+      img.src = dataUrl;
+      newImage = img.src;
+      img.onload = function () {
+        var pdfWidth = img.width;
+        var pdfHeight = img.height;
+        // FileSaver.saveAs(dataUrl, 'my-pdfimage.png'); // Save as Image
+        var doc;
+        if (pdfWidth > pdfHeight) {
+          doc = new jsPDF('l', 'px', [pdfWidth, pdfHeight]);
+        }
+        else {
+          doc = new jsPDF('p', 'px', [pdfWidth, pdfHeight]);
+        }
+        var width = doc.internal.pageSize.getWidth();
+        var height = doc.internal.pageSize.getHeight();
+        doc.addImage(newImage, 'PNG', 10, 10, width, height);
+        filename = 'Orden de Servicio Nro '+ this.Order +'_.pdf';
+        doc.save(filename);
+        this.spinner.hide()
+      };
+    })
+      .catch(function (error) {
+        this.spinner.hide();
+        console.log(error)
+      });
+  }
+
+
 
   MensajeExitoso(mensaje: string) {
     this.toastr.successToastr(mensaje, 'Confirmado!');
