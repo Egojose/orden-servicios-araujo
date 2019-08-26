@@ -324,14 +324,14 @@ export class EditarOrdenComponent implements OnInit {
   }
 
   calcularDias() {
-    let arrayInicio = this.editarOrden.get('fechaInicio').value.split(' ');
-    let arrayFin = this.editarOrden.get('fechaFinal').value.split(' ');
-    let fecha1 = parseInt(arrayInicio[2], 10);
-    let fecha2 = parseInt(arrayFin[2], 10);
-    let calculo = fecha1 + fecha2
-    this.editarOrden.controls['totalDias'].setValue(calculo);
-  };
-
+    let fecha1 = this.editarOrden.get('fechaInicio').value;
+    let fecha2 = this.editarOrden.get('fechaFinal').value;
+    let time = new Date(fecha1).getTime(); 
+    let time2 = new Date(fecha2).getTime();
+    let diff = Math.abs(time2 - time);
+    let diffDays = Math.ceil(diff / (1000 * 3600 * 24)); 
+    this.editarOrden.controls['totalDias'].setValue(diffDays);
+  }
   obtenerOrden() {
     this.IdRegistroOS = sessionStorage.getItem("IdServicio");
     this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
