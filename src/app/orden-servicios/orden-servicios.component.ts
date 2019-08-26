@@ -486,13 +486,13 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   calcularDias() {
-    let arrInicio = new Date(this.generarOrdenServicios.get('fechaInicio').value)
-    let arrInicio1 = arrInicio.getDate();
-    let arrFinal = new Date(this.generarOrdenServicios.get('fechaFinal').value)
-    let arrFinal1 = arrFinal.getDate();
-    let sumaDias = arrFinal1 - arrInicio1
-    sumaDias <= 0 ? sumaDias = 1 : sumaDias = sumaDias
-    this.generarOrdenServicios.controls['totalDias'].setValue(sumaDias);
+    let fecha1 = this.generarOrdenServicios.get('fechaInicio').value;
+    let fecha2 = this.generarOrdenServicios.get('fechaFinal').value;
+    let time = new Date(fecha1).getTime(); 
+    let time2 = new Date(fecha2).getTime();
+    let diff = Math.abs(time2 - time);
+    let diffDays = Math.ceil(diff / (1000 * 3600 * 24)); 
+    this.generarOrdenServicios.controls['totalDias'].setValue(diffDays);
   }
 
   cancelar() {
