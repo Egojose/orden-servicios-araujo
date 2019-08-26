@@ -1,8 +1,14 @@
-<<<<<<< HEAD
 header {
-    background: url('../assets/images/header.png');
+    background: #fff;
+    /* background: url('../assets/images/header.png') no-repeat; */
     width: 100%;
     height: 100px;
+}
+header img {
+    width: 300px;
+    height: 100px;
+    margin-left: 30px;
+    display: block;
 }
 
 .zona-usuario-logueado{
@@ -53,88 +59,21 @@ header {
 
  @media only screen and (max-width: 600px) {
     header {
-        background: url('../assets/images/header.png');
+        background: #fff;
+        /* background: url('../assets/images/header.png') no-repeat; */
         width: 100%;
         height: 100px;
     }
-    .zona-usuario-logueado{
-        float: right;
-        margin-top: 10px;
-    }
-    .usuario-logueado{
-        font-size: 14px;
-    }
-    .text-bienvenida {
-        text-align: end;
-        margin-right: 10px;
-        padding-top: 15px;
-        color: #1F2547;
-        font-weight: 400;
-        font-size: 14px;
-     }
- }
-=======
-header {
-    background: url('../assets/images/header.png');
-    width: 100%;
-    height: 100px;
-}
-
-.zona-usuario-logueado{
-    float: right;
-    margin-top: 40px;
-}
-
-.usuario-logueado{
-    font-size: 20px;
-}
-
-.text-bienvenida {
-    text-align: end;
-    margin-right: 30px;
-    padding-top: 30px;
-    color: #1F2547;
-    font-weight: 400;
-    font-size: 22px;
- }
-
- h3 {
-    color: #1F2547;
- }
-
-
- .principal {
-     margin-top: 40px;
- }
-
- #contenedor {
-     border: none;
- }
-
- .user {
-     background: grey;
-     color: white;
- }
-
- .font {
-     font-size: 40px;
- }
-
- .user a {
-     color: white;
-    text-decoration: none !important;
-    
- }
-
- @media only screen and (max-width: 600px) {
-    header {
-        background: url('../assets/images/header.png') no-repeat;
-        width: 100%;
+    header img {
+        width: 150px;
         height: 100px;
+        margin-left: 15px;
+        display: block;
     }
     .zona-usuario-logueado{
         float: right;
-        margin-top: 10px;
+        /* margin-top: 10px; */
+        margin-top: -30px;
     }
     .usuario-logueado{
         font-size: 14px;
@@ -151,13 +90,21 @@ header {
 
  @media only screen and (min-width: 600px) {
     header {
-        background: url('../assets/images/header.png') no-repeat;
+        background: #fff;
+        /* background: url('../assets/images/header.png') no-repeat; */
         width: 100%;
         height: 100px;
     }
+    header img {
+        width: 250px;
+        height: 75px;
+        margin-left: 30px;
+        display: block;
+    }
     .zona-usuario-logueado{
         float: right;
-        margin-top: 10px;
+        /* margin-top: 10px; */
+        margin-top: -40px;
     }
     .usuario-logueado{
         font-size: 14px;
@@ -169,14 +116,22 @@ header {
         color: #1F2547;
         font-weight: 400;
         font-size: 14px;
+        margin-top: 10px;
      } 
 } 
 
  @media only screen and (min-width: 992px) {
     header {
-        background: url('../assets/images/header.png') no-repeat;
+        background: #fff;
+        /* background: url('../assets/images/header.png') no-repeat; */
         width: 100%;
         height: 100px;
+    }
+    header img {
+        width: 300px;
+        height: 100px;
+        margin-left: 30px;
+        display: block;
     }
     .zona-usuario-logueado{
         float: right;
@@ -197,9 +152,16 @@ header {
  
  @media only screen and (min-width: 1200px) {
     header {
-        background: url('../assets/images/header.png') no-repeat;
+        background: #fff;
+        /* background: url('../assets/images/header.png') no-repeat; */
         width: 100%;
         height: 100px;
+    }
+    header img {
+        width: 400px;
+        height: 100px;
+        margin-left: 30px;
+        display: block;
     }
     .zona-usuario-logueado{
         float: right;
@@ -217,5 +179,3 @@ header {
         font-size: 22px;
      } 
  }
-
->>>>>>> master
