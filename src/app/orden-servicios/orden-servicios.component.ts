@@ -27,6 +27,7 @@ export class OrdenServiciosComponent implements OnInit {
   generarOrdenServicios: FormGroup;
   panelOpenState = false;
   panelOpenState1 = false;
+  panelOpenState2 = false;
   pagoCECO: boolean
   pagoUnico: boolean;
   pagoVarios: boolean;
@@ -54,6 +55,8 @@ export class OrdenServiciosComponent implements OnInit {
   idOrden: number;
   mostrarCecos: boolean;
   porcentajeAsumidoNum: number;
+  personaNatural: boolean;
+  afiliar: boolean;
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -68,6 +71,10 @@ export class OrdenServiciosComponent implements OnInit {
     this.pagoVarios = false;
     this.pagoCECO = false;
     this.mostrarCecos = true;
+    this.generarOrdenServicios.controls['persona'].setValue('false');
+    this.generarOrdenServicios.controls['diasPorMes'].setValue(30);
+    this.generarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
+    this.generarOrdenServicios.controls['afiliacion'].setValue('false');
   }
 
   private registrarControles() {
@@ -131,7 +138,33 @@ export class OrdenServiciosComponent implements OnInit {
       polizaVida: [''],
       polizaVehiculos: [''],
       numeroCecoPorcentaje: [''],
-      porcentajeAsumido: ['']
+      porcentajeAsumido: [''],
+      valorTotalServicio: [''],
+      persona: [''],
+      nroDias: [''],
+      valorPorDia: [''],
+      diasPorMes: [''],
+      valorServicioPorMes: [''],
+      porcentajeCotizacion: [''],
+      baseCotizacion: [''],
+      afiliacion: [''],
+      porcentajeRiesgo: [''],
+      nivelRiesgo: [''],
+      comentariosArl: [''],
+      pagoAfiliacion: [''],
+      conceptoUnico: [''],
+      porcentajePago1: [''],
+      porcentajePago2: [''],
+      porcentajePago3: [''],
+      porcentajePago4: [''],
+      porcentajePago5: [''],
+      porcentajePago6: [''],
+      conceptoPago1: [''],
+      conceptoPago2: [''],
+      conceptoPago3: [''],
+      conceptoPago4: [''],
+      conceptoPago5: [''],
+      conceptoPago6: ['']
     })
   }
 
@@ -481,6 +514,79 @@ export class OrdenServiciosComponent implements OnInit {
     }
   }
 
+  personaChange($event) {
+    if($event.value === 'true'){
+      this.personaNatural = true;
+      this.agregarValorTotalServicio();
+      this.nroDiasContrato();
+      this.valorPorDia();
+      this.ValorPorMes();
+      this.calcularBaseCotizacion();
+    }
+    else {
+      this.personaNatural = false;
+    }
+  }
+
+  afiliacionChange($event) {
+    if($event.value === 'true') {
+      this.afiliar = true;
+    }
+    else {
+      this.afiliar = false;
+    }
+  }
+
+  porcentajeNivelRiesgo($event) {
+    let porcentajeRiesgo
+    if($event.value === 'I') {
+      porcentajeRiesgo = '0.522 %'
+    }
+    else if($event.value === 'II') {
+      porcentajeRiesgo = '1.044 %'
+    }
+    else if($event.value === 'III') {
+      porcentajeRiesgo = '2.436 %'
+    }
+    else if($event.value === 'IV') {
+      porcentajeRiesgo = '4.350 %'
+    }
+    else if($event.value === 'V') {
+      porcentajeRiesgo = '6.960 %'
+    }
+    this.generarOrdenServicios.controls['porcentajeRiesgo'].setValue(porcentajeRiesgo);
+  }
+  
+  agregarValorTotalServicio () {
+    this.generarOrdenServicios.controls['valorTotalServicio'].setValue(this.generarOrdenServicios.get('total').value)
+  }
+
+  nroDiasContrato() {
+    this.generarOrdenServicios.controls['nroDias'].setValue(this.generarOrdenServicios.get('totalDias').value)
+  }
+
+  valorPorDia() {
+    let valor = parseInt(this.generarOrdenServicios.get('total').value, 10)
+    let dias = parseInt(this.generarOrdenServicios.get('totalDias').value, 10)
+    let calculo = valor / dias
+    this.generarOrdenServicios.controls['valorPorDia'].setValue(calculo)
+  }
+
+  ValorPorMes() {
+    let meses = parseInt(this.generarOrdenServicios.get('totalDias').value) / 30
+    let valorxmes;
+    if(meses <= 1) {
+      meses = 1
+    }
+    valorxmes = this.generarOrdenServicios.get('total').value / meses;
+    this.generarOrdenServicios.controls['valorServicioPorMes'].setValue(valorxmes);
+  }
+
+  calcularBaseCotizacion() {
+    let base = parseInt(this.generarOrdenServicios.get('valorServicioPorMes').value, 10) * 0.40
+    this.generarOrdenServicios.controls['baseCotizacion'].setValue(base);
+  }
+
   changeFecha() {
     this.calcularDias();
   }
@@ -569,6 +675,31 @@ export class OrdenServiciosComponent implements OnInit {
     let objOrden;
     let objServicio;
     let porcentajeAsumido = this.generarOrdenServicios.get('porcentajeAsumido').value;
+    let personaNatural = this.generarOrdenServicios.get('persona').value;
+    console.log(personaNatural);
+    let valorxdia = this.generarOrdenServicios.get('valorPorDia').value;
+    let diasxmes = this.generarOrdenServicios.get('diasPorMes').value;
+    let valorxmes = this.generarOrdenServicios.get('valorServicioPorMes').value;
+    let valorBase = this.generarOrdenServicios.get('baseCotizacion').value;
+    let afiliacion = this.generarOrdenServicios.get('afiliacion').value;
+    let conceptoPagoUnico = this.generarOrdenServicios.get('conceptoUnico').value;
+    let NivelRiesgo = this.generarOrdenServicios.get('nivelRiesgo').value;
+    let porcentajeRiesgo = this.generarOrdenServicios.get('porcentajeRiesgo').value;
+    let pagoAfiliacion = this.generarOrdenServicios.get('pagoAfiliacion').value;
+    let comentarios = this.generarOrdenServicios.get('comentariosArl').value;
+    let porcentajePago1 = this.generarOrdenServicios.get('porcentajePago1').value;
+    let porcentajePago2 = this.generarOrdenServicios.get('porcentajePago2').value;
+    let porcentajePago3 = this.generarOrdenServicios.get('porcentajePago3').value;
+    let porcentajePago4 = this.generarOrdenServicios.get('porcentajePago4').value;
+    let porcentajePago5 = this.generarOrdenServicios.get('porcentajePago5').value;
+    let porcentajePago6 = this.generarOrdenServicios.get('porcentajePago6').value;
+    let conceptoPago1 = this.generarOrdenServicios.get('conceptoPago1').value;
+    let conceptoPago2 = this.generarOrdenServicios.get('conceptoPago2').value;
+    let conceptoPago3 = this.generarOrdenServicios.get('conceptoPago3').value;
+    let conceptoPago4 = this.generarOrdenServicios.get('conceptoPago4').value;
+    let conceptoPago5 = this.generarOrdenServicios.get('conceptoPago5').value;
+    let conceptoPago6 = this.generarOrdenServicios.get('conceptoPago6').value;
+
 
     if (regimen === "") {
       this.MensajeAdvertencia('debe seleccionar el regimen');
@@ -588,6 +719,11 @@ export class OrdenServiciosComponent implements OnInit {
       return false;
     }
 
+    if(personaNatural === 'true' && (diasxmes === '' || valorxmes === '' || valorxdia === '' || valorxmes === '' || valorBase === '')) {
+      this.MensajeAdvertencia('Por favor diligencie todos los campos del cálculo de pago para cumplimiento de pagos a la seguridad social y pensiones.')
+      return false;
+    }
+
     tieneIva === "" ? tieneIva = false : tieneIva = true;
     rut === "" ? rut = false : rut = rut;
     camara === "" ? camara = false : camara = camara;
@@ -598,6 +734,11 @@ export class OrdenServiciosComponent implements OnInit {
     Pago4 === "" ? Pago4 = null : Pago4 = Pago4;
     Pago5 === "" ? Pago5 = null : Pago5 = Pago5;
     Pago6 === "" ? Pago6 = null : Pago6 = Pago6;
+    valorxdia === '' ? valorxdia = 0 : valorxdia = parseInt(valorxdia);
+    valorxmes === '' ? valorxmes = 0 : valorxmes = parseInt(valorxmes);
+    valorBase === '' ? valorBase = 0 : valorBase = parseInt(valorBase);
+    afiliacion === 'false' ? afiliacion = false : afiliacion = true;
+
 
     if (formaPago === 'Único' && fechaPago === null) {
       this.MensajeAdvertencia('Seleccione la fecha de pago');
@@ -611,9 +752,12 @@ export class OrdenServiciosComponent implements OnInit {
       return false;
     }
 
+    
+
     garantia === 'true' ? garantia = true : garantia = false;
     polizaVida === 'true' ? polizaVida = true : polizaVida = false;
     polizaVehiculos === "true" ? polizaVehiculos = true : polizaVehiculos = false;
+    personaNatural === 'true' ? personaNatural = true : personaNatural = false; 
 
     let ordenA = nroOrden.split('-');
     let sumaOrden = parseInt(ordenA[1], 10) + 1
@@ -632,13 +776,6 @@ export class OrdenServiciosComponent implements OnInit {
       nroActualizadoAsociado = 'A-' + `${sumaOrden}`;
       nroActualizadoConsultores = 'C-' + `${sumaOrden}`
     }
-
-    // let RespuestaConsecutivo = await this.obtenerConsecutivo();
-    // if (RespuestaConsecutivo === "Error") {
-    //   this.MensajeError("Error al obtener el consecutivo");
-    //   this.spinner.hide();
-    //   return false;
-    // }
 
     objOrden = {
       Title: empresaSolicitante,
@@ -696,7 +833,30 @@ export class OrdenServiciosComponent implements OnInit {
       Estado: 'Pendiente de aprobación gerente unidad de negocios',
       ResponsableActualId: responsableActual,
       UsuarioSolicitanteId: usuarioSolicitante,
-      PorcentajeAsumido: parseInt(porcentajeAsumido)
+      PorcentajeAsumido: parseInt(porcentajeAsumido),
+      PersonaNatural: personaNatural,
+      ValorPorDia: valorxdia,
+      DiasPorMes: `${diasxmes}`,
+      ValorPorMes: valorxmes,
+      BaseCotizacion: valorBase,
+      RequiereAfiliacion: afiliacion,
+      PorcentajeRiesgo: porcentajeRiesgo,
+      NivelRiesgo: NivelRiesgo,
+      ComentariosArl: comentarios,
+      PagoAfiliacion: pagoAfiliacion,
+      ConceptoPagoUnico: conceptoPagoUnico,
+      PorcentajePago1: porcentajePago1,
+      PorcentajePago2: porcentajePago2,
+      PorcentajePago3: porcentajePago3,
+      PorcentajePago4: porcentajePago4,
+      PorcentajePago5: porcentajePago5,
+      PorcentajePago6: porcentajePago6,
+      ConceptoPago1: conceptoPago1,
+      ConceptoPago2: conceptoPago2,
+      ConceptoPago3: conceptoPago3,
+      ConceptoPago4: conceptoPago4,
+      ConceptoPago5: conceptoPago5,
+      ConceptoPago6: conceptoPago6
     }
 
     if (this.generarOrdenServicios.invalid) {
