@@ -550,7 +550,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
         '<p>Si necesita más información por favor comuníquese con el responsable del rechazo.</p>'; 
 
     if(this.rechazado === true) {
-      let id = this.participacionCecos[0].id
+      // let id = this.participacionCecos[0].id
       let iDborrar = parseInt(this.IdRegistroOS);
       objOrden = {
         Estado: 'Rechazado',
