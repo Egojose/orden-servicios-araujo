@@ -307,7 +307,7 @@
               </div>
               <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal">
+                    <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinal" (dateChange)="changeFecha()">
                     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                     <mat-datepicker #picker2></mat-datepicker>
                   </mat-form-field>
@@ -319,7 +319,7 @@
               </div>
               <div class="col-md-4">
                 <mat-form-field>
-                  <input matInput placeholder="Total días del contrato" formControlName="totalDias" (click)="changeFecha()" type="number">
+                  <input matInput placeholder="Total días del contrato" formControlName="totalDias" type="number">
                 </mat-form-field>
                 <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('totalDias').valid && generarOrdenServicios.get('totalDias').touched"><small
@@ -385,7 +385,7 @@
                             <input matInput placeholder="Porcentaje mínimo de cotización" formControlName="porcentajeCotizacion" readonly>
                           </mat-form-field>
                         </div>
-                        <div class="col-md-">
+                        <div class="col-md-4">
                           <mat-form-field>
                             <input matInput placeholder="Valor servicio base de cotización/mes" currencyMask
                             [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="baseCotizacion" (click)="calcularBaseCotizacion()">
@@ -489,7 +489,7 @@
                 </div>
                 <div class="col-md-4">
                   <mat-form-field>
-                    <input matInput placeholder="porcentaje" formControlaName="porcentajePago1">
+                    <input matInput placeholder="porcentaje" formControlName="porcentajePago1">
                   </mat-form-field>
                 </div>
                 <div class="col-md-4">
@@ -508,7 +508,7 @@
                 </div>
                 <div class="col-md-4">
                     <mat-form-field>
-                      <input matInput placeholder="porcentaje" formControlaName="porcentajePago2">
+                      <input matInput placeholder="porcentaje" formControlName="porcentajePago2">
                     </mat-form-field>
                   </div>
                   <div class="col-md-4">
@@ -527,7 +527,7 @@
                 </div>
                 <div class="col-md-4">
                     <mat-form-field>
-                      <input matInput placeholder="porcentaje" formControlaName="porcentajePago3">
+                      <input matInput placeholder="porcentaje" formControlName="porcentajePago3">
                     </mat-form-field>
                   </div>
                   <div class="col-md-4">
@@ -546,7 +546,7 @@
                 </div>
                 <div class="col-md-4">
                     <mat-form-field>
-                      <input matInput placeholder="porcentaje" formControlaName="porcentajePago4">
+                      <input matInput placeholder="porcentaje" formControlName="porcentajePago4">
                     </mat-form-field>
                   </div>
                   <div class="col-md-4">
@@ -565,7 +565,7 @@
                 </div>
                 <div class="col-md-4">
                     <mat-form-field>
-                      <input matInput placeholder="porcentaje" formControlaName="porcentajePago5">
+                      <input matInput placeholder="porcentaje" formControlName="porcentajePago5">
                     </mat-form-field>
                   </div>
                   <div class="col-md-4">
@@ -584,7 +584,7 @@
                 </div>
                 <div class="col-md-4">
                     <mat-form-field>
-                      <input matInput placeholder="porcentaje" formControlaName="porcentajePago6">
+                      <input matInput placeholder="porcentaje" formControlName="porcentajePago6">
                     </mat-form-field>
                   </div>
                   <div class="col-md-4">

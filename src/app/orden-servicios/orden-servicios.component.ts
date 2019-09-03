@@ -517,6 +517,11 @@ export class OrdenServiciosComponent implements OnInit {
   personaChange($event) {
     if($event.value === 'true'){
       this.personaNatural = true;
+      this.agregarValorTotalServicio();
+      this.nroDiasContrato();
+      this.valorPorDia();
+      this.ValorPorMes();
+      this.calcularBaseCotizacion();
     }
     else {
       this.personaNatural = false;
@@ -556,7 +561,7 @@ export class OrdenServiciosComponent implements OnInit {
     this.generarOrdenServicios.controls['valorTotalServicio'].setValue(this.generarOrdenServicios.get('total').value)
   }
 
-  nroDiasContrato () {
+  nroDiasContrato() {
     this.generarOrdenServicios.controls['nroDias'].setValue(this.generarOrdenServicios.get('totalDias').value)
   }
 
@@ -671,10 +676,11 @@ export class OrdenServiciosComponent implements OnInit {
     let objServicio;
     let porcentajeAsumido = this.generarOrdenServicios.get('porcentajeAsumido').value;
     let personaNatural = this.generarOrdenServicios.get('persona').value;
+    console.log(personaNatural);
     let valorxdia = this.generarOrdenServicios.get('valorPorDia').value;
     let diasxmes = this.generarOrdenServicios.get('diasPorMes').value;
     let valorxmes = this.generarOrdenServicios.get('valorServicioPorMes').value;
-    let valorBase = this.generarOrdenServicios.get('porcentajeCotizacion').value;
+    let valorBase = this.generarOrdenServicios.get('baseCotizacion').value;
     let afiliacion = this.generarOrdenServicios.get('afiliacion').value;
     let conceptoPagoUnico = this.generarOrdenServicios.get('conceptoUnico').value;
     let NivelRiesgo = this.generarOrdenServicios.get('nivelRiesgo').value;
@@ -728,7 +734,6 @@ export class OrdenServiciosComponent implements OnInit {
     Pago4 === "" ? Pago4 = null : Pago4 = Pago4;
     Pago5 === "" ? Pago5 = null : Pago5 = Pago5;
     Pago6 === "" ? Pago6 = null : Pago6 = Pago6;
-    personaNatural === 'false' ? personaNatural = false : personaNatural = true;
     valorxdia === '' ? valorxdia = 0 : valorxdia = parseInt(valorxdia);
     valorxmes === '' ? valorxmes = 0 : valorxmes = parseInt(valorxmes);
     valorBase === '' ? valorBase = 0 : valorBase = parseInt(valorBase);
@@ -771,13 +776,6 @@ export class OrdenServiciosComponent implements OnInit {
       nroActualizadoAsociado = 'A-' + `${sumaOrden}`;
       nroActualizadoConsultores = 'C-' + `${sumaOrden}`
     }
-
-    // let RespuestaConsecutivo = await this.obtenerConsecutivo();
-    // if (RespuestaConsecutivo === "Error") {
-    //   this.MensajeError("Error al obtener el consecutivo");
-    //   this.spinner.hide();
-    //   return false;
-    // }
 
     objOrden = {
       Title: empresaSolicitante,
@@ -838,13 +836,13 @@ export class OrdenServiciosComponent implements OnInit {
       PorcentajeAsumido: parseInt(porcentajeAsumido),
       PersonaNatural: personaNatural,
       ValorPorDia: valorxdia,
-      DiasPorMes: diasxmes,
+      DiasPorMes: `${diasxmes}`,
       ValorPorMes: valorxmes,
       BaseCotizacion: valorBase,
       RequiereAfiliacion: afiliacion,
       PorcentajeRiesgo: porcentajeRiesgo,
       NivelRiesgo: NivelRiesgo,
-      comentariosArl: comentarios,
+      ComentariosArl: comentarios,
       PagoAfiliacion: pagoAfiliacion,
       ConceptoPagoUnico: conceptoPagoUnico,
       PorcentajePago1: porcentajePago1,
