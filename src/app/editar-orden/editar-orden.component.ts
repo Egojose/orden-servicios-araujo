@@ -61,6 +61,9 @@ export class EditarOrdenComponent implements OnInit {
   idServicios: number;
   porcentajeAsumidoNum: number;
   sumaPorcentaje: number;
+  personaNatural: boolean;
+  afiliar: boolean;
+
 
 
   constructor(
@@ -70,6 +73,10 @@ export class EditarOrdenComponent implements OnInit {
     this.registrarControles();
     this.obtenerUsuarios();
     this.ObtenerUsuarioActual();
+    this.editarOrden.controls['persona'].setValue('false');
+    this.editarOrden.controls['diasPorMes'].setValue(30);
+    this.editarOrden.controls['porcentajeCotizacion'].setValue('40%');
+    this.editarOrden.controls['afiliacion'].setValue('false');
   }
 
   private registrarControles() {
@@ -134,7 +141,33 @@ export class EditarOrdenComponent implements OnInit {
       polizaVida: [''],
       polizaVehiculos: [''],
       numeroCecoPorcentaje: [''],
-      porcentajeAsumido: ['']
+      porcentajeAsumido: [''],
+      valorTotalServicio: [''],
+      persona: [''],
+      nroDias: [''],
+      valorPorDia: [''],
+      diasPorMes: [''],
+      valorServicioPorMes: [''],
+      porcentajeCotizacion: [''],
+      baseCotizacion: [''],
+      afiliacion: [''],
+      porcentajeRiesgo: [''],
+      nivelRiesgo: [''],
+      comentariosArl: [''],
+      pagoAfiliacion: [''],
+      conceptoUnico: [''],
+      porcentajePago1: [''],
+      porcentajePago2: [''],
+      porcentajePago3: [''],
+      porcentajePago4: [''],
+      porcentajePago5: [''],
+      porcentajePago6: [''],
+      conceptoPago1: [''],
+      conceptoPago2: [''],
+      conceptoPago3: [''],
+      conceptoPago4: [''],
+      conceptoPago5: [''],
+      conceptoPago6: ['']
     })
   }
 
@@ -201,7 +234,7 @@ export class EditarOrdenComponent implements OnInit {
   };
 
   validarPorcentaje() {
-    this.porcentajeAsumidoNum = parseInt(this.editarOrden.get('porcentajeAsumido').value)
+    this.porcentajeAsumidoNum = parseInt(this.editarOrden.get('porcentajeAsumido').value, 10)
     if (this.arrayCecos.length > 0) {
       let array: any = [];
       this.arrayCecos.map((x) => {
@@ -209,10 +242,11 @@ export class EditarOrdenComponent implements OnInit {
         array.push(x.porcentaje)
       })
       this.sumaPorcentaje = array.reduce((a, suma) => a + suma);
-      if(array.length === 0) {
+      if(array.length === 0 || array === undefined) {
         this.sumaPorcentaje = 0
       }
     }
+    else this.sumaPorcentaje = 0
   }
 
   changeCeco($event) {
@@ -312,6 +346,79 @@ export class EditarOrdenComponent implements OnInit {
     }
   };
 
+  personaChange($event) {
+    if($event.value === 'true'){
+      this.personaNatural = true;
+      this.agregarValorTotalServicio();
+      this.nroDiasContrato();
+      this.valorPorDia();
+      this.ValorPorMes();
+      this.calcularBaseCotizacion();
+    }
+    else {
+      this.personaNatural = false;
+    }
+  }
+
+  afiliacionChange($event) {
+    if($event.value === 'true') {
+      this.afiliar = true;
+    }
+    else {
+      this.afiliar = false;
+    }
+  }
+
+  porcentajeNivelRiesgo($event) {
+    let porcentajeRiesgo
+    if($event.value === 'I') {
+      porcentajeRiesgo = '0.522 %'
+    }
+    else if($event.value === 'II') {
+      porcentajeRiesgo = '1.044 %'
+    }
+    else if($event.value === 'III') {
+      porcentajeRiesgo = '2.436 %'
+    }
+    else if($event.value === 'IV') {
+      porcentajeRiesgo = '4.350 %'
+    }
+    else if($event.value === 'V') {
+      porcentajeRiesgo = '6.960 %'
+    }
+    this.editarOrden.controls['porcentajeRiesgo'].setValue(porcentajeRiesgo);
+  }
+  
+  agregarValorTotalServicio () {
+    this.editarOrden.controls['valorTotalServicio'].setValue(this.editarOrden.get('total').value)
+  }
+
+  nroDiasContrato() {
+    this.editarOrden.controls['nroDias'].setValue(this.editarOrden.get('totalDias').value)
+  }
+
+  valorPorDia() {
+    let valor = parseInt(this.editarOrden.get('total').value, 10)
+    let dias = parseInt(this.editarOrden.get('totalDias').value, 10)
+    let calculo = valor / dias
+    this.editarOrden.controls['valorPorDia'].setValue(calculo)
+  }
+
+  ValorPorMes() {
+    let meses = parseInt(this.editarOrden.get('totalDias').value) / 30
+    let valorxmes;
+    if(meses <= 1) {
+      meses = 1
+    }
+    valorxmes = this.editarOrden.get('total').value / meses;
+    this.editarOrden.controls['valorServicioPorMes'].setValue(valorxmes);
+  }
+
+  calcularBaseCotizacion() {
+    let base = parseInt(this.editarOrden.get('valorServicioPorMes').value, 10) * 0.40
+    this.editarOrden.controls['baseCotizacion'].setValue(base);
+  }
+
   changeFecha() {
     this.calcularDias();
   }
@@ -393,6 +500,23 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['Pago4'].setValue(this.orden[0].fecha4toPago);
     this.editarOrden.controls['Pago5'].setValue(this.orden[0].fecha5toPago);
     this.editarOrden.controls['Pago6'].setValue(this.orden[0].fecha6toPago);
+    this.editarOrden.controls['porcentajePago1'].setValue(this.orden[0].porcentajePago1);
+    this.editarOrden.controls['porcentajePago2'].setValue(this.orden[0].porcentajePago2);
+    this.editarOrden.controls['porcentajePago3'].setValue(this.orden[0].porcentajePago3);
+    this.editarOrden.controls['porcentajePago4'].setValue(this.orden[0].porcentajePago4);
+    this.editarOrden.controls['porcentajePago5'].setValue(this.orden[0].porcentajePago5);
+    this.editarOrden.controls['porcentajePago6'].setValue(this.orden[0].porcentajePago6);
+    this.editarOrden.controls['conceptoPago1'].setValue(this.orden[0].conceptoPago1);
+    this.editarOrden.controls['conceptoPago2'].setValue(this.orden[0].conceptoPago2);
+    this.editarOrden.controls['conceptoPago3'].setValue(this.orden[0].conceptoPago3);
+    this.editarOrden.controls['conceptoPago4'].setValue(this.orden[0].conceptoPago4);
+    this.editarOrden.controls['conceptoPago5'].setValue(this.orden[0].conceptoPago5);
+    this.editarOrden.controls['conceptoPago6'].setValue(this.orden[0].conceptoPago6);
+    this.editarOrden.controls['afiliacion'].setValue(this.orden[0].afiliacion);
+    this.editarOrden.controls['nivelRiesgo'].setValue(this.orden[0].NivelRiesgo);
+    this.editarOrden.controls['porcentajeRiesgo'].setValue(this.orden[0].porcentajeRiesgo);
+    this.editarOrden.controls['pagoAfiliacion'].setValue(this.orden[0].pagoAfiliacion);
+    this.editarOrden.controls['comentariosArl'].setValue(this.orden[0].comentarios);
     this.editarOrden.controls['ceco1'].setValue(this.orden[0].cecoResponsable1);
     this.editarOrden.controls['ceco2'].setValue(this.orden[0].cecoResponsable2);
     this.editarOrden.controls['ceco3'].setValue(this.orden[0].cecoResponsable3);
@@ -461,6 +585,13 @@ export class EditarOrdenComponent implements OnInit {
     }
     else {
       this.editarOrden.controls['polizaVehiculos'].setValue('false');
+    }
+    if(this.editarOrden.controls['afiliacion'].value === true) {
+      this.editarOrden.controls['afiliacion'].setValue('true');
+      this.afiliar = true;
+    }
+    else {
+      this.editarOrden.controls['afiliacion'].setValue('false');
     }
   }
 
@@ -562,6 +693,42 @@ export class EditarOrdenComponent implements OnInit {
     let objOrden;
     let objServicio;
     let porcentajeAsumido = this.editarOrden.get('porcentajeAsumido').value;
+    let personaNatural = this.editarOrden.get('persona').value;
+    let valorxdia = this.editarOrden.get('valorPorDia').value;
+    let diasxmes = this.editarOrden.get('diasPorMes').value;
+    let valorxmes = this.editarOrden.get('valorServicioPorMes').value;
+    let valorBase = this.editarOrden.get('baseCotizacion').value;
+    let afiliacion = this.editarOrden.get('afiliacion').value;
+    let conceptoPagoUnico = this.editarOrden.get('conceptoUnico').value;
+    let NivelRiesgo = this.editarOrden.get('nivelRiesgo').value;
+    let porcentajeRiesgo = this.editarOrden.get('porcentajeRiesgo').value;
+    let pagoAfiliacion = this.editarOrden.get('pagoAfiliacion').value;
+    let comentarios = this.editarOrden.get('comentariosArl').value;
+    let porcentajePago1 = this.editarOrden.get('porcentajePago1').value;
+    let porcentajePago2 = this.editarOrden.get('porcentajePago2').value;
+    let porcentajePago3 = this.editarOrden.get('porcentajePago3').value;
+    let porcentajePago4 = this.editarOrden.get('porcentajePago4').value;
+    let porcentajePago5 = this.editarOrden.get('porcentajePago5').value;
+    let porcentajePago6 = this.editarOrden.get('porcentajePago6').value;
+    let conceptoPago1 = this.editarOrden.get('conceptoPago1').value;
+    let conceptoPago2 = this.editarOrden.get('conceptoPago2').value;
+    let conceptoPago3 = this.editarOrden.get('conceptoPago3').value;
+    let conceptoPago4 = this.editarOrden.get('conceptoPago4').value;
+    let conceptoPago5 = this.editarOrden.get('conceptoPago5').value;
+    let conceptoPago6 = this.editarOrden.get('conceptoPago6').value;
+
+    porcentajePago1 === null ? porcentajePago1 = "" : porcentajePago1 = porcentajePago1;
+    porcentajePago2 === null ? porcentajePago2 = "" : porcentajePago2 = porcentajePago2;
+    porcentajePago3 === null ? porcentajePago3 = "" : porcentajePago3 = porcentajePago3;
+    porcentajePago4 === null ? porcentajePago4 = "" : porcentajePago4 = porcentajePago4;
+    porcentajePago5 === null ? porcentajePago5 = "" : porcentajePago5 = porcentajePago5;
+    porcentajePago6 === null ? porcentajePago6 = "" : porcentajePago6 = porcentajePago6;
+    conceptoPago1 === null ? conceptoPago1 = "" : conceptoPago1 = conceptoPago1;
+    conceptoPago2 === null ? conceptoPago2 = "" : conceptoPago2 = conceptoPago2;
+    conceptoPago3 === null ? conceptoPago3 = "" : conceptoPago3 = conceptoPago3;
+    conceptoPago4 === null ? conceptoPago4 = "" : conceptoPago4 = conceptoPago4;
+    conceptoPago5 === null ? conceptoPago5 = "" : conceptoPago5 = conceptoPago5;
+    conceptoPago6 === null ? conceptoPago6 = "" : conceptoPago6 = conceptoPago6;
 
     if (regimen === "") {
       this.MensajeAdvertencia('debe seleccionar el regimen');
@@ -591,6 +758,11 @@ export class EditarOrdenComponent implements OnInit {
     Pago4 === "" ? Pago4 = null : Pago4 = Pago4;
     Pago5 === "" ? Pago5 = null : Pago5 = Pago5;
     Pago6 === "" ? Pago6 = null : Pago6 = Pago6;
+    valorxdia === '' ? valorxdia = 0 : valorxdia = parseInt(valorxdia);
+    valorxmes === '' ? valorxmes = 0 : valorxmes = parseInt(valorxmes);
+    valorBase === '' ? valorBase = 0 : valorBase = parseInt(valorBase);
+    afiliacion === 'false' ? afiliacion = false : afiliacion = true;
+    personaNatural === 'true' ? personaNatural = true : personaNatural = false; 
 
     if (formaPago === 'Único' && fechaPago === null) {
       this.MensajeAdvertencia('Seleccione la fecha de pago');
@@ -665,7 +837,30 @@ export class EditarOrdenComponent implements OnInit {
       ResponsableActualId: responsableActual,
       UsuarioSolicitanteId: usuarioSolicitante,
       PorcentajeAsumido: parseInt(porcentajeAsumido),
-      MotivoRechazo: ""
+      MotivoRechazo: "",
+      PersonaNatural: personaNatural,
+      ValorPorDia: valorxdia,
+      DiasPorMes: `${diasxmes}`,
+      ValorPorMes: valorxmes,
+      BaseCotizacion: valorBase,
+      RequiereAfiliacion: afiliacion,
+      PorcentajeRiesgo: porcentajeRiesgo,
+      NivelRiesgo: NivelRiesgo,
+      ComentariosArl: comentarios,
+      PagoAfiliacion: pagoAfiliacion,
+      ConceptoPagoUnico: conceptoPagoUnico,
+      PorcentajePago1: porcentajePago1,
+      PorcentajePago2: porcentajePago2,
+      PorcentajePago3: porcentajePago3,
+      PorcentajePago4: porcentajePago4,
+      PorcentajePago5: porcentajePago5,
+      PorcentajePago6: porcentajePago6,
+      ConceptoPago1: conceptoPago1,
+      ConceptoPago2: conceptoPago2,
+      ConceptoPago3: conceptoPago3,
+      ConceptoPago4: conceptoPago4,
+      ConceptoPago5: conceptoPago5,
+      ConceptoPago6: conceptoPago6
     }
 
     objServicio = {

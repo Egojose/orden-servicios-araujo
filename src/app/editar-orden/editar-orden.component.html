@@ -263,6 +263,126 @@
                 </mat-error>
               </div>
             </div>
+
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState2 = true"  (closed)="panelOpenState2 = false">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title><strong>CALCULO DE PAGO PARA CUMPLIMIENTO DE PAGOS A LA SEGURIDAD SOCIAL Y PENSIONES (solo personas naturales)</strong></mat-panel-title>
+                    <mat-panel-description>{{panelOpenState1 ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <mat-card>
+                    <div class="row">
+                      <div class="col-md-4 offset-4" >
+                        <label for="Regimen" id="regimen">Es persona natural?</label>
+                          <mat-radio-group formControlName="persona" (change)="personaChange($event)">
+                            <mat-radio-button value="true">Sí</mat-radio-button>
+                            <mat-radio-button value="false">No</mat-radio-button>
+                          </mat-radio-group>
+                      </div>
+                    </div>
+                      <br>
+                      <ng-container *ngIf="personaNatural">
+                      <div class="row">
+                        <div class="col-md-3">
+                          <mat-form-field>
+                            <input matInput currencyMask
+                              [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }"
+                              placeholder="Valor total del servicio" formControlName="valorTotalServicio"
+                              (click)="agregarValorTotalServicio()" readonly>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-3">
+                          <mat-form-field>
+                            <input matInput placeholder="Días de duración del servicio" formControlName="nroDias"
+                              (click)="nroDiasContrato()" readonly>
+                          </mat-form-field>
+                        </div>
+                          <div class="col-md-3">
+                            <mat-form-field>
+                              <input matInput currencyMask
+                              [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" placeholder="Valor por día de servicio" formControlName="valorPorDia" (click)="valorPorDia()" readonly>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-3">
+                            <mat-form-field>
+                              <input matInput placeholder="Número de días/mes" formControlName="diasPorMes">
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <mat-form-field>
+                              <input matInput currencyMask
+                              [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" placeholder="Valor del servicio por mes" formControlName="valorServicioPorMes" (click)="ValorPorMes()">
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field>
+                              <input matInput placeholder="Porcentaje mínimo de cotización" formControlName="porcentajeCotizacion" readonly>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field>
+                              <input matInput placeholder="Valor servicio base de cotización/mes" currencyMask
+                              [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="baseCotizacion" (click)="calcularBaseCotizacion()">
+                            </mat-form-field>
+                          </div>
+                        </div>
+                    </ng-container>
+                  </mat-card>
+                  <hr>
+                  <mat-card>
+                    <div class="row">
+                      <div class="col-md-6 offset-3">
+                        <label for="Regimen" id="regimen">Requiere afiliación a la ARL?</label>
+                        <mat-radio-group formControlName="afiliacion" (change)="afiliacionChange($event)">
+                          <mat-radio-button value="true">Sí</mat-radio-button>
+                          <mat-radio-button value="false">No</mat-radio-button>
+                        </mat-radio-group>
+                      </div>
+                    </div>
+                    <ng-container *ngIf="afiliar">
+                      <div class="row">
+                      <div class="col-md-6">
+                        <mat-form-field>
+                            <mat-label>Nivel de riesgo</mat-label>
+                            <mat-select formControlName="nivelRiesgo" (selectionChange)="porcentajeNivelRiesgo($event)">
+                                <mat-option value="I">I</mat-option>                       
+                                <mat-option value="II">II</mat-option>
+                                <mat-option value="III">III</mat-option>
+                                <mat-option value="IV">IV</mat-option>
+                                <mat-option value="V">V</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-6">
+                        <mat-form-field>
+                          <input matInput placeholder="Porcentaje" formControlName="porcentajeRiesgo">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-8 offset-2">
+                          <label for="Regimen" id="regimen">Quién asume el pago de la ARL?</label>
+                          <mat-radio-group formControlName="pagoAfiliacion">
+                            <mat-radio-button value="ARAUJO IBARRA">ARAUJO IBARRA</mat-radio-button>
+                            <mat-radio-button value="ASESOR">ASESOR</mat-radio-button>
+                          </mat-radio-group>
+                        </div>
+                      </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <mat-form-field>
+                          <textarea matInput placeholder="Comentarios" formControlName="comentariosArl"></textarea>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    </ng-container>
+                  </mat-card>
+                </mat-expansion-panel>
+              </mat-accordion>
+
             <br>
             <h5 class="text-center">Forma de pago</h5>
             <br>
@@ -279,64 +399,137 @@
               </div>
             </div>
             <ng-container *ngIf="pagoUnico">
-              <div class="row">
-                <div class="col-md-12">
-                  <mat-form-field>
-                    <input matInput [matDatepicker]="picker3" placeholder="Fecha de pago" formControlName="fechaPago">
-                    <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
-                    <mat-datepicker #picker3></mat-datepicker>
-                  </mat-form-field>
+                <div class="row">
+                  <div class="col-md-6">
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="picker3" placeholder="Fecha de pago" formControlName="fechaPago">
+                      <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                      <mat-datepicker #picker3></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6">
+                    <mat-form-field>
+                      <input matInput placeholder="Concepto" formControlName="conceptoUnico">
+                    </mat-form-field>
+                  </div>
                 </div>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="pagoVarios">
-              <div class="row">
-                <div class="col-md-4">
-                  <mat-form-field>
-                    <input matInput [matDatepicker]="picker4" placeholder="Fecha de pago 1" formControlName="Pago1">
-                    <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
-                    <mat-datepicker #picker4></mat-datepicker>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-4">
-                  <mat-form-field>
-                    <input matInput [matDatepicker]="picker5" placeholder="Fecha de pago 2" formControlName="Pago2">
-                    <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
-                    <mat-datepicker #picker5></mat-datepicker>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-4">
-                  <mat-form-field>
-                    <input matInput [matDatepicker]="picker6" placeholder="Fecha de pago 3" formControlName="Pago3">
-                    <mat-datepicker-toggle matSuffix [for]="picker6"></mat-datepicker-toggle>
-                    <mat-datepicker #picker6></mat-datepicker>
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-4">
-                  <mat-form-field>
-                    <input matInput [matDatepicker]="picker7" placeholder="Fecha de pago 4" formControlName="Pago4">
-                    <mat-datepicker-toggle matSuffix [for]="picker7"></mat-datepicker-toggle>
-                    <mat-datepicker #picker7></mat-datepicker>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-4">
-                  <mat-form-field>
-                    <input matInput [matDatepicker]="picker8" placeholder="Fecha de pago 5" formControlName="Pago5">
-                    <mat-datepicker-toggle matSuffix [for]="picker8"></mat-datepicker-toggle>
-                    <mat-datepicker #picker8></mat-datepicker>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-4">
-                  <mat-form-field>
-                    <input matInput [matDatepicker]="picker9" placeholder="Fecha de pago 6" formControlName="Pago6">
-                    <mat-datepicker-toggle matSuffix [for]="picker9"></mat-datepicker-toggle>
-                    <mat-datepicker #picker9></mat-datepicker>
-                  </mat-form-field>
-                </div>
-              </div>
-            </ng-container>
+              </ng-container>
+              <ng-container *ngIf="pagoVarios">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker4" placeholder="Fecha de pago 1" formControlName="Pago1">
+                        <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+                        <mat-datepicker #picker4></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field>
+                        <input matInput placeholder="porcentaje" formControlName="porcentajePago1">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field>
+                        <input matInput placeholder="Concepto" formControlName="conceptoPago1">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker5" placeholder="Fecha de pago 2" formControlName="Pago2">
+                        <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
+                        <mat-datepicker #picker5></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="porcentaje" formControlName="porcentajePago2">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="Concepto" formControlName="conceptoPago2">
+                        </mat-form-field>
+                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker6" placeholder="Fecha de pago 3" formControlName="Pago3">
+                        <mat-datepicker-toggle matSuffix [for]="picker6"></mat-datepicker-toggle>
+                        <mat-datepicker #picker6></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="porcentaje" formControlName="porcentajePago3">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="Concepto" formControlName="conceptoPago3">
+                        </mat-form-field>
+                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker7" placeholder="Fecha de pago 4" formControlName="Pago4">
+                        <mat-datepicker-toggle matSuffix [for]="picker7"></mat-datepicker-toggle>
+                        <mat-datepicker #picker7></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="porcentaje" formControlName="porcentajePago4">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="Concepto" formControlName="conceptoPago4">
+                        </mat-form-field>
+                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker8" placeholder="Fecha de pago 5" formControlName="Pago5">
+                        <mat-datepicker-toggle matSuffix [for]="picker8"></mat-datepicker-toggle>
+                        <mat-datepicker #picker8></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="porcentaje" formControlName="porcentajePago5">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="Concepto" formControlName="conceptoPago5">
+                        </mat-form-field>
+                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker9" placeholder="Fecha de pago 6" formControlName="Pago6">
+                        <mat-datepicker-toggle matSuffix [for]="picker9"></mat-datepicker-toggle>
+                        <mat-datepicker #picker9></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="porcentaje" formControlName="porcentajePago6">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-md-4">
+                        <mat-form-field>
+                          <input matInput placeholder="Concepto" formControlName="conceptoPago6">
+                        </mat-form-field>
+                      </div>
+                  </div>
+                </ng-container>
             <br>
             <ng-container id="contenedorTable">
                 <div class="row">
