@@ -77,6 +77,29 @@ export class Orden{
         public firmaResponsableDirector: string[],
         public ResponsableActual: number,
         public porcentajeAsumido: number,
+        public personaNatural: boolean,
+        public valorxdia: number,
+        public diasxmes: string,
+        public valorxmes: number,
+        public valorBase: number,
+        public afiliacion: boolean,
+        public porcentajeRiesgo: string,
+        public NivelRiesgo: string,
+        public comentarios: string,
+        public pagoAfiliacion: string,
+        public conceptoPagoUnico: string,
+        public porcentajePago1: string,
+        public porcentajePago2: string,
+        public porcentajePago3: string,
+        public porcentajePago4: string,
+        public porcentajePago5: string,
+        public porcentajePago6: string,
+        public conceptoPago1: string,
+        public conceptoPago2: string,
+        public conceptoPago3: string,
+        public conceptoPago4: string,
+        public conceptoPago5: string,
+        public conceptoPago6: string
     ) {}
 
     public static fromJson(element: any) {
@@ -157,8 +180,31 @@ export class Orden{
             element.FirmaGerenteAdministrativo,
             element.FirmaDirectorOperativo,
             element.ResponsableActualId,
-            element.PorcentajeAsumido
-        );
+            element.PorcentajeAsumido,
+            element.PersonaNatural,
+            element.ValorPorDia,
+            element.DiasPorMes,
+            element.ValorPorMes,
+            element.BaseCotizacion,
+            element.RequiereAfiliacion,
+            element.PorcentajeRiesgo,
+            element.NivelRiesgo,
+            element.ComentariosArl,
+            element.PagoAfiliacion,
+            element.ConceptoPagoUnico,
+            element.PorcentajePago1,
+            element.PorcentajePago2,
+            element.PorcentajePago3,
+            element.PorcentajePago4,
+            element.PorcentajePago5,
+            element.PorcentajePago6,
+            element.ConceptoPago1,
+            element.ConceptoPago2,
+            element.ConceptoPago3,
+            element.ConceptoPago4,
+            element.ConceptoPago5,
+            element.ConceptoPago6
+        );  
     }
 
     public static fromJsonList(elements: any) {
