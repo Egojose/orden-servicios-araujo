@@ -57,6 +57,7 @@ export class OrdenServiciosComponent implements OnInit {
   porcentajeAsumidoNum: number;
   personaNatural: boolean;
   afiliar: boolean;
+  mostrarTablaCecos: boolean;
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -316,6 +317,16 @@ export class OrdenServiciosComponent implements OnInit {
 
   borrarCecos(index) {
     this.arrayCecos.splice(index, 1);
+  }
+
+  mostrarTabla() {
+    let porcentaje = parseInt(this.generarOrdenServicios.get('porcentajeAsumido').value)
+    if(porcentaje < 100) {
+      this.mostrarTablaCecos = true;
+    }
+    else {
+      this.mostrarTablaCecos = false;
+    }
   }
 
   async obtenerConsecutivo(): Promise<any> {
