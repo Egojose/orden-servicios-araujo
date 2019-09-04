@@ -366,6 +366,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['porcentajePago4'].setValue(this.orden[0].porcentajePago4);
     this.aprobarOrdenServicios.controls['porcentajePago5'].setValue(this.orden[0].porcentajePago5);
     this.aprobarOrdenServicios.controls['porcentajePago6'].setValue(this.orden[0].porcentajePago6);
+    this.aprobarOrdenServicios.controls['conceptoUnico'].setValue(this.orden[0].conceptoPagoUnico);
     this.aprobarOrdenServicios.controls['conceptoPago1'].setValue(this.orden[0].conceptoPago1);
     this.aprobarOrdenServicios.controls['conceptoPago2'].setValue(this.orden[0].conceptoPago2);
     this.aprobarOrdenServicios.controls['conceptoPago3'].setValue(this.orden[0].conceptoPago3);
