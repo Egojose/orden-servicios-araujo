@@ -322,6 +322,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['unidadNegocios'].setValue(this.orden[0].uNegocios);
     this.aprobarOrdenServicios.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
     this.aprobarOrdenServicios.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
+    this.aprobarOrdenServicios.controls['porcentajeAsumido'].setValue(this.orden[0].porcentajeAsumido);
     this.aprobarOrdenServicios.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
     this.aprobarOrdenServicios.controls['razonSocial'].setValue(this.orden[0].razonSocial);
     this.aprobarOrdenServicios.controls['nitProveedor'].setValue(this.orden[0].nitProveedor);
