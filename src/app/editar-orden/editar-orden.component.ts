@@ -47,7 +47,6 @@ export class EditarOrdenComponent implements OnInit {
   pagoVarios: boolean;
   panelOpenState = false;
   panelOpenState1 = false;
-  panelOpenState2 = false;
   IdRegistroOS: string;
   emailSolicitante: any;
   cargarFirmajefe: any[];
@@ -628,9 +627,19 @@ export class EditarOrdenComponent implements OnInit {
     this.arrayCecos.splice(index, 1);
   }
 
+  validarCalculosPersonaNatural() {
+    if(this.editarOrden.get('persona').value === 'true') {
+      if(this.editarOrden.get('valorTotalServicio').value === '' || this.editarOrden.get('valorPorDia').value === '' || this.editarOrden.get('valorServicioPorMes').value === '') {
+        this.MensajeAdvertencia('Debe diligenciar los campos de calculo de pago para la seguridad social')
+        return false;
+      }
+    }
+  }
+
   onSubmit() {
     this.spinner.show()
     this.validarPorcentaje();
+    this.validarCalculosPersonaNatural();
     if (this.sumaPorcentaje + this.porcentajeAsumidoNum !== 100) {
       this.spinner.hide();
       this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
