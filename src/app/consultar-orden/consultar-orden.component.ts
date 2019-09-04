@@ -101,6 +101,7 @@ export class ConsultarOrdenComponent implements OnInit {
   ngOnInit() {
     this.pagoUnico = false;
     this.pagoVarios = false;
+    this.aprobarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
     this.registrarControles();
     // this.consultarOrden();
     this.ObtenerUsuarioActual();
