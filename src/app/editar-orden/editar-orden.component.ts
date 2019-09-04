@@ -74,6 +74,7 @@ export class EditarOrdenComponent implements OnInit {
     this.registrarControles();
     this.obtenerUsuarios();
     this.ObtenerUsuarioActual();
+    this.obtenerConsecutivoInicial();
     this.editarOrden.controls['persona'].setValue('false');
     this.editarOrden.controls['diasPorMes'].setValue(30);
     this.editarOrden.controls['porcentajeCotizacion'].setValue('40%');
@@ -270,13 +271,13 @@ export class EditarOrdenComponent implements OnInit {
     )
   }; 
 
-  // obtenerConsecutivoInicial() {
-  //   this.servicio.obtenerConsecutivoInciail().subscribe(
-  //     (respuesta) => {
-  //      this.config = Configuracion.fromJsonList(respuesta);
-  //     }
-  //   )
-  // }; 
+  obtenerConsecutivoInicial() {
+    this.servicio.obtenerConsecutivoInciail().subscribe(
+      (respuesta) => {
+       this.config = Configuracion.fromJsonList(respuesta);
+      }
+    )
+  }; 
 
   obtenerEmpresa() {
     this.servicio.obtenerEmpresa().subscribe(
@@ -312,6 +313,7 @@ export class EditarOrdenComponent implements OnInit {
   changeIva($event) {
     let precio = this.editarOrden.controls['precio'].value
     if($event.checked === true) {
+      console.log($event.checked)
       this. calcularIva();
     }
     else {
