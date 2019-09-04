@@ -47,6 +47,7 @@ export class EditarOrdenComponent implements OnInit {
   pagoVarios: boolean;
   panelOpenState = false;
   panelOpenState1 = false;
+  panelOpenState2 = false;
   IdRegistroOS: string;
   emailSolicitante: any;
   cargarFirmajefe: any[];
