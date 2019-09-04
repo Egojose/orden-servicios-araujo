@@ -508,6 +508,7 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['porcentajePago4'].setValue(this.orden[0].porcentajePago4);
     this.editarOrden.controls['porcentajePago5'].setValue(this.orden[0].porcentajePago5);
     this.editarOrden.controls['porcentajePago6'].setValue(this.orden[0].porcentajePago6);
+    this.editarOrden.controls['conceptoUnico'].setValue(this.orden[0].conceptoPagoUnico);
     this.editarOrden.controls['conceptoPago1'].setValue(this.orden[0].conceptoPago1);
     this.editarOrden.controls['conceptoPago2'].setValue(this.orden[0].conceptoPago2);
     this.editarOrden.controls['conceptoPago3'].setValue(this.orden[0].conceptoPago3);

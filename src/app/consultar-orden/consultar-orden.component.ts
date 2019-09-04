@@ -101,7 +101,6 @@ export class ConsultarOrdenComponent implements OnInit {
   ngOnInit() {
     this.pagoUnico = false;
     this.pagoVarios = false;
-    this.aprobarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
     this.registrarControles();
     // this.consultarOrden();
     this.ObtenerUsuarioActual();
@@ -358,6 +357,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['porcentajePago4'].setValue(this.orden[0].porcentajePago4);
     this.aprobarOrdenServicios.controls['porcentajePago5'].setValue(this.orden[0].porcentajePago5);
     this.aprobarOrdenServicios.controls['porcentajePago6'].setValue(this.orden[0].porcentajePago6);
+    this.aprobarOrdenServicios.controls['conceptoUnico'].setValue(this.orden[0].conceptoPagoUnico);
     this.aprobarOrdenServicios.controls['conceptoPago1'].setValue(this.orden[0].conceptoPago1);
     this.aprobarOrdenServicios.controls['conceptoPago2'].setValue(this.orden[0].conceptoPago2);
     this.aprobarOrdenServicios.controls['conceptoPago3'].setValue(this.orden[0].conceptoPago3);
@@ -369,6 +369,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['nroDias'].setValue(this.orden[0].totalDias);
     this.aprobarOrdenServicios.controls['valorPorDia'].setValue(this.orden[0].valorxdia);
     this.aprobarOrdenServicios.controls['diasPorMes'].setValue(this.orden[0].diasxmes);
+    this.aprobarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
     this.aprobarOrdenServicios.controls['valorServicioPorMes'].setValue(this.orden[0].valorxmes);
     this.aprobarOrdenServicios.controls['baseCotizacion'].setValue(this.orden[0].valorBase);
     this.aprobarOrdenServicios.controls['afiliacion'].setValue(this.orden[0].afiliacion);
