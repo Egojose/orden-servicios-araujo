@@ -93,6 +93,8 @@ export class ConsultarOrdenComponent implements OnInit {
   fechaFinal;
   totalDias;
   valorLetras;
+  personaNatural: boolean;
+  afiliar: boolean;
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private spinner: NgxSpinnerService) { }
 
@@ -165,8 +167,33 @@ export class ConsultarOrdenComponent implements OnInit {
       mesesCalidad2: [''],
       polizaVida: [''],
       polizaVehiculos: [''],
-      
-      motivoRechazo: ['']
+      motivoRechazo: [''],
+      valorTotalServicio: [''],
+      persona: [''],
+      nroDias: [''],
+      valorPorDia: [''],
+      diasPorMes: [''],
+      valorServicioPorMes: [''],
+      porcentajeCotizacion: [''],
+      baseCotizacion: [''],
+      afiliacion: [''],
+      porcentajeRiesgo: [''],
+      nivelRiesgo: [''],
+      comentariosArl: [''],
+      pagoAfiliacion: [''],
+      conceptoUnico: [''],
+      porcentajePago1: [''],
+      porcentajePago2: [''],
+      porcentajePago3: [''],
+      porcentajePago4: [''],
+      porcentajePago5: [''],
+      porcentajePago6: [''],
+      conceptoPago1: [''],
+      conceptoPago2: [''],
+      conceptoPago3: [''],
+      conceptoPago4: [''],
+      conceptoPago5: [''],
+      conceptoPago6: ['']
     })
   }
 
@@ -247,6 +274,9 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['Pago5'].disable();
     this.aprobarOrdenServicios.controls['Pago6'].disable();
     this.aprobarOrdenServicios.controls['Pago1'].disable();
+    this.aprobarOrdenServicios.controls['persona'].disable();
+    this.aprobarOrdenServicios.controls['afiliacion'].disable();
+    this.aprobarOrdenServicios.controls['pagoAfiliacion'].disable();
   }
 
   // valoresTabla() {
@@ -281,10 +311,6 @@ export class ConsultarOrdenComponent implements OnInit {
     this.totalAr = this.orden[0].total;
     this.totalDias = this.orden[0].totalDias;
     this.valorLetras = this.orden[0].valorLetras;
-
-
-
-
     this.aprobarOrdenServicios.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
     this.aprobarOrdenServicios.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
     this.aprobarOrdenServicios.controls['ciudadSolicitante'].setValue(this.orden[0].ciudadSolicitante);
@@ -323,6 +349,30 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['Pago4'].setValue(this.orden[0].fecha4toPago);
     this.aprobarOrdenServicios.controls['Pago5'].setValue(this.orden[0].fecha5toPago);
     this.aprobarOrdenServicios.controls['Pago6'].setValue(this.orden[0].fecha6toPago);
+    this.aprobarOrdenServicios.controls['porcentajePago1'].setValue(this.orden[0].porcentajePago1);
+    this.aprobarOrdenServicios.controls['porcentajePago2'].setValue(this.orden[0].porcentajePago2);
+    this.aprobarOrdenServicios.controls['porcentajePago3'].setValue(this.orden[0].porcentajePago3);
+    this.aprobarOrdenServicios.controls['porcentajePago4'].setValue(this.orden[0].porcentajePago4);
+    this.aprobarOrdenServicios.controls['porcentajePago5'].setValue(this.orden[0].porcentajePago5);
+    this.aprobarOrdenServicios.controls['porcentajePago6'].setValue(this.orden[0].porcentajePago6);
+    this.aprobarOrdenServicios.controls['conceptoPago1'].setValue(this.orden[0].conceptoPago1);
+    this.aprobarOrdenServicios.controls['conceptoPago2'].setValue(this.orden[0].conceptoPago2);
+    this.aprobarOrdenServicios.controls['conceptoPago3'].setValue(this.orden[0].conceptoPago3);
+    this.aprobarOrdenServicios.controls['conceptoPago4'].setValue(this.orden[0].conceptoPago4);
+    this.aprobarOrdenServicios.controls['conceptoPago5'].setValue(this.orden[0].conceptoPago5);
+    this.aprobarOrdenServicios.controls['conceptoPago6'].setValue(this.orden[0].conceptoPago6);
+    this.aprobarOrdenServicios.controls['persona'].setValue(this.orden[0].personaNatural);
+    this.aprobarOrdenServicios.controls['valorTotalServicio'].setValue(this.orden[0].total);
+    this.aprobarOrdenServicios.controls['nroDias'].setValue(this.orden[0].totalDias);
+    this.aprobarOrdenServicios.controls['valorPorDia'].setValue(this.orden[0].valorxdia);
+    this.aprobarOrdenServicios.controls['diasPorMes'].setValue(this.orden[0].diasxmes);
+    this.aprobarOrdenServicios.controls['valorServicioPorMes'].setValue(this.orden[0].valorxmes);
+    this.aprobarOrdenServicios.controls['baseCotizacion'].setValue(this.orden[0].valorBase);
+    this.aprobarOrdenServicios.controls['afiliacion'].setValue(this.orden[0].afiliacion);
+    this.aprobarOrdenServicios.controls['nivelRiesgo'].setValue(this.orden[0].NivelRiesgo);
+    this.aprobarOrdenServicios.controls['porcentajeRiesgo'].setValue(this.orden[0].porcentajeRiesgo);
+    this.aprobarOrdenServicios.controls['pagoAfiliacion'].setValue(this.orden[0].pagoAfiliacion);
+    this.aprobarOrdenServicios.controls['comentariosArl'].setValue(this.orden[0].comentarios);
     this.aprobarOrdenServicios.controls['ceco1'].setValue(this.orden[0].cecoResponsable1);
     this.aprobarOrdenServicios.controls['ceco2'].setValue(this.orden[0].cecoResponsable2);
     this.aprobarOrdenServicios.controls['ceco3'].setValue(this.orden[0].cecoResponsable3);
@@ -390,6 +440,20 @@ export class ConsultarOrdenComponent implements OnInit {
     }
     else {
       this.aprobarOrdenServicios.controls['polizaVehiculos'].setValue('false');
+    }
+    if(this.aprobarOrdenServicios.controls['persona'].value === true) {
+      this.aprobarOrdenServicios.controls['persona'].setValue('true');
+      this.personaNatural = true;
+    }
+    else {
+      this.aprobarOrdenServicios.controls['persona'].setValue('false');
+    }
+    if(this.aprobarOrdenServicios.controls['afiliacion'].value === true) {
+      this.aprobarOrdenServicios.controls['afiliacion'].setValue('true');
+      this.afiliar = true;
+    }
+    else {
+      this.aprobarOrdenServicios.controls['afiliacion'].setValue('false');
     }
   }
 

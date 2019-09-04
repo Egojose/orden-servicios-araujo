@@ -91,6 +91,8 @@ export class AprobarOrdenServicioComponent implements OnInit {
   idParticipacion: number;
   FirmasCECOS: any;
   aprobadorActual: any = [];
+  personaNatural: boolean;
+  afiliar: boolean;
 
 
   constructor(
@@ -106,6 +108,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.usuarioRechaza = false;
     this.registrarControles();        
     this.obtenerDatosAprobadores();
+    this.aprobarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
   }
 
   private registrarControles() {
@@ -166,7 +169,33 @@ export class AprobarOrdenServicioComponent implements OnInit {
       polizaVehiculos: [''],
       gerenteUnegocios: [''],
       motivoRechazo: [''],
-      porcentajeAsumido: ['']
+      porcentajeAsumido: [''],
+      valorTotalServicio: [''],
+      persona: [''],
+      nroDias: [''],
+      valorPorDia: [''],
+      diasPorMes: [''],
+      valorServicioPorMes: [''],
+      porcentajeCotizacion: [''],
+      baseCotizacion: [''],
+      afiliacion: [''],
+      porcentajeRiesgo: [''],
+      nivelRiesgo: [''],
+      comentariosArl: [''],
+      pagoAfiliacion: [''],
+      conceptoUnico: [''],
+      porcentajePago1: [''],
+      porcentajePago2: [''],
+      porcentajePago3: [''],
+      porcentajePago4: [''],
+      porcentajePago5: [''],
+      porcentajePago6: [''],
+      conceptoPago1: [''],
+      conceptoPago2: [''],
+      conceptoPago3: [''],
+      conceptoPago4: [''],
+      conceptoPago5: [''],
+      conceptoPago6: ['']
     })
   }
 
@@ -205,7 +234,6 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.servicio.obtenerOrden(this.IdRegistroOS).subscribe(
       (respuesta) => {
         this.orden = Orden.fromJsonList(respuesta);
-        console.log(respuesta)
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
         this.solicitante = this.orden[0].usuarioSolicitante;
         if( this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
@@ -242,21 +270,14 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.participacionCecos = PorcentajeCecos.fromJsonList(respuesta);
         this.porAprobar =  this.participacionCecos.filter(x => x.aprobado === false && x.director.ID !== this.usuarioActual.id);
         this.aprobado = this.participacionCecos.filter(x => x.aprobado === true)
-        // this.aprobadorActual = this.participacionCecos.filter(x => x.director.ID === this.usuarioActual.id)
-        console.log(this.aprobado);
-        console.log(this.porAprobar)
-        console.log(this.participacionCecos);
-        // console.log(this.aprobadorActual);
         if (this.porAprobar.length > 0) {
           this.emailDirectorCeco = this.porAprobar[0].director.EMail;
           this.directorResponsable = this.porAprobar[0].director;
         }
         let arr;
         arr = this.participacionCecos.filter(x => x.director.ID === this.usuarioActual.id);
-        console.log(arr)
         if (arr.length > 0) {
           this.idParticipacion = arr[0].id;
-          console.log(this.idParticipacion);
         }
       }
     )
@@ -281,6 +302,9 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['Pago5'].disable();
     this.aprobarOrdenServicios.controls['Pago6'].disable();
     this.aprobarOrdenServicios.controls['Pago1'].disable();
+    this.aprobarOrdenServicios.controls['persona'].disable();
+    this.aprobarOrdenServicios.controls['afiliacion'].disable();
+    this.aprobarOrdenServicios.controls['pagoAfiliacion'].disable();
   }
 
   obtenerDatosAprobadores() {
@@ -336,6 +360,30 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['Pago4'].setValue(this.orden[0].fecha4toPago);
     this.aprobarOrdenServicios.controls['Pago5'].setValue(this.orden[0].fecha5toPago);
     this.aprobarOrdenServicios.controls['Pago6'].setValue(this.orden[0].fecha6toPago);
+    this.aprobarOrdenServicios.controls['porcentajePago1'].setValue(this.orden[0].porcentajePago1);
+    this.aprobarOrdenServicios.controls['porcentajePago2'].setValue(this.orden[0].porcentajePago2);
+    this.aprobarOrdenServicios.controls['porcentajePago3'].setValue(this.orden[0].porcentajePago3);
+    this.aprobarOrdenServicios.controls['porcentajePago4'].setValue(this.orden[0].porcentajePago4);
+    this.aprobarOrdenServicios.controls['porcentajePago5'].setValue(this.orden[0].porcentajePago5);
+    this.aprobarOrdenServicios.controls['porcentajePago6'].setValue(this.orden[0].porcentajePago6);
+    this.aprobarOrdenServicios.controls['conceptoPago1'].setValue(this.orden[0].conceptoPago1);
+    this.aprobarOrdenServicios.controls['conceptoPago2'].setValue(this.orden[0].conceptoPago2);
+    this.aprobarOrdenServicios.controls['conceptoPago3'].setValue(this.orden[0].conceptoPago3);
+    this.aprobarOrdenServicios.controls['conceptoPago4'].setValue(this.orden[0].conceptoPago4);
+    this.aprobarOrdenServicios.controls['conceptoPago5'].setValue(this.orden[0].conceptoPago5);
+    this.aprobarOrdenServicios.controls['conceptoPago6'].setValue(this.orden[0].conceptoPago6);
+    this.aprobarOrdenServicios.controls['persona'].setValue(this.orden[0].personaNatural);
+    this.aprobarOrdenServicios.controls['valorTotalServicio'].setValue(this.orden[0].total);
+    this.aprobarOrdenServicios.controls['nroDias'].setValue(this.orden[0].totalDias);
+    this.aprobarOrdenServicios.controls['valorPorDia'].setValue(this.orden[0].valorxdia);
+    this.aprobarOrdenServicios.controls['diasPorMes'].setValue(this.orden[0].diasxmes);
+    this.aprobarOrdenServicios.controls['valorServicioPorMes'].setValue(this.orden[0].valorxmes);
+    this.aprobarOrdenServicios.controls['baseCotizacion'].setValue(this.orden[0].valorBase);
+    this.aprobarOrdenServicios.controls['afiliacion'].setValue(this.orden[0].afiliacion);
+    this.aprobarOrdenServicios.controls['nivelRiesgo'].setValue(this.orden[0].NivelRiesgo);
+    this.aprobarOrdenServicios.controls['porcentajeRiesgo'].setValue(this.orden[0].porcentajeRiesgo);
+    this.aprobarOrdenServicios.controls['pagoAfiliacion'].setValue(this.orden[0].pagoAfiliacion);
+    this.aprobarOrdenServicios.controls['comentariosArl'].setValue(this.orden[0].comentarios);
     this.aprobarOrdenServicios.controls['ceco1'].setValue(this.orden[0].cecoResponsable1);
     this.aprobarOrdenServicios.controls['porcentajeCeco1'].setValue(this.orden[0].porcentajeResponsable1);
     this.aprobarOrdenServicios.controls['garantia'].setValue(this.orden[0].garantia);
@@ -381,7 +429,6 @@ export class AprobarOrdenServicioComponent implements OnInit {
   }
 
   switchValores() {
-    console.log(this.aprobarOrdenServicios.controls['garantia'].value);
     if(this.aprobarOrdenServicios.controls['empresaSolicitante'].value === 'Araujo Ibarra Consultores Internacionales S.A.S') {
       this.esConsultores = true;
     }
@@ -415,6 +462,20 @@ export class AprobarOrdenServicioComponent implements OnInit {
     }
     else {
       this.aprobarOrdenServicios.controls['polizaVehiculos'].setValue('false');
+    }
+    if(this.aprobarOrdenServicios.controls['persona'].value === true) {
+      this.aprobarOrdenServicios.controls['persona'].setValue('true');
+      this.personaNatural = true;
+    }
+    else {
+      this.aprobarOrdenServicios.controls['persona'].setValue('false');
+    }
+    if(this.aprobarOrdenServicios.controls['afiliacion'].value === true) {
+      this.aprobarOrdenServicios.controls['afiliacion'].setValue('true');
+      this.afiliar = true;
+    }
+    else {
+      this.aprobarOrdenServicios.controls['afiliacion'].setValue('false');
     }
   }
 
