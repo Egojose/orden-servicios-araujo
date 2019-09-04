@@ -140,7 +140,7 @@
             </div>
             <div class="col-md-4">
                 <mat-form-field>
-                  <input matInput placeholder="Porcentaje asumido" formControlName="porcentajeAsumido" type="number">
+                  <input matInput placeholder="Porcentaje asumido" formControlName="porcentajeAsumido" type="number" (change)="mostrarTabla()">
                 </mat-form-field>
                 <mat-error>
                     <span *ngIf="!generarOrdenServicios.get('numeroCECO').valid && generarOrdenServicios.get('numeroCECO').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -604,7 +604,7 @@
                   </mat-radio-group>
               </div>
             </div> -->
-            <ng-container id="contenedorTable">
+            <ng-container id="contenedorTable" *ngIf="mostrarTablaCecos">
               <div class="row">
                 <div class="col-md-3">
                     <mat-form-field>
