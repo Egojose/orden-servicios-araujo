@@ -612,6 +612,15 @@ export class OrdenServiciosComponent implements OnInit {
     this.generarOrdenServicios.controls['totalDias'].setValue(diffDays);
   }
 
+  validarCalculosPersonaNatural() {
+    if(this.generarOrdenServicios.get('persona').value === 'true') {
+      if(this.generarOrdenServicios.get('valorTotalServicio').value === '' || this.generarOrdenServicios.get('valorPorDia').value === '' || this.generarOrdenServicios.get('valorServicioPorMes').value === '') {
+        this.MensajeAdvertencia('Debe diligenciar los campos de calculo de pago para la seguridad social')
+        return false;
+      }
+    }
+  }
+
   cancelar() {
     setTimeout(
       () => {
@@ -622,6 +631,7 @@ export class OrdenServiciosComponent implements OnInit {
   async onSubmit() {
     this.spinner.show();
     this.validarPorcentaje();
+    this.validarCalculosPersonaNatural();
     if (this.sumaPorcentaje + this.porcentajeAsumidoNum !== 100) {
       this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
       this.spinner.hide();
