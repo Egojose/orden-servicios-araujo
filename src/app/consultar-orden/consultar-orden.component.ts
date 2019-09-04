@@ -101,6 +101,7 @@ export class ConsultarOrdenComponent implements OnInit {
   ngOnInit() {
     this.pagoUnico = false;
     this.pagoVarios = false;
+    this.aprobarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
     this.registrarControles();
     // this.consultarOrden();
     this.ObtenerUsuarioActual();
@@ -119,6 +120,7 @@ export class ConsultarOrdenComponent implements OnInit {
       unidadNegocios: [''],
       nombreCECO: [''],
       numeroCECO: [''],
+      porcentajeAsumido: [''],
       razonSocial: [''],
       nitProveedor: [''],
       ciudadProveedor: [''],
@@ -321,6 +323,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['unidadNegocios'].setValue(this.orden[0].uNegocios);
     this.aprobarOrdenServicios.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
     this.aprobarOrdenServicios.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
+    this.aprobarOrdenServicios.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
     this.aprobarOrdenServicios.controls['razonSocial'].setValue(this.orden[0].razonSocial);
     this.aprobarOrdenServicios.controls['nitProveedor'].setValue(this.orden[0].nitProveedor);
     this.aprobarOrdenServicios.controls['ciudadProveedor'].setValue(this.orden[0].ciudadProveedor);
