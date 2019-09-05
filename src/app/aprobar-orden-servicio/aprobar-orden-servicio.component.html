@@ -626,8 +626,10 @@
             </tbody>
           </table>
         </ng-container>
-        <button type="button" class="btn btn-success" (click)="aprobar()">Aprobar</button>
-        <button type="button" class="btn btn-danger" (click)="openModal(template)">Rechazar</button>
+        <ng-container *ngIf="mostrarBotonesAprobarRechazar">
+          <button type="button" class="btn btn-success" (click)="aprobar()">Aprobar</button>
+          <button type="button" class="btn btn-danger" (click)="openModal(template)">Rechazar</button>
+        </ng-container>
         <ng-template #template>
             <div class="modal-header">
               <h5 class="modal-title pull-left">Por favor especifique el motivo de rechazo</h5>

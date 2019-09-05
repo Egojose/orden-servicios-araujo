@@ -93,6 +93,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   aprobadorActual: any = [];
   personaNatural: boolean;
   afiliar: boolean;
+  mostrarBotonesAprobarRechazar: boolean;
 
 
   constructor(
@@ -106,6 +107,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.rechazado = false;
     this.usuarioAprueba = false;
     this.usuarioRechaza = false;
+    this.mostrarBotonesAprobarRechazar = true;
     this.registrarControles();        
     this.obtenerDatosAprobadores();
     this.aprobarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
@@ -545,6 +547,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.valoresFirma();
     this.cambiarValoresAprobado();
     this.MensajeInfo('La orden ha sido aprobada! Haga click en "Enviar" para terminar');
+    this.mostrarBotonesAprobarRechazar = false;
   }
 
   rechazar() {
@@ -558,6 +561,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       this.firmaJefe = null;
       this.rechazado = true;
       this.usuarioRechaza = true;
+      this.mostrarBotonesAprobarRechazar = false;
       this.MensajeInfo('La orden ha sido rechazada! Haga click en "Enviar" para terminar')
       this.modalRef.hide();
     }
