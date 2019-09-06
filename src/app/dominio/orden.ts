@@ -154,7 +154,7 @@ export class Orden{
             element.AniosPagoSalarios,
             element.PorcentajeResponsabilidadCivil,
             element.PorcentajeManejoAnticipos,
-            element.MesesAnticipos,
+            element.MesesManejoAnticipos,
             element.PorcentajeCalidadServicio,
             element.ValidezCalidadServicio,
             element.ExtensionCalidadServicio,
