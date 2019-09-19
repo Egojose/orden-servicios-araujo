@@ -17,7 +17,8 @@ header {
     text-align: end;
     margin-right: 30px;
     padding-top: 30px;
-    color: #1F2547;
+    color: #fff;
+    /* color: #1F2547; */
     font-weight: 400;
     font-size: 22px;
  }
@@ -67,7 +68,8 @@ header {
         text-align: end;
         margin-right: 10px;
         padding-top: 15px;
-        color: #1F2547;
+        color: #fff;
+        /* color: #1F2547; */
         font-weight: 400;
         font-size: 14px;
      }
@@ -90,7 +92,8 @@ header {
         text-align: end;
         margin-right: 10px;
         padding-top: 15px;
-        color: #1F2547;
+        color: #fff;
+        /* color: #1F2547; */
         font-weight: 400;
         font-size: 14px;
      } 
@@ -113,7 +116,8 @@ header {
         text-align: end;
         margin-right: 30px;
         padding-top: 30px;
-        color: #1F2547;
+        color: #fff;
+        /* color: #1F2547; */
         font-weight: 400;
         font-size: 22px;
      }
@@ -136,7 +140,8 @@ header {
         text-align: end;
         margin-right: 30px;
         padding-top: 30px;
-        color: #1F2547;
+        color: #fff;
+        /* color: #1F2547; */
         font-weight: 400;
         font-size: 22px;
      } 
