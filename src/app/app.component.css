@@ -1,14 +1,7 @@
 header {
-    background: #fff;
-    /* background: url('../assets/images/header.png') no-repeat; */
+    background: url('../assets/images/header.png');
     width: 100%;
     height: 100px;
-}
-header img {
-    width: 300px;
-    height: 100px;
-    margin-left: 30px;
-    display: block;
 }
 
 .zona-usuario-logueado{
@@ -24,7 +17,8 @@ header img {
     text-align: end;
     margin-right: 30px;
     padding-top: 30px;
-    color: #1F2547;
+    color: #fff;
+    /* color: #1F2547; */
     font-weight: 400;
     font-size: 22px;
  }
@@ -59,21 +53,13 @@ header img {
 
  @media only screen and (max-width: 600px) {
     header {
-        background: #fff;
-        /* background: url('../assets/images/header.png') no-repeat; */
+        background: url('../assets/images/header.png') no-repeat;
         width: 100%;
         height: 100px;
     }
-    header img {
-        width: 150px;
-        height: 100px;
-        margin-left: 15px;
-        display: block;
-    }
     .zona-usuario-logueado{
         float: right;
-        /* margin-top: 10px; */
-        margin-top: -30px;
+        margin-top: 10px;
     }
     .usuario-logueado{
         font-size: 14px;
@@ -82,7 +68,8 @@ header img {
         text-align: end;
         margin-right: 10px;
         padding-top: 15px;
-        color: #1F2547;
+        color: #fff;
+        /* color: #1F2547; */
         font-weight: 400;
         font-size: 14px;
      }
@@ -90,21 +77,13 @@ header img {
 
  @media only screen and (min-width: 600px) {
     header {
-        background: #fff;
-        /* background: url('../assets/images/header.png') no-repeat; */
+        background: url('../assets/images/header.png') no-repeat;
         width: 100%;
         height: 100px;
     }
-    header img {
-        width: 250px;
-        height: 75px;
-        margin-left: 30px;
-        display: block;
-    }
     .zona-usuario-logueado{
         float: right;
-        /* margin-top: 10px; */
-        margin-top: -40px;
+        margin-top: 10px;
     }
     .usuario-logueado{
         font-size: 14px;
@@ -113,25 +92,18 @@ header img {
         text-align: end;
         margin-right: 10px;
         padding-top: 15px;
-        color: #1F2547;
+        color: #fff;
+        /* color: #1F2547; */
         font-weight: 400;
         font-size: 14px;
-        margin-top: 10px;
      } 
 } 
 
  @media only screen and (min-width: 992px) {
     header {
-        background: #fff;
-        /* background: url('../assets/images/header.png') no-repeat; */
+        background: url('../assets/images/header.png') no-repeat;
         width: 100%;
         height: 100px;
-    }
-    header img {
-        width: 300px;
-        height: 100px;
-        margin-left: 30px;
-        display: block;
     }
     .zona-usuario-logueado{
         float: right;
@@ -144,7 +116,8 @@ header img {
         text-align: end;
         margin-right: 30px;
         padding-top: 30px;
-        color: #1F2547;
+        color: #fff;
+        /* color: #1F2547; */
         font-weight: 400;
         font-size: 22px;
      }
@@ -152,16 +125,9 @@ header img {
  
  @media only screen and (min-width: 1200px) {
     header {
-        background: #fff;
-        /* background: url('../assets/images/header.png') no-repeat; */
+        background: url('../assets/images/header.png') no-repeat;
         width: 100%;
         height: 100px;
-    }
-    header img {
-        width: 400px;
-        height: 100px;
-        margin-left: 30px;
-        display: block;
     }
     .zona-usuario-logueado{
         float: right;
@@ -174,8 +140,10 @@ header img {
         text-align: end;
         margin-right: 30px;
         padding-top: 30px;
-        color: #1F2547;
+        color: #fff;
+        /* color: #1F2547; */
         font-weight: 400;
         font-size: 22px;
      } 
  }
+
