@@ -259,7 +259,7 @@
               <div class="col-md-4">
                 <mat-form-field>
                   <input matInput placeholder="Precio" currencyMask
-                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precio" (keyup)="changePrecio($event)">
+                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 2 }" formControlName="precio" (keyup)="changePrecio($event)">
                 </mat-form-field>
                 <mat-error>
                     <span *ngIf="!generarOrdenServicios.get('precio').valid && generarOrdenServicios.get('precio').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -272,13 +272,13 @@
               </div>
               <div class="col-md-3">
                 <mat-form-field>
-                    <input matInput currencyMask [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="iva" readonly>
+                    <input matInput currencyMask [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 2 }" formControlName="iva" readonly>
                 </mat-form-field>
               </div>
               <div class="col-md-4">
                 <mat-form-field>
                   <input matInput placeholder="Total" currencyMask
-                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="total" readonly>
+                  [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 2 }" formControlName="total" readonly>
                 </mat-form-field>
               </div>
             </div>
@@ -350,7 +350,7 @@
                       <div class="col-md-3">
                         <mat-form-field>
                           <input matInput currencyMask
-                            [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }"
+                            [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 2 }"
                             placeholder="Valor total del servicio" formControlName="valorTotalServicio"
                             (click)="agregarValorTotalServicio()" readonly>
                         </mat-form-field>
@@ -364,7 +364,7 @@
                         <div class="col-md-3">
                           <mat-form-field>
                             <input matInput currencyMask
-                            [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" placeholder="Valor por día de servicio" formControlName="valorPorDia" (click)="valorPorDia()" readonly>
+                            [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 2 }" placeholder="Valor por día de servicio" formControlName="valorPorDia" (click)="valorPorDia()" readonly>
                           </mat-form-field>
                         </div>
                         <div class="col-md-3">
@@ -377,7 +377,7 @@
                         <div class="col-md-4">
                           <mat-form-field>
                             <input matInput currencyMask
-                            [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" placeholder="Valor del servicio por mes" formControlName="valorServicioPorMes" (click)="ValorPorMes()">
+                            [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 2 }" placeholder="Valor del servicio por mes" formControlName="valorServicioPorMes" (click)="ValorPorMes()">
                           </mat-form-field>
                         </div>
                         <div class="col-md-4">
@@ -388,7 +388,7 @@
                         <div class="col-md-4">
                           <mat-form-field>
                             <input matInput placeholder="Valor servicio base de cotización/mes" currencyMask
-                            [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="baseCotizacion" (click)="calcularBaseCotizacion()">
+                            [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 2 }" formControlName="baseCotizacion" (click)="calcularBaseCotizacion()">
                           </mat-form-field>
                         </div>
                       </div>

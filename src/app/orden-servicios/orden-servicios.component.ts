@@ -466,17 +466,18 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   calcularIva() {
-    let price = this.generarOrdenServicios.get('precio').value;
+    let price = (this.generarOrdenServicios.get('precio').value).toFixed(2);
     let iva = this.config[0].iva;
     let ivaPorcentaje = iva / 100
     this.ivaCalculado = price * ivaPorcentaje
-    let total = price + this.ivaCalculado
+    let total = parseFloat(price) + parseFloat(this.ivaCalculado.toString())
+    console.log(total);
     this.generarOrdenServicios.controls['iva'].setValue(this.ivaCalculado);
     this.generarOrdenServicios.controls['total'].setValue(total);
   }
 
   calcularTotal() {
-    let price = parseInt(this.generarOrdenServicios.get('precio').value, 10);
+    let price = parseFloat(this.generarOrdenServicios.get('precio').value);
     this.total = price;
     this.generarOrdenServicios.controls['total'].setValue(this.total);
     this.generarOrdenServicios.controls['iva'].setValue(0);
@@ -577,7 +578,7 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   valorPorDia() {
-    let valor = parseInt(this.generarOrdenServicios.get('total').value, 10)
+    let valor = parseFloat(this.generarOrdenServicios.get('total').value)
     let dias = parseInt(this.generarOrdenServicios.get('totalDias').value, 10)
     let calculo = valor / dias
     this.generarOrdenServicios.controls['valorPorDia'].setValue(calculo)
@@ -594,7 +595,7 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   calcularBaseCotizacion() {
-    let base = parseInt(this.generarOrdenServicios.get('valorServicioPorMes').value, 10) * 0.40
+    let base = parseFloat(this.generarOrdenServicios.get('valorServicioPorMes').value) * 0.40
     this.generarOrdenServicios.controls['baseCotizacion'].setValue(base);
   }
 
