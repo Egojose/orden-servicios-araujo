@@ -27,7 +27,7 @@ export class BandejaServiciosComponent implements OnInit {
   empty: boolean = false;
   emptyOrdenes: boolean = false;
 
-  displayedColumns: string[] = ['NumeroOrden', 'Solicitante', 'FechaSolicitud', 'EmpresaSolicitante', 'Estado', 'Acciones'];
+  displayedColumns: string[] = ['NumeroOrden', 'Solicitante', 'FechaSolicitud', 'Proveedor', 'Estado', 'Acciones'];
   ObjServicios: BandejaServicios[];
 
   constructor(private servicio: SPServicio, private route: ActivatedRoute, private router: Router, private toastr: ToastrManager) { }
