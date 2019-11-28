@@ -63,6 +63,7 @@ export class EditarOrdenComponent implements OnInit {
   sumaPorcentaje: number;
   personaNatural: boolean;
   afiliar: boolean;
+  nroOrden: string;
 
 
 
@@ -271,7 +272,7 @@ export class EditarOrdenComponent implements OnInit {
   }; 
 
   obtenerConsecutivoInicial() {
-    this.servicio.obtenerConsecutivoInciail().subscribe(
+    this.servicio.obtenerConsecutivoInciail().then(
       (respuesta) => {
        this.config = Configuracion.fromJsonList(respuesta);
       }
@@ -635,6 +636,39 @@ export class EditarOrdenComponent implements OnInit {
         return false;
       }
     }
+  }
+
+  async validarConsecutivo() {
+    await this.servicio.obtenerConsecutivoInciail().then(
+      (respuesta) => {
+       this.nroOrden = this.editarOrden.get('nroOrden').value;
+        let objConfig;
+        let consecutivo;
+        let consultores = this.editarOrden.controls['empresaSolicitante'].value.tipo === 'Consultores'
+        if(consultores) {
+          consecutivo = respuesta[0].Consecutivo
+          consecutivo === this.nroOrden ? this.nroOrden = this.nroOrden : this.nroOrden = consecutivo;
+        }
+        else {
+          consecutivo = respuesta[0].ConsecutivoAsociados;
+          consecutivo === this.nroOrden ? this.nroOrden = this.nroOrden : this.nroOrden = consecutivo;
+        }
+        let consecutivoNumber = consecutivo.split('-');
+        let suma = parseInt(consecutivoNumber[1]) + 1;
+        let sumaString;
+        if (suma < 10) {
+          sumaString = "00" + suma
+        }
+        else if (suma < 100) {
+          sumaString = "0" + suma;
+        }
+        else {
+          sumaString = suma
+        }
+        consultores ? objConfig = {Consecutivo: `C-${sumaString}`} : objConfig = {ConsecutivoAsociados: `A-${sumaString}`}
+        this.servicio.ActualizarNroOrden(respuesta[0].Id, objConfig);
+      }
+    );
   }
 
   onSubmit() {

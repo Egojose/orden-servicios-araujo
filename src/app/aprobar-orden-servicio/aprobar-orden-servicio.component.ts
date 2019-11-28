@@ -259,7 +259,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   }
 
   obtenerParametroAprobacion() {
-    this.servicio.obtenerConsecutivoInciail().subscribe(
+    this.servicio.obtenerConsecutivoInciail().then(
       (respuesta) => {
        this.config = Configuracion.fromJsonList(respuesta);
       }

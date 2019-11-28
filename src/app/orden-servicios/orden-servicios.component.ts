@@ -58,6 +58,7 @@ export class OrdenServiciosComponent implements OnInit {
   personaNatural: boolean;
   afiliar: boolean;
   mostrarTablaCecos: boolean;
+  nroOrden: string;
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -268,7 +269,7 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   obtenerConsecutivoInicial() {
-    this.servicio.obtenerConsecutivoInciail().subscribe(
+    this.servicio.obtenerConsecutivoInciail().then(
       (respuesta) => {
         this.config = Configuracion.fromJsonList(respuesta);
         this.cargarNroOrden();
@@ -327,85 +328,6 @@ export class OrdenServiciosComponent implements OnInit {
     else {
       this.mostrarTablaCecos = false;
     }
-  }
-
-  async obtenerConsecutivo(): Promise<any> {
-
-    let RespuestaMensaje = "";
-    let RespuestaGurdado;
-    let numeroOrdenString = this.config[0].consecutivo.split('-')
-    let numeroOrdenStringAsociados = this.config[0].consecutivoAsociados.split('-');
-    let numeroOrdenNumber;
-
-    if (this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores') {
-      numeroOrdenNumber = parseInt(numeroOrdenString[1], 10)
-    }
-    else if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados') {
-      numeroOrdenNumber = parseInt(numeroOrdenStringAsociados[1], 10)
-    }
-
-    await this.servicio.obtenerConsecutivo().then(
-      async (respuesta) => {
-
-        this.config = Configuracion.fromJsonList(respuesta);
-        let ordenActual = numeroOrdenNumber
-        let ordenValue;
-        if (this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores' && ordenActual < 10) {
-          ordenValue = `C-00${ordenActual}`
-        }
-        else if (this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores' && (ordenActual >= 10 && ordenActual < 100)) {
-          ordenValue = `C-0${ordenActual}`
-        }
-        else if (this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores' && ordenActual > 99) {
-          ordenValue = `C-${ordenActual}`
-        }
-        else if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados' && ordenActual < 10) {
-          ordenValue = `A-00${ordenActual}`
-        }
-        else if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados' && (ordenActual >= 10 && ordenActual < 100)) {
-          ordenValue = `A-0${ordenActual}`
-        }
-        else if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Asociados' && ordenActual > 99) {
-          ordenValue = `A-${ordenActual}`
-        }
-        this.generarOrdenServicios.controls['nroOrden'].setValue(ordenValue);
-
-        let objConfig;
-
-        let Consecutivo = ordenValue.split("-");
-        let suma = parseInt(Consecutivo[1]) + 1;
-        let sumaString;
-        if (suma < 10) {
-          sumaString = "00" + suma
-        }
-        else if (suma < 100) {
-          sumaString = "0" + suma;
-        }
-        else {
-          sumaString = suma
-        }
-        Consecutivo = Consecutivo[0] + "-" + sumaString;
-        if (this.generarOrdenServicios.get('empresaSolicitante').value.tipo === 'Consultores') {
-          objConfig = { Consecutivo: Consecutivo }
-        }
-        else {
-          objConfig = { ConsecutivoAsociados: Consecutivo }
-        }
-        RespuestaMensaje = "Exitoso";
-        RespuestaGurdado = await this.ActualizarConsecutivo(this.config[0].id, objConfig);
-        if (RespuestaGurdado === "Error") {
-          RespuestaMensaje = "Error";
-        }
-
-      }
-    ).catch(
-      (error) => {
-        console.log(error);
-        RespuestaMensaje = "Error";
-      }
-    )
-
-    return RespuestaMensaje
   }
 
   async ActualizarConsecutivo(id, Obj): Promise<any> {
@@ -629,6 +551,39 @@ export class OrdenServiciosComponent implements OnInit {
       }, 500);
   }
 
+  async validarConsecutivo() {
+    await this.servicio.obtenerConsecutivoInciail().then(
+      (respuesta) => {
+       this.nroOrden = this.generarOrdenServicios.get('nroOrden').value;
+        let objConfig;
+        let consecutivo;
+        let consultores = this.generarOrdenServicios.controls['empresaSolicitante'].value.tipo === 'Consultores'
+        if(consultores) {
+          consecutivo = respuesta[0].Consecutivo
+          consecutivo === this.nroOrden ? this.nroOrden = this.nroOrden : this.nroOrden = consecutivo;
+        }
+        else {
+          consecutivo = respuesta[0].ConsecutivoAsociados;
+          consecutivo === this.nroOrden ? this.nroOrden = this.nroOrden : this.nroOrden = consecutivo;
+        }
+        let consecutivoNumber = consecutivo.split('-');
+        let suma = parseInt(consecutivoNumber[1]) + 1;
+        let sumaString;
+        if (suma < 10) {
+          sumaString = "00" + suma
+        }
+        else if (suma < 100) {
+          sumaString = "0" + suma;
+        }
+        else {
+          sumaString = suma
+        }
+        consultores ? objConfig = {Consecutivo: `C-${sumaString}`} : objConfig = {ConsecutivoAsociados: `A-${sumaString}`}
+        this.servicio.ActualizarNroOrden(respuesta[0].Id, objConfig);
+      }
+    );
+  }
+
   async onSubmit() {
     this.spinner.show();
     this.validarPorcentaje();
@@ -639,7 +594,7 @@ export class OrdenServiciosComponent implements OnInit {
       return false;
     }
     
-    let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
+    // let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value.nombre;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
     let ciudadSolicitante = this.generarOrdenServicios.get('ciudadSolicitante').value.nombre;
@@ -721,7 +676,8 @@ export class OrdenServiciosComponent implements OnInit {
     let conceptoPago4 = this.generarOrdenServicios.get('conceptoPago4').value;
     let conceptoPago5 = this.generarOrdenServicios.get('conceptoPago5').value;
     let conceptoPago6 = this.generarOrdenServicios.get('conceptoPago6').value;
-
+   
+    await this.validarConsecutivo();
 
     if (regimen === "") {
       this.MensajeAdvertencia('debe seleccionar el regimen');
@@ -781,27 +737,9 @@ export class OrdenServiciosComponent implements OnInit {
     polizaVehiculos === "true" ? polizaVehiculos = true : polizaVehiculos = false;
     personaNatural === 'true' ? personaNatural = true : personaNatural = false; 
 
-    let ordenA = nroOrden.split('-');
-    let sumaOrden = parseInt(ordenA[1], 10) + 1
-    let nroActualizadoAsociado: string;
-    let nroActualizadoConsultores: string;
-
-    if (sumaOrden < 10) {
-      nroActualizadoAsociado = 'A-00' + `${sumaOrden}`;
-      nroActualizadoConsultores = 'C-00' + `${sumaOrden}`
-    }
-    else if (sumaOrden >= 10 && sumaOrden < 100) {
-      nroActualizadoAsociado = 'A-0' + `${sumaOrden}`;
-      nroActualizadoConsultores = 'C-0' + `${sumaOrden}`
-    }
-    else {
-      nroActualizadoAsociado = 'A-' + `${sumaOrden}`;
-      nroActualizadoConsultores = 'C-' + `${sumaOrden}`
-    }
-
     objOrden = {
       Title: empresaSolicitante,
-      NroOrden: nroOrden,
+      NroOrden: this.nroOrden,
       NitSolicitante: nitSolicitante,
       CiudadSolicitante: ciudadSolicitante,
       TelSolicitante: telSolicitante,
@@ -886,12 +824,6 @@ export class OrdenServiciosComponent implements OnInit {
       this.spinner.hide();
     }
     else {
-      let RespuestaConsecutivo = await this.obtenerConsecutivo();
-      if (RespuestaConsecutivo === "Error") {
-        this.MensajeError("Error al obtener el consecutivo");
-        this.spinner.hide();
-        return false;
-      }
       this.servicio.AgregarOrden(objOrden).then(
         (item: ItemAddResult) => {
           this.idOrden = item.data.Id
