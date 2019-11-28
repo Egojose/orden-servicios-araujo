@@ -32,7 +32,7 @@ export class SPServicio {
             headers: {
                 'Accept': 'application/json; odata=verbose',
                 'Content-Type': 'application/json;odata=verbose',
-                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImFQY3R3X29kdlJPb0VOZzNWb09sSWgydGlFcyIsImtpZCI6ImFQY3R3X29kdlJPb0VOZzNWb09sSWgydGlFcyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvYXJpYmFzYXMuc2hhcmVwb2ludC5jb21AM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwiaXNzIjoiMDAwMDAwMDEtMDAwMC0wMDAwLWMwMDAtMDAwMDAwMDAwMDAwQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsImlhdCI6MTU3MTg0NjY3MiwibmJmIjoxNTcxODQ2NjcyLCJleHAiOjE1NzE4NzU3NzIsImlkZW50aXR5cHJvdmlkZXIiOiIwMDAwMDAwMS0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDBAM2FjZDI5NDUtNDdlOC00YTVjLTljNjgtMjkzOTY5MTA5ZTRkIiwibmFtZWlkIjoiNTdjMWUwNjctOWM1My00MjQ4LWE2MmEtZmJhZGI3YWMwODUyQDNhY2QyOTQ1LTQ3ZTgtNGE1Yy05YzY4LTI5Mzk2OTEwOWU0ZCIsIm9pZCI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInN1YiI6ImQ4ZWNhM2E3LTBiNTUtNDJhNy1iYTk3LTMxNTJjZjZkZTI0MCIsInRydXN0ZWRmb3JkZWxlZ2F0aW9uIjoiZmFsc2UifQ.lK2TrF_hpDJONp3uHcpKObejkk2NAQaI0UssIqlsTqMIhiIVpQomlsInxbMB5sHQErNNmru9EI2GFMilpzMcKFrVIRvYk1X9u9AZAjm3c80C9pKFyOucSDhkJ9bglrBTiQqfxzfWb8vgn06irBSf8-mX2DPJysnd88jEgTYD2MwboiNDTdg0dJxBhIvupOtzbsw2fH9W1UNN2vOBtKwreVT2RVSSxN909xalEI-GiDju5CP6Ax3NDFfO_KealLBeUzZGWBW2U1FiNSnwJKZhEPMPPLpS0EHWgkckxl1RPjHiKKo2_b_vafD8PXStplIvTcowdJLA_2bUAeytuckLng'
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkJCOENlRlZxeWFHckdOdWVoSklpTDRkZmp6dyIsImtpZCI6IkJCOENlRlZxeWFHckdOdWVoSklpTDRkZmp6dyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvZW5vdmVsc29sdWNpb25lcy5zaGFyZXBvaW50LmNvbUA5MjAwNDBiMy1jMjIwLTQ4YTItYTczZi0xMTc3ZmEyYzA5OGUiLCJpc3MiOiIwMDAwMDAwMS0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDBAOTIwMDQwYjMtYzIyMC00OGEyLWE3M2YtMTE3N2ZhMmMwOThlIiwiaWF0IjoxNTc0OTY2OTE5LCJuYmYiOjE1NzQ5NjY5MTksImV4cCI6MTU3NDk5NjAxOSwiaWRlbnRpdHlwcm92aWRlciI6IjAwMDAwMDAxLTAwMDAtMDAwMC1jMDAwLTAwMDAwMDAwMDAwMEA5MjAwNDBiMy1jMjIwLTQ4YTItYTczZi0xMTc3ZmEyYzA5OGUiLCJuYW1laWQiOiI5YzBhNTEyNS0zMDhhLTRiOTAtOWY2Mi00YzM3MWI2NDdlNDNAOTIwMDQwYjMtYzIyMC00OGEyLWE3M2YtMTE3N2ZhMmMwOThlIiwib2lkIjoiNGVhYjVlMDAtNzA2MS00OGVjLTg3ODItOGVhZmQzY2Y0MjJlIiwic3ViIjoiNGVhYjVlMDAtNzA2MS00OGVjLTg3ODItOGVhZmQzY2Y0MjJlIiwidHJ1c3RlZGZvcmRlbGVnYXRpb24iOiJmYWxzZSJ9.Vhk4gMQwpFleh-A77a3aYxnTyBZDU3UD5JJRq_JFubhx4QS39aKoTcNete_TDzNLxhJ_TFDjIO9KxmvnHsT_nfzzNz-dZCRX0oTLUmR4KW-Xfi3s6GTTIRr77VpcrFXq6StUHZZzEYU2-bTbKWE22kaH0q6mPvoN3_JA4er2DuW52pq9BrrG8hZJ7MJY8rlf_VqIhu-ljIOqTFf3Qxs5jcybbMfPgefiwomyvIP-uzodKfeAqInv9aKqrfd4ltHoMgwINHvYt0BTBbIxYgQQbbaOI1lc1wEBCega2T5Y2t6C-wgQKKB4AoL_a8BXbVH7FijwXh9zCmynjUO5JnVxRQ'
             }
         }, environment.urlWeb);
 
@@ -94,8 +94,8 @@ export class SPServicio {
         return respuesta;
     }
 
-    obtenerConsecutivoInciail() {
-        let respuesta = from(this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaConfiguracion).items.get());
+    async obtenerConsecutivoInciail(): Promise<any> {
+        let respuesta = await this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaConfiguracion).items.get();
         return respuesta;
     }
 
