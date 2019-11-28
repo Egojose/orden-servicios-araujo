@@ -62,11 +62,11 @@ export class SPServicio {
     }
 
     AgregarOrden(ObjOrden){
-        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaOrdenes).items.add(ObjOrden)
+        return this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaOrdenes).items.add(ObjOrden)
     }
 
     ActualizarOrden(IdOrden: number, objOrden) {
-        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaOrdenes).items.getById(IdOrden).update(objOrden);
+        return this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaOrdenes).items.getById(IdOrden).update(objOrden);
     }
 
     ObtenerGruposUsuario(usuarioId: number){
@@ -106,7 +106,7 @@ export class SPServicio {
 
 
     async ActualizarNroOrden(idServicio: number, objConfig): Promise<any> {
-         return await this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaConfiguracion).items.getById(idServicio).update(objConfig);
+         return await this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaConfiguracion).items.getById(idServicio).update(objConfig);
     }
 
     ConsultarMisPendientes(idUsuario) {
@@ -135,12 +135,12 @@ export class SPServicio {
     }
 
     EnviarNotificacion(objNotificacion){
-        let respuesta = this.ObtenerConfiguracionConPost().utility.sendEmail(objNotificacion);
+        let respuesta = this.ObtenerConfiguracion().utility.sendEmail(objNotificacion);
         return respuesta;
     }
 
     ValidarUsuarioGerente() {
-        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.listaAprobadores).items.getAll();
+        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaAprobadores).items.getAll();
         return respuesta;
     } 
 
@@ -155,17 +155,17 @@ export class SPServicio {
     }
 
     GuardarServicio(ObjServicio){
-        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaServicios).items.add(ObjServicio);
+        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaServicios).items.add(ObjServicio);
         return respuesta;
     }
 
     // ActualizarServicio(id, objServicio) {
-    //     let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaServicios).items.getById(id).update(objServicio);
+    //     let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaServicios).items.getById(id).update(objServicio);
     //     return respuesta;
     // }
 
     ModificarServicio(ObjServicio, idServicio){
-        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaServicios).items.getById(idServicio).update(ObjServicio);
+        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaServicios).items.getById(idServicio).update(ObjServicio);
         return respuesta; 
     }
 
@@ -175,7 +175,7 @@ export class SPServicio {
     }
 
     async AgregarCecos(ObjOrden){
-        return await this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.add(ObjOrden)
+        return await this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCecos).items.add(ObjOrden)
     }
 
     // ObtenerParticipacion(idOrden) {
@@ -189,17 +189,17 @@ export class SPServicio {
     }
 
     ModificarParticipacion(id, objPorcentaje){
-        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.filter("OrdenServicioId eq '"+id+"'").getById(id).update(objPorcentaje);
+        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCecos).items.filter("OrdenServicioId eq '"+id+"'").getById(id).update(objPorcentaje);
         return respuesta;
     }
 
     aprobarParticipacionPorCeco(id, objPorcentaje) {
-        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.filter("ID eq '"+id+"'").getById(id).update(objPorcentaje);
+        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCecos).items.filter("ID eq '"+id+"'").getById(id).update(objPorcentaje);
         return respuesta;
     }
 
     borrarCecos(OrdenServicio: number){
-        return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.getById(OrdenServicio).delete();
+        return this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCecos).items.getById(OrdenServicio).delete();
     }
 
 }
