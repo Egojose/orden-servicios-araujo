@@ -18,6 +18,7 @@ import { ExportAsModule } from 'ngx-export-as';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BandejaServiciosComponent } from './bandeja-servicios/bandeja-servicios.component';
 import { EditarOrdenComponent } from './editar-orden/editar-orden.component';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,

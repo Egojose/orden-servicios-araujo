@@ -6,7 +6,8 @@ export class BandejaServicios{
         public FechaSolicitud: Date,
         public Empresa: string,
         public Estado: string,
-        public RazonSocial: string
+        public RazonSocial: string,
+        public NroJob: string
     ) { }
 
     public static fromJson(element: any) {
@@ -17,7 +18,8 @@ export class BandejaServicios{
             element.Created,
             element.Title,
             element.Estado,
-            element.RazonSocial
+            element.RazonSocial,
+            element.NroJob
         );
     }
 

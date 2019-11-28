@@ -96,7 +96,11 @@
       "always",
       "strict-bound-class-methods"
     ],
+<<<<<<< HEAD
     "prefer-const": false,
     
+=======
+    "prefer-const": false,    
+>>>>>>> master
   }
 }
