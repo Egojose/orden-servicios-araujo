@@ -272,7 +272,7 @@ export class EditarOrdenComponent implements OnInit {
   }; 
 
   obtenerConsecutivoInicial() {
-    this.servicio.obtenerConsecutivoInciail().subscribe(
+    this.servicio.obtenerConsecutivoInciail().then(
       (respuesta) => {
        this.config = Configuracion.fromJsonList(respuesta);
       }
