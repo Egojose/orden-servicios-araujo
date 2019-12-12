@@ -15,6 +15,8 @@ import { async } from 'q';
 import { promise } from 'protractor';
 import { CentroCosto } from '../dominio/centroCosto';
 import { Sede } from '../dominio/sede';
+import { Proveedores } from '../dominio/proveedores';
+import { ClienteJobs } from '../dominio/clienteJobs';
 
 
 @Component({
@@ -35,6 +37,7 @@ export class OrdenServiciosComponent implements OnInit {
   unegocios: Unegocios[] = [];
   config: Configuracion[] = [];
   empresa: Empresas[] = [];
+  proveedor: Proveedores[] = [];
   sedes: Sede[] = [];
   ivaCalculado: number;
   total: number;
@@ -42,7 +45,8 @@ export class OrdenServiciosComponent implements OnInit {
   empleadoEditar: Empleado[] = [];
   usuarioActual: Usuario;
   usuarios: Usuario[] = [];
-  areas: CentroCosto[] = []
+  areas: CentroCosto[] = [];
+  cliente: ClienteJobs[] = [];
   nombreUsuario;
   idUsuario: number;
   jefe;
@@ -98,6 +102,7 @@ export class OrdenServiciosComponent implements OnInit {
       telProveedor: ['', Validators.required],
       direccionProveedor: ['', Validators.required],
       contactoProveedor: ['', Validators.required],
+      emailRepresentante: ['', Validators.required],
       regimen: ['', Validators.required],
       rut: [''],
       camara: [''],
@@ -235,6 +240,38 @@ export class OrdenServiciosComponent implements OnInit {
     )
   }
 
+  obtenerProveedores() {
+    this.servicio.obtenerProveedor().subscribe(
+      (respuesta) => {
+        this.proveedor = Proveedores.fromJsonList(respuesta);
+      }
+    )
+  }
+
+  obtenerCliente() {
+    this.servicio.obtenerClientesJobs().subscribe(
+      (respuesta) => {
+        this.cliente = ClienteJobs.fromJsonList(respuesta);
+      }
+    )
+  }
+
+  datosProveedor($event) {
+    console.log($event);
+    let nit = $event.value.nit;
+    let ciudad = $event.value.ciudad;
+    let telefono = $event.value.telefono;
+    let direccion = $event.value.direccion;
+    let representante = $event.value.representante;
+    let email = $event.value.emailRepresentante;
+    this.generarOrdenServicios.controls['nitProveedor'].setValue(nit);
+    this.generarOrdenServicios.controls['ciudadProveedor'].setValue(ciudad);
+    this.generarOrdenServicios.controls['telProveedor'].setValue(telefono);
+    this.generarOrdenServicios.controls['direccionProveedor'].setValue(direccion);
+    this.generarOrdenServicios.controls['contactoProveedor'].setValue(representante);
+    this.generarOrdenServicios.controls['emailRepresentante'].setValue(email);
+  }
+
   obtenerCeco() {
     this.servicio.obtenerCecos().subscribe(
       (respuesta) => {
@@ -242,6 +279,11 @@ export class OrdenServiciosComponent implements OnInit {
         console.log(this.areas)
       }
     )
+  }
+
+  clientes($event) {
+    let nit = $event.value.nit;
+    this.generarOrdenServicios.controls['job'].setValue(nit);
   }
 
   changeCeco($event) {
@@ -273,7 +315,9 @@ export class OrdenServiciosComponent implements OnInit {
       (respuesta) => {
         this.config = Configuracion.fromJsonList(respuesta);
         this.cargarNroOrden();
-        this.obtenerEmpresa()
+        this.obtenerEmpresa();
+        this.obtenerProveedores();
+        this.obtenerCliente();
         console.log(this.config);
       }
     )

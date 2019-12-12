@@ -15,6 +15,8 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { Sede } from '../dominio/sede';
 import { CentroCosto } from '../dominio/centroCosto';
 import { Empresas } from '../dominio/empresas';
+import { Proveedores } from '../dominio/proveedores';
+import { ClienteJobs } from '../dominio/clienteJobs';
 
 @Component({
   selector: 'app-editar-orden',
@@ -37,6 +39,8 @@ export class EditarOrdenComponent implements OnInit {
   config : Configuracion [] = [];
   empresa: Empresas [] = [];
   orden: Orden[] = [];
+  proveedor: Proveedores[] = [];
+  cliente: ClienteJobs[] = [];
   esConsultores: boolean;
   esAsociados: boolean;
   ivaCalculado: number;
@@ -105,6 +109,7 @@ export class EditarOrdenComponent implements OnInit {
       camara: [''],
       descripcionServicios: ['', Validators.required],
       cliente: [''],
+      emailRepresentante: ['', Validators.required],
       job: [''],
       precio: ['', Validators.required],
       tieneIva: [''],
@@ -227,6 +232,39 @@ export class EditarOrdenComponent implements OnInit {
     )
   };
 
+  obtenerProveedores() {
+    this.servicio.obtenerProveedor().subscribe(
+      (respuesta) => {
+        this.proveedor = Proveedores.fromJsonList(respuesta);
+      }
+    )
+  }
+
+  obtenerCliente() {
+    this.servicio.obtenerClientesJobs().subscribe(
+      (respuesta) => {
+        this.cliente = ClienteJobs.fromJsonList(respuesta);
+      }
+    )
+  }
+
+  datosProveedor($event) {
+    console.log($event);
+    let nit = $event.value.nit;
+    let ciudad = $event.value.ciudad;
+    let telefono = $event.value.telefono;
+    let direccion = $event.value.direccion;
+    let representante = $event.value.representante;
+    let email = $event.value.emailRepresentante;
+    this.editarOrden.controls['nitProveedor'].setValue(nit);
+    this.editarOrden.controls['ciudadProveedor'].setValue(ciudad);
+    this.editarOrden.controls['telProveedor'].setValue(telefono);
+    this.editarOrden.controls['direccionProveedor'].setValue(direccion);
+    this.editarOrden.controls['contactoProveedor'].setValue(representante);
+    this.editarOrden.controls['emailRepresentante'].setValue(email);
+  }
+
+
   obtenerCeco() {
     this.servicio.obtenerCecos().subscribe(
       (respuesta) => {
@@ -234,6 +272,11 @@ export class EditarOrdenComponent implements OnInit {
       }
     )
   };
+
+  clientes($event) {
+    let nit = $event.value.nit;
+    this.editarOrden.controls['job'].setValue(nit);
+  }
 
   validarPorcentaje() {
     this.porcentajeAsumidoNum = parseInt(this.editarOrden.get('porcentajeAsumido').value, 10)
@@ -275,6 +318,8 @@ export class EditarOrdenComponent implements OnInit {
     this.servicio.obtenerConsecutivoInciail().then(
       (respuesta) => {
        this.config = Configuracion.fromJsonList(respuesta);
+       this.obtenerProveedores();
+       this.obtenerCliente();
       }
     )
   }; 
