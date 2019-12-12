@@ -18,7 +18,11 @@
         <div class="row">
           <div class="col-md-2 offset-10">
               <h3><strong>N° {{NumeroOrden}}</strong></h3>
-          </div>         
+          </div>
+          <div class="col-md-3" *ngIf="mostrarBtn">
+            <button type="button" class="btn btn-success btn-block" (click)="abrirDocumento()">Ver propuesta</button>
+          </div>
+          <div class="col-md-4" *ngIf="!mostrarBtn"><button type="button" class="btn btn-default" disabled>Sin adjunto propuesta de proveedor</button></div>
         </div>
         <br>
           <div class="row">
@@ -124,7 +128,7 @@
           <div class="row">
             <div class="col-md-12">
               <mat-form-field>
-                <input matInput placeholder="Contacto" formControlName="contactoProveedor" readonly>
+                <input matInput placeholder="Representante legal" formControlName="contactoProveedor" readonly>
               </mat-form-field>
             </div>
           </div>
@@ -354,7 +358,7 @@
                   </div>
                   <div class="col-md-6">
                     <mat-form-field>
-                      <input matInput placeholder="Concepto" formControlName="conceptoUnico">
+                      <input matInput placeholder="Concepto" formControlName="conceptoUnico" readonly>
                     </mat-form-field>
                   </div>
                 </div>

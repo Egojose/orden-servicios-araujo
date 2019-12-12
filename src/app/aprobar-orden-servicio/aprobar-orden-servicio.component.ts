@@ -13,6 +13,7 @@ import { EmailProperties } from '@pnp/sp';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from "ngx-spinner";
 import { PorcentajeCecos } from '../dominio/porcentajeCecos'
+import { Documento } from '../dominio/documento';
 
 @Component({
   selector: 'app-aprobar-orden-servicio',
@@ -94,6 +95,8 @@ export class AprobarOrdenServicioComponent implements OnInit {
   personaNatural: boolean;
   afiliar: boolean;
   mostrarBotonesAprobarRechazar: boolean;
+  documentoPropuesta: Documento[] = [];
+  mostrarBtn: boolean = true;
 
 
   constructor(
@@ -197,7 +200,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       conceptoPago3: [''],
       conceptoPago4: [''],
       conceptoPago5: [''],
-      conceptoPago6: ['']
+      conceptoPago6: [''],
     })
   }
 
@@ -254,8 +257,28 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.obtenerfirmaUsuario();
         this.obtenerParametroAprobacion();
         this.obtenerParticipacionCecos();
+        this.obtenerDocumentos();
       }
     )
+  }
+
+  obtenerDocumentos() {
+    let id = this.orden[0].id
+    this.servicio.obtenerDocumentos(id).then(
+      (respuesta) => {
+        this.documentoPropuesta = Documento.fromJsonList(respuesta);
+        console.log(this.documentoPropuesta);
+        this.documentoPropuesta.length === 0 ? this.mostrarBtn = false: this.mostrarBtn = true;
+      }
+    ).catch(
+      error => {
+        console.log('Error obteniendo los documentos: ' + error);
+      }
+    )
+  }
+
+  abrirDocumento() {
+    window.open(this.documentoPropuesta[0].rutaArchivo, '_blank');
   }
 
   obtenerParametroAprobacion() {
