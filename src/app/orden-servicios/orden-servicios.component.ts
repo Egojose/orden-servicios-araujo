@@ -63,6 +63,8 @@ export class OrdenServiciosComponent implements OnInit {
   afiliar: boolean;
   mostrarTablaCecos: boolean;
   nroOrden: string;
+  adjuntoPropuesta: any;
+  idDocumentoAdjunto: any;
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -319,6 +321,51 @@ export class OrdenServiciosComponent implements OnInit {
         this.obtenerProveedores();
         this.obtenerCliente();
         console.log(this.config);
+      }
+    )
+  }
+
+  adjuntarPropuesta($event) {
+    let adjunto = $event.target.files[0];
+    if (adjunto != null) {
+      this.adjuntoPropuesta = adjunto;
+      this.agregarPropuesta();
+    } else {
+      this.adjuntoPropuesta = null;
+    };
+  };
+
+  async agregarPropuesta() {
+    let obj = {
+      Title: this.adjuntoPropuesta.name,
+      // idOrdenServicioId: this.empleado[0].id
+    }
+    await this.servicio.AgregarPropuesta(this.adjuntoPropuesta.name, this.adjuntoPropuesta).then(
+      f => {
+        console.log(f);
+        f.file.getItem().then(item => {
+          console.log(item);
+          this.idDocumentoAdjunto = item.Id;
+          // this.actualizarMetadatosHV(obj, idDocumento);
+          // item.update(obj);               
+        })
+      }
+    ).catch(
+      (error) => {
+        console.log(error)
+        this.MensajeError('No se pudo cargar el archivo. Intente de nuevo')
+      }
+    );
+  };
+
+  actualizarMetadatosAdjuntoPropuestas(obj,idDocumento) {
+    this.servicio.ActualizarMetaDatosAdjuntoPropuestas(obj, idDocumento).then(
+      (res) => {
+        this.MensajeInfo('Se agregó la propuesta a la orden de servicio')
+      }
+    ).catch(
+      (error) => {
+        console.log(error);
       }
     )
   }
@@ -639,6 +686,7 @@ export class OrdenServiciosComponent implements OnInit {
     }
     
     // let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
+    let objAdjuntoPropuesta;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value.nombre;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
     let ciudadSolicitante = this.generarOrdenServicios.get('ciudadSolicitante').value.nombre;
@@ -649,7 +697,7 @@ export class OrdenServiciosComponent implements OnInit {
     let unidadNegocios = this.generarOrdenServicios.get('unidadNegocios').value;
     let nombreCECO = this.generarOrdenServicios.get('nombreCECO').value.nombre;
     let numeroCECO = this.generarOrdenServicios.get('numeroCECO').value;
-    let razonSocial = this.generarOrdenServicios.get('razonSocial').value;
+    let razonSocial = this.generarOrdenServicios.get('razonSocial').value.nombre;
     let nitProveedor = this.generarOrdenServicios.get('nitProveedor').value;
     let ciudadProveedor = this.generarOrdenServicios.get('ciudadProveedor').value;
     let telProveedor = this.generarOrdenServicios.get('telProveedor').value;
@@ -659,7 +707,7 @@ export class OrdenServiciosComponent implements OnInit {
     let rut = this.generarOrdenServicios.get('rut').value;
     let camara = this.generarOrdenServicios.get('camara').value;
     let descripcionServicios = this.generarOrdenServicios.get('descripcionServicios').value;
-    let cliente = this.generarOrdenServicios.get('cliente').value;
+    let cliente = this.generarOrdenServicios.get('cliente').value.cliente;
     let job = this.generarOrdenServicios.get('job').value;
     let precio = this.generarOrdenServicios.get('precio').value;
     let iva = this.generarOrdenServicios.get('iva').value;
@@ -863,6 +911,7 @@ export class OrdenServiciosComponent implements OnInit {
       ConceptoPago6: conceptoPago6
     }
 
+
     if (this.generarOrdenServicios.invalid) {
       this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
       this.spinner.hide();
@@ -871,6 +920,10 @@ export class OrdenServiciosComponent implements OnInit {
       this.servicio.AgregarOrden(objOrden).then(
         (item: ItemAddResult) => {
           this.idOrden = item.data.Id
+          objAdjuntoPropuesta = {
+            idOrdenServicioId: this.idOrden.toString()
+          }
+          this.actualizarMetadatosAdjuntoPropuestas(objAdjuntoPropuesta, this.idDocumentoAdjunto);
           // let idOrden = item.data.Id;
           let numeroOrden = this.generarOrdenServicios.get('nroOrden').value
           console.log(this.idOrden);
