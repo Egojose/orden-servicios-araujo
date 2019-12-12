@@ -17,6 +17,16 @@ export class SPServicio {
         return configuracionSharepoint;
     }
 
+    public ObtenerConfiguracionJobs() {
+        const configuracionSharepoint = sp.configure({
+            headers: {
+                'Accept': 'application/json; odata=verbose'
+            }
+        }, environment.urlWebJobs);
+
+        return configuracionSharepoint;
+    }
+
     public ObtenerConfiguracionGH() {
         const configuracionSharepoint = sp.configure({
             headers: {
@@ -200,6 +210,16 @@ export class SPServicio {
 
     borrarCecos(OrdenServicio: number){
         return this.ObtenerConfiguracionConPost().web.lists.getByTitle(environment.ListaCecos).items.getById(OrdenServicio).delete();
+    }
+
+    obtenerProveedor() {
+        let respuesta = from(this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaProveedores).select("*").items.get());
+        return respuesta; 
+    }
+
+    obtenerClientesJobs() {
+        let respuesta = from(this.ObtenerConfiguracionJobs().web.lists.getByTitle(environment.ListaCliente).select('*').items.get());
+        return respuesta;
     }
 
 }
