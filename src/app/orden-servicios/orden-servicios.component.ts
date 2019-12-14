@@ -65,6 +65,7 @@ export class OrdenServiciosComponent implements OnInit {
   nroOrden: string;
   adjuntoPropuesta: any;
   idDocumentoAdjunto: any;
+  documentoClausula: any[];
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -703,6 +704,7 @@ export class OrdenServiciosComponent implements OnInit {
     let telProveedor = this.generarOrdenServicios.get('telProveedor').value;
     let direccionProveedor = this.generarOrdenServicios.get('direccionProveedor').value;
     let contactoProveedor = this.generarOrdenServicios.get('contactoProveedor').value;
+    let emailProveedor = this.generarOrdenServicios.get('emailRepresentante').value;
     let regimen = this.generarOrdenServicios.get('regimen').value;
     let rut = this.generarOrdenServicios.get('rut').value;
     let camara = this.generarOrdenServicios.get('camara').value;
@@ -847,6 +849,7 @@ export class OrdenServiciosComponent implements OnInit {
       TelProveedor: telProveedor,
       DireccionProveedor: direccionProveedor,
       ContactoProveedor: contactoProveedor,
+      EmailProveedor: emailProveedor,
       Regimen: regimen,
       Rut: rut,
       CamaraComercio: camara,
@@ -923,7 +926,9 @@ export class OrdenServiciosComponent implements OnInit {
           objAdjuntoPropuesta = {
             idOrdenServicioId: this.idOrden.toString()
           }
-          this.actualizarMetadatosAdjuntoPropuestas(objAdjuntoPropuesta, this.idDocumentoAdjunto);
+          if(this.idDocumentoAdjunto !== undefined) {
+            this.actualizarMetadatosAdjuntoPropuestas(objAdjuntoPropuesta, this.idDocumentoAdjunto);
+          }
           // let idOrden = item.data.Id;
           let numeroOrden = this.generarOrdenServicios.get('nroOrden').value
           console.log(this.idOrden);
