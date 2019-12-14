@@ -104,12 +104,12 @@ export class EditarOrdenComponent implements OnInit {
       telProveedor: ['', Validators.required],
       direccionProveedor: ['', Validators.required],
       contactoProveedor: ['', Validators.required],
+      emailRepresentante: ['', Validators.required],
       regimen: ['', Validators.required],
       rut: [''],
       camara: [''],
       descripcionServicios: ['', Validators.required],
       cliente: [''],
-      emailRepresentante: ['', Validators.required],
       job: [''],
       precio: ['', Validators.required],
       tieneIva: [''],
@@ -526,6 +526,7 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['telProveedor'].setValue(this.orden[0].telProveedor);
     this.editarOrden.controls['direccionProveedor'].setValue(this.orden[0].direccionProveedor);
     this.editarOrden.controls['contactoProveedor'].setValue(this.orden[0].contactoProveedor);
+    this.editarOrden.controls['emailRepresentante'].setValue(this.orden[0].emailProveedor);
     this.editarOrden.controls['regimen'].setValue(this.orden[0].regimen);
     this.editarOrden.controls['rut'].setValue(this.orden[0].rut);
     this.editarOrden.controls['camara'].setValue(this.orden[0].camara);
@@ -739,17 +740,18 @@ export class EditarOrdenComponent implements OnInit {
     let unidadNegocios = this.editarOrden.get('unidadNegocios').value;
     let nombreCECO = this.editarOrden.get('nombreCECO').value.nombre;
     let numeroCECO = this.editarOrden.get('numeroCECO').value;
-    let razonSocial = this.editarOrden.get('razonSocial').value;
+    let razonSocial = this.editarOrden.get('razonSocial').value.nombre;
     let nitProveedor = this.editarOrden.get('nitProveedor').value;
     let ciudadProveedor = this.editarOrden.get('ciudadProveedor').value;
     let telProveedor = this.editarOrden.get('telProveedor').value;
     let direccionProveedor = this.editarOrden.get('direccionProveedor').value;
     let contactoProveedor = this.editarOrden.get('contactoProveedor').value;
+    let emailProveedor = this.editarOrden.get('emailRepresentante').value;
     let regimen = this.editarOrden.get('regimen').value;
     let rut = this.editarOrden.get('rut').value;
     let camara = this.editarOrden.get('camara').value;
     let descripcionServicios = this.editarOrden.get('descripcionServicios').value;
-    let cliente = this.editarOrden.get('cliente').value;
+    let cliente = this.editarOrden.get('cliente').value.cliente;
     let job = this.editarOrden.get('job').value;
     let precio = this.editarOrden.get('precio').value;
     let iva = this.editarOrden.get('iva').value;
@@ -890,6 +892,7 @@ export class EditarOrdenComponent implements OnInit {
       TelProveedor: telProveedor,
       DireccionProveedor: direccionProveedor,
       ContactoProveedor: contactoProveedor,
+      EmailProveedor: emailProveedor,
       Regimen: regimen,
       Rut: rut,
       CamaraComercio: camara,
