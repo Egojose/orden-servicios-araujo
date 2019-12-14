@@ -135,6 +135,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
       telProveedor: [''],
       direccionProveedor: [''],
       contactoProveedor: [''],
+      emailProveedor: [''],
       regimen: ['',],
       rut: [''],
       camara: [''],
@@ -363,6 +364,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.aprobarOrdenServicios.controls['telProveedor'].setValue(this.orden[0].telProveedor);
     this.aprobarOrdenServicios.controls['direccionProveedor'].setValue(this.orden[0].direccionProveedor);
     this.aprobarOrdenServicios.controls['contactoProveedor'].setValue(this.orden[0].contactoProveedor);
+    this.aprobarOrdenServicios.controls['emailProveedor'].setValue(this.orden[0].emailProveedor);
     this.aprobarOrdenServicios.controls['regimen'].setValue(this.orden[0].regimen);
     this.aprobarOrdenServicios.controls['rut'].setValue(this.orden[0].rut);
     this.aprobarOrdenServicios.controls['camara'].setValue(this.orden[0].camara);
