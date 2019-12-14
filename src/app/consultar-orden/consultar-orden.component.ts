@@ -95,6 +95,8 @@ export class ConsultarOrdenComponent implements OnInit {
   valorLetras;
   personaNatural: boolean;
   afiliar: boolean;
+  verClausula: boolean = false;
+  documentoClausula: any[];
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private spinner: NgxSpinnerService) { }
 
@@ -236,6 +238,10 @@ export class ConsultarOrdenComponent implements OnInit {
         if(this.orden[0].estado === 'Pendiente de radicar factura') {
           this.pagar = true;
         }
+
+        if(this.orden[0].total >= 8000000) {
+          this.verClausula = true;
+        }
         this.ordenNro = this.aprobarOrdenServicios.get('nroOrden').value;
         this.valoresPorDefecto();
         this.cargarValoresFirma();
@@ -253,6 +259,19 @@ export class ConsultarOrdenComponent implements OnInit {
         console.log(this.participacionCecos);
       }
     )
+  }
+
+  obtenerClausula() {
+    this.servicio.obtenerClausulas().then(
+      (respuesta) => {
+        this.documentoClausula = respuesta;
+        console.log(respuesta);
+      }
+    )
+  }
+
+  descargarClausula() {
+    window.open('https://enovelsoluciones.sharepoint.com' + this.documentoClausula[0].File.ServerRelativeUrl, '_blank');
   }
 
   disableButtons():void {

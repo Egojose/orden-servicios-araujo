@@ -19,6 +19,11 @@
                 <button type="button" class="btn btn-success btn-block" (click)="recibir()">Pagar</button>
               </div>
             </ng-container>
+            <ng-container *ngIf="verClausula">
+              <div class="col-md-3">
+                <button type="button" class="btn btn-success btn-block" (click)="descargarClausula()">Ver cláusula</button>
+              </div>
+            </ng-container>
           </div>
           <br>
           <div class="row">
