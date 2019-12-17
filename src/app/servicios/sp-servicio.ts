@@ -223,13 +223,13 @@ export class SPServicio {
     }
 
     async AgregarPropuesta(nombre, archivo: File): Promise<any> {
-        let respuesta = await this.ObtenerConfiguracionConPost().web.getFolderByServerRelativeUrl("PropuestasProveedores").files.add(nombre, archivo);
+        let respuesta = await this.ObtenerConfiguracion().web.getFolderByServerRelativeUrl("PropuestasProveedores").files.add(nombre, archivo);
         return respuesta;
         
     }
 
     ActualizarMetaDatosAdjuntoPropuestas(obj, idDocumento){
-        let respuesta = this.ObtenerConfiguracionConPost().web.lists.getByTitle("PropuestasProveedores").items.getById(idDocumento).update(obj);
+        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle("PropuestasProveedores").items.getById(idDocumento).update(obj);
         return respuesta;
     }
 
