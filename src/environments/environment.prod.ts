@@ -3,6 +3,7 @@ export const environment = {
   urlRaiz: 'https://enovelsoluciones.sharepoint.com/',
   urlWeb: 'https://enovelsoluciones.sharepoint.com/sites/IntranetAraujo/servicios',
   urlWebGH: 'https://enovelsoluciones.sharepoint.com/sites/IntranetAraujo/Gestion-humana',
+  urlWebJobs: 'https://enovelsoluciones.sharepoint.com/sites/IntranetAraujo/Jobs',
   urlReltativa: 'sites/Intranet/Servicios',
   listaOrdenes: 'OrdenServicios',
   listaConfiguracion: 'ConfiguracionOrdenServicio',
@@ -13,5 +14,7 @@ export const environment = {
   ListaEmpresas: 'EmpresasAraujoIbarra',
   ListaCeco: 'CentroCostos',
   ListaSedes: 'Sedes',
-  ListaCecos: 'ParticipacionCecoOS'
+  ListaCecos: 'ParticipacionCecoOS',
+  ListaProveedores: 'Proveedores',
+  ListaCliente: 'Cliente'
 };

@@ -15,6 +15,8 @@ import { async } from 'q';
 import { promise } from 'protractor';
 import { CentroCosto } from '../dominio/centroCosto';
 import { Sede } from '../dominio/sede';
+import { Proveedores } from '../dominio/proveedores';
+import { ClienteJobs } from '../dominio/clienteJobs';
 
 
 @Component({
@@ -35,6 +37,7 @@ export class OrdenServiciosComponent implements OnInit {
   unegocios: Unegocios[] = [];
   config: Configuracion[] = [];
   empresa: Empresas[] = [];
+  proveedor: Proveedores[] = [];
   sedes: Sede[] = [];
   ivaCalculado: number;
   total: number;
@@ -42,7 +45,8 @@ export class OrdenServiciosComponent implements OnInit {
   empleadoEditar: Empleado[] = [];
   usuarioActual: Usuario;
   usuarios: Usuario[] = [];
-  areas: CentroCosto[] = []
+  areas: CentroCosto[] = [];
+  cliente: ClienteJobs[] = [];
   nombreUsuario;
   idUsuario: number;
   jefe;
@@ -59,6 +63,9 @@ export class OrdenServiciosComponent implements OnInit {
   afiliar: boolean;
   mostrarTablaCecos: boolean;
   nroOrden: string;
+  adjuntoPropuesta: any;
+  idDocumentoAdjunto: any;
+  documentoClausula: any[];
 
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
@@ -98,6 +105,7 @@ export class OrdenServiciosComponent implements OnInit {
       telProveedor: ['', Validators.required],
       direccionProveedor: ['', Validators.required],
       contactoProveedor: ['', Validators.required],
+      emailRepresentante: ['', Validators.required],
       regimen: ['', Validators.required],
       rut: [''],
       camara: [''],
@@ -235,6 +243,38 @@ export class OrdenServiciosComponent implements OnInit {
     )
   }
 
+  obtenerProveedores() {
+    this.servicio.obtenerProveedor().subscribe(
+      (respuesta) => {
+        this.proveedor = Proveedores.fromJsonList(respuesta);
+      }
+    )
+  }
+
+  obtenerCliente() {
+    this.servicio.obtenerClientesJobs().subscribe(
+      (respuesta) => {
+        this.cliente = ClienteJobs.fromJsonList(respuesta);
+      }
+    )
+  }
+
+  datosProveedor($event) {
+    console.log($event);
+    let nit = $event.value.nit;
+    let ciudad = $event.value.ciudad;
+    let telefono = $event.value.telefono;
+    let direccion = $event.value.direccion;
+    let representante = $event.value.representante;
+    let email = $event.value.emailRepresentante;
+    this.generarOrdenServicios.controls['nitProveedor'].setValue(nit);
+    this.generarOrdenServicios.controls['ciudadProveedor'].setValue(ciudad);
+    this.generarOrdenServicios.controls['telProveedor'].setValue(telefono);
+    this.generarOrdenServicios.controls['direccionProveedor'].setValue(direccion);
+    this.generarOrdenServicios.controls['contactoProveedor'].setValue(representante);
+    this.generarOrdenServicios.controls['emailRepresentante'].setValue(email);
+  }
+
   obtenerCeco() {
     this.servicio.obtenerCecos().subscribe(
       (respuesta) => {
@@ -242,6 +282,11 @@ export class OrdenServiciosComponent implements OnInit {
         console.log(this.areas)
       }
     )
+  }
+
+  clientes($event) {
+    let nit = $event.value.nit;
+    this.generarOrdenServicios.controls['job'].setValue(nit);
   }
 
   changeCeco($event) {
@@ -273,8 +318,55 @@ export class OrdenServiciosComponent implements OnInit {
       (respuesta) => {
         this.config = Configuracion.fromJsonList(respuesta);
         this.cargarNroOrden();
-        this.obtenerEmpresa()
+        this.obtenerEmpresa();
+        this.obtenerProveedores();
+        this.obtenerCliente();
         console.log(this.config);
+      }
+    )
+  }
+
+  adjuntarPropuesta($event) {
+    let adjunto = $event.target.files[0];
+    if (adjunto != null) {
+      this.adjuntoPropuesta = adjunto;
+      this.agregarPropuesta();
+    } else {
+      this.adjuntoPropuesta = null;
+    };
+  };
+
+  async agregarPropuesta() {
+    let obj = {
+      Title: this.adjuntoPropuesta.name,
+      // idOrdenServicioId: this.empleado[0].id
+    }
+    await this.servicio.AgregarPropuesta(this.adjuntoPropuesta.name, this.adjuntoPropuesta).then(
+      f => {
+        console.log(f);
+        f.file.getItem().then(item => {
+          console.log(item);
+          this.idDocumentoAdjunto = item.Id;
+          // this.actualizarMetadatosHV(obj, idDocumento);
+          // item.update(obj);               
+        })
+      }
+    ).catch(
+      (error) => {
+        console.log(error)
+        this.MensajeError('No se pudo cargar el archivo. Intente de nuevo')
+      }
+    );
+  };
+
+  actualizarMetadatosAdjuntoPropuestas(obj,idDocumento) {
+    this.servicio.ActualizarMetaDatosAdjuntoPropuestas(obj, idDocumento).then(
+      (res) => {
+        this.MensajeInfo('Se agregó la propuesta a la orden de servicio')
+      }
+    ).catch(
+      (error) => {
+        console.log(error);
       }
     )
   }
@@ -595,6 +687,7 @@ export class OrdenServiciosComponent implements OnInit {
     }
     
     // let nroOrden = this.generarOrdenServicios.get('nroOrden').value;
+    let objAdjuntoPropuesta;
     let empresaSolicitante = this.generarOrdenServicios.get('empresaSolicitante').value.nombre;
     let nitSolicitante = this.generarOrdenServicios.get('nitSolicitante').value;
     let ciudadSolicitante = this.generarOrdenServicios.get('ciudadSolicitante').value.nombre;
@@ -605,17 +698,18 @@ export class OrdenServiciosComponent implements OnInit {
     let unidadNegocios = this.generarOrdenServicios.get('unidadNegocios').value;
     let nombreCECO = this.generarOrdenServicios.get('nombreCECO').value.nombre;
     let numeroCECO = this.generarOrdenServicios.get('numeroCECO').value;
-    let razonSocial = this.generarOrdenServicios.get('razonSocial').value;
+    let razonSocial = this.generarOrdenServicios.get('razonSocial').value.nombre;
     let nitProveedor = this.generarOrdenServicios.get('nitProveedor').value;
     let ciudadProveedor = this.generarOrdenServicios.get('ciudadProveedor').value;
     let telProveedor = this.generarOrdenServicios.get('telProveedor').value;
     let direccionProveedor = this.generarOrdenServicios.get('direccionProveedor').value;
     let contactoProveedor = this.generarOrdenServicios.get('contactoProveedor').value;
+    let emailProveedor = this.generarOrdenServicios.get('emailRepresentante').value;
     let regimen = this.generarOrdenServicios.get('regimen').value;
     let rut = this.generarOrdenServicios.get('rut').value;
     let camara = this.generarOrdenServicios.get('camara').value;
     let descripcionServicios = this.generarOrdenServicios.get('descripcionServicios').value;
-    let cliente = this.generarOrdenServicios.get('cliente').value;
+    let cliente = this.generarOrdenServicios.get('cliente').value.cliente;
     let job = this.generarOrdenServicios.get('job').value;
     let precio = this.generarOrdenServicios.get('precio').value;
     let iva = this.generarOrdenServicios.get('iva').value;
@@ -755,6 +849,7 @@ export class OrdenServiciosComponent implements OnInit {
       TelProveedor: telProveedor,
       DireccionProveedor: direccionProveedor,
       ContactoProveedor: contactoProveedor,
+      EmailProveedor: emailProveedor,
       Regimen: regimen,
       Rut: rut,
       CamaraComercio: camara,
@@ -819,6 +914,7 @@ export class OrdenServiciosComponent implements OnInit {
       ConceptoPago6: conceptoPago6
     }
 
+
     if (this.generarOrdenServicios.invalid) {
       this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
       this.spinner.hide();
@@ -827,6 +923,12 @@ export class OrdenServiciosComponent implements OnInit {
       this.servicio.AgregarOrden(objOrden).then(
         (item: ItemAddResult) => {
           this.idOrden = item.data.Id
+          objAdjuntoPropuesta = {
+            idOrdenServicioId: this.idOrden.toString()
+          }
+          if(this.idDocumentoAdjunto !== undefined) {
+            this.actualizarMetadatosAdjuntoPropuestas(objAdjuntoPropuesta, this.idDocumentoAdjunto);
+          }
           // let idOrden = item.data.Id;
           let numeroOrden = this.generarOrdenServicios.get('nroOrden').value
           console.log(this.idOrden);
