@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef  } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { SPServicio } from "../servicios/sp-servicio";
 import { Unegocios } from '../dominio/unegocios';
@@ -24,8 +24,9 @@ import { ClienteJobs } from '../dominio/clienteJobs';
   styleUrls: ['./editar-orden.component.css']
 })
 export class EditarOrdenComponent implements OnInit {
-
+  modalRef: BsModalRef;
   editarOrden: FormGroup;
+  otroSi: FormGroup;
   usuarioActual: Usuario;
   nombreUsuario: any;
   nombre: any;
@@ -68,6 +69,7 @@ export class EditarOrdenComponent implements OnInit {
   personaNatural: boolean;
   afiliar: boolean;
   nroOrden: string;
+  deshabilitarCampos: boolean = false;
 
 
 
@@ -83,6 +85,13 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['diasPorMes'].setValue(30);
     this.editarOrden.controls['porcentajeCotizacion'].setValue('40%');
     this.editarOrden.controls['afiliacion'].setValue('false');
+  }
+
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(
+      template, Object.assign({}, { class: 'gray modal-lg' })
+      );
   }
 
   private registrarControles() {
@@ -175,6 +184,68 @@ export class EditarOrdenComponent implements OnInit {
       conceptoPago4: [''],
       conceptoPago5: [''],
       conceptoPago6: ['']
+    })
+
+    this.otroSi = this.fb.group({
+      descripcionServiciosOtroSi: [''],
+      clienteOtroSi: [''],
+      jobOtroSi: [''],
+      precioOtroSi: [''],
+      tieneIvaOtroSi: [''],
+      ivaOtroSi: [''],
+      totalOtroSi: [''],
+      valorLetrasOtroSi: [],
+      fechaInicioOtroSi: [''],
+      fechaFinalOtroSi: [''],
+      totalDiasOtroSi: [''],
+      personaOtroSi: [''],
+      valorTotalServicioOtroSi: [''],
+      nroDiasOtroSi: [''],
+      valorPorDiaOtroSi: [''],
+      diasPorMesOtroSi: [''],
+      valorServicioPorMesOtroSi: [''],
+      porcentajeCotizacionOtroSi: [''],
+      baseCotizacionOtroSi: [''],
+      afiliacionOtroSi: [''],
+      nivelRiesgoOtroSi: [''],
+      porcentajeRiesgoOtroSi: [''],
+      pagoAfiliacionOtroSi: [''],
+      comentariosArlOtroSi: [''],
+      formaPagoOtroSi: [''],
+      fechaPagoOtroSi: [''],
+      conceptoUnicoOtroSi: [''],
+      OtroSiPago1: [''],
+      OtroSiPago2: [''],
+      OtroSiPago3: [''],
+      OtroSiPago4: [''],
+      OtroSiPago5: [''],
+      OtroSiPago6: [''],
+      OtroSiporcentajePago1: [''],
+      OtroSiporcentajePago2: [''],
+      OtroSiporcentajePago3: [''],
+      OtroSiporcentajePago4: [''],
+      OtroSiporcentajePago5: [''],
+      OtroSiporcentajePago6: [''],
+      otroSiconceptoPago1: [''],
+      otroSiconceptoPago2: [''],
+      otroSiconceptoPago3: [''],
+      otroSiconceptoPago4: [''],
+      otroSiconceptoPago5: [''],
+      otroSiconceptoPago6: [''],
+      otrosSiporcentajeCeco1: [''],
+      garantiaOtroSi: [''],
+      porcentajeCumplimientoOtroSi: [''],
+      porcentajeAnticiposOtroSi: [''],
+      porcentajeSalariosOtroSi: [''],
+      porcentajeResponsabilidadOtroSi: [''],
+      porcentajeCalidadOtroSi: [''],
+      mesesCumplimientoOtroSi: [''],
+      mesesAnticiposOtroSi: [''],
+      mesesSalariosOtroSi: [''],
+      otroSimesesCalidad1: [''],
+      otroSimesesCalidad2: [''],
+      polizaVidaOtroSi: [''],
+      polizaVehiculosOtroSi: [''],
     })
   }
 
@@ -477,6 +548,8 @@ export class EditarOrdenComponent implements OnInit {
         window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
       }, 500);
   }
+
+
 
   calcularDias() {
     let fecha1 = this.editarOrden.get('fechaInicio').value;
