@@ -670,6 +670,7 @@ export class EditarOrdenComponent implements OnInit {
   valoresPorDefecto() {
     this.editarOrden.controls['nroOrden'].setValue(this.orden[0].nroOrden);
     this.editarOrden.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
+    console.log(this.editarOrden.controls['empresaSolicitante'].value)
     this.editarOrden.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
     this.editarOrden.controls['ciudadSolicitante'].setValue(this.orden[0].ciudadSolicitante);
     this.editarOrden.controls['telSolicitante'].setValue(this.orden[0].telSolicitante);
@@ -1011,17 +1012,17 @@ export class EditarOrdenComponent implements OnInit {
     let id = parseInt(this.IdRegistroOS);
     let id1 = this.orden[0].id
     let nroOrden = this.editarOrden.get('nroOrden').value;
-    let empresaSolicitante = this.editarOrden.get('empresaSolicitante').value.nombre;
+    let empresaSolicitante = this.editarOrden.get('empresaSolicitante').value;
     let nitSolicitante = this.editarOrden.get('nitSolicitante').value;
-    let ciudadSolicitante = this.editarOrden.get('ciudadSolicitante').value.nombre;
+    let ciudadSolicitante = this.editarOrden.get('ciudadSolicitante').value;
     let telSolicitante = this.editarOrden.get('telSolicitante').value;
     let direccionSolicitante = this.editarOrden.get('direccionSolicitante').value;
-    let contactoSolicitante = this.editarOrden.get('contactoSolicitante').value.label;
+    let contactoSolicitante = this.editarOrden.get('contactoSolicitante').value;
     let emailSolicitante = this.editarOrden.get('emailSolicitante').value;
     let unidadNegocios = this.editarOrden.get('unidadNegocios').value;
-    let nombreCECO = this.editarOrden.get('nombreCECO').value.nombre;
+    let nombreCECO = this.editarOrden.get('nombreCECO').value;
     let numeroCECO = this.editarOrden.get('numeroCECO').value;
-    let razonSocial = this.editarOrden.get('razonSocial').value.nombre;
+    let razonSocial = this.editarOrden.get('razonSocial').value;
     let nitProveedor = this.editarOrden.get('nitProveedor').value;
     let ciudadProveedor = this.editarOrden.get('ciudadProveedor').value;
     let telProveedor = this.editarOrden.get('telProveedor').value;
@@ -1091,7 +1092,6 @@ export class EditarOrdenComponent implements OnInit {
     let conceptoPago5 = this.editarOrden.get('conceptoPago5').value;
     let conceptoPago6 = this.editarOrden.get('conceptoPago6').value;
     let otroSi;
-    let cuerpo;
     let objAdjuntoPropuesta;
     let idPadre;
 
@@ -1252,12 +1252,6 @@ export class EditarOrdenComponent implements OnInit {
       this.spinner.hide();
     }
 
-    const emailProps: EmailProperties = {
-      To: [this.usuarioActual.EmailJefeDirecto],
-      Subject: "Notificación de orden de servicio",
-      Body: cuerpo,
-    };
-
     if(this.esOtroSi === false) {
 
       let objServicio = {
@@ -1269,13 +1263,19 @@ export class EditarOrdenComponent implements OnInit {
         idServicio: id
       }
 
-      cuerpo = '<p>Cordial saludo</p>' +
+     let cuerpo = '<p>Cordial saludo</p>' +
       '<br>' +
       '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado una nueva orden de servicio con el número <strong>' + this.editarOrden.get('nroOrden').value + '</strong> para su aprobación</p>' +
       '<br>' +
       '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
       '<p>En caso de que el acceso no lo dirija a página por favor copie la siguiente url en el navegador:</p>' +
       'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';
+
+      const emailProps: EmailProperties = {
+        To: [this.usuarioActual.EmailJefeDirecto],
+        Subject: "Notificación de orden de servicio",
+        Body: cuerpo,
+      };
 
       this.servicio.ActualizarOrden(id, objOrden).then(
         (respuesta) => {
@@ -1315,13 +1315,20 @@ export class EditarOrdenComponent implements OnInit {
         idServicio: this.idOtroSi
       }
 
-      cuerpo = '<p>Cordial saludo</p>' +
+      let cuerpo = '<p>Cordial saludo</p>' +
       '<br>' +
       '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado un otro sí para la orden de servicio <strong>' + this.editarOrden.get('nroOrden').value + '</strong> que está pendiente de su aprobación</p>' +
       '<br>' +
       '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
       '<p>En caso de que el acceso no lo dirija a página por favor copie la siguiente url en el navegador:</p>' +
       'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';
+
+
+      const emailProps: EmailProperties = {
+        To: [this.usuarioActual.EmailJefeDirecto],
+        Subject: "Notificación de orden de servicio",
+        Body: cuerpo,
+      };
 
       this.servicio.AgregarOrden(objOrden).then(
         (item: ItemAddResult) => {
