@@ -114,7 +114,7 @@
                         <td mat-cell *matCellDef="let element">
                             <button class="btn btn-primary" (click)="VerServicio(element.Id, element.Estado)">Ver Servicio</button>
                             <button class="btn btn-danger" *ngIf="element.Estado === 'Rechazado'" [disabled]="ocultarBtn" (click)="openModal(element, template)">Anular</button>
-                            <button class="btn btn-secondary" id="otroSí" *ngIf="element.Estado === 'Rechazado' || element.estado === 'Pagado' || element.estado === 'Pendiente de radicar factura'" (click)="agregarOtroSi(element.Id)">Agregar otro sí</button>
+                            <button class="btn btn-secondary" id="otroSí" *ngIf="element.Estado === 'Rechazado' || element.estado === 'Pagado' || element.estado === 'Pendiente de radicar factura'" (click)="agregarOtroSi(element.Id)">Otro sí</button>
                         </td>
                         <!-- <td mat-cell *matCellDef="let element">
                             <button class="btn btn-danger"  (click)="openModal(element, template)">Anular</button>
