@@ -97,6 +97,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   mostrarBotonesAprobarRechazar: boolean;
   documentoPropuesta: Documento[] = [];
   mostrarBtn: boolean = true;
+  otroSi: string = '';
 
 
   constructor(
@@ -242,6 +243,9 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.orden = Orden.fromJsonList(respuesta);
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
         this.solicitante = this.orden[0].usuarioSolicitante;
+        if(this.orden[0].esOtroSi === true) {
+          this.otroSi = '(Otro sí)'
+        }
         if( this.orden[0].estado === 'Pendiente aprobación gerente administrativo y financiero') {
           this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url
         }
