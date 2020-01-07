@@ -87,10 +87,10 @@
           <h5 class="text-center">Datos del proveedor</h5>
           <div class="row">
             <div class="col-md-12">
-              <ng-container *ngIf="!esOtroSi">
-                <mat-form-field>
+              <ng-container>
+                <mat-form-field id="razonSocialProveedor">
                   <mat-label>Razón social</mat-label>
-                  <mat-select formControlName="razonSocial" (selectionChange)="datosProveedor($event)">
+                  <mat-select formControlName="razonSocial" (selectionChange)="datosProveedor($event)" class="lectura">
                       <mat-option *ngFor="let proveedor of proveedor" [value]="proveedor">
                         {{proveedor.nombre}}                        
                       </mat-option>
@@ -98,11 +98,11 @@
                 <!-- <input matInput placeholder="Razón social" formControlName="razonSocial"> -->
               </mat-form-field>
               </ng-container>
-              <ng-container *ngIf="esOtroSi">
+              <!-- <ng-container *ngIf="esOtroSi">
                 <mat-form-field>
                   <input matInput placeholder="Razón social" formControlName="razonSocial" readonly>
                 </mat-form-field>
-              </ng-container>
+              </ng-container> -->
               <mat-error>
                   <span *ngIf="!editarOrden.get('razonSocial').valid && editarOrden.get('razonSocial').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
               </mat-error>

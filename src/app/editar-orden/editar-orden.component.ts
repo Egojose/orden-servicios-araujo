@@ -78,6 +78,8 @@ export class EditarOrdenComponent implements OnInit {
   idDocumentoAdjunto: any;
   adjuntoPropuesta: any;
   readOtroSi: boolean = false;
+  proveedorXdefecto: any; 
+  clienteXdefecto: any;
 
 
 
@@ -88,6 +90,7 @@ export class EditarOrdenComponent implements OnInit {
     this.registrarControles();
     this.obtenerUsuarios();
     this.ObtenerUsuarioActual();
+    this.obtenerProveedores();
     this.obtenerConsecutivoInicial();
     this.editarOrden.controls['persona'].setValue('false');
     this.editarOrden.controls['diasPorMes'].setValue(30);
@@ -256,67 +259,6 @@ export class EditarOrdenComponent implements OnInit {
       conceptoPago6: ['']
     })
 
-    // this.otroSi = this.fb.group({
-    //   descripcionServiciosOtroSi: [''],
-    //   clienteOtroSi: [''],
-    //   jobOtroSi: [''],
-    //   precioOtroSi: [''],
-    //   tieneIvaOtroSi: [''],
-    //   ivaOtroSi: [''],
-    //   totalOtroSi: [''],
-    //   valorLetrasOtroSi: [],
-    //   fechaInicioOtroSi: [''],
-    //   fechaFinalOtroSi: [''],
-    //   totalDiasOtroSi: [''],
-    //   personaOtroSi: [''],
-    //   valorTotalServicioOtroSi: [''],
-    //   nroDiasOtroSi: [''],
-    //   valorPorDiaOtroSi: [''],
-    //   diasPorMesOtroSi: [''],
-    //   valorServicioPorMesOtroSi: [''],
-    //   porcentajeCotizacionOtroSi: [''],
-    //   baseCotizacionOtroSi: [''],
-    //   afiliacionOtroSi: [''],
-    //   nivelRiesgoOtroSi: [''],
-    //   porcentajeRiesgoOtroSi: [''],
-    //   pagoAfiliacionOtroSi: [''],
-    //   comentariosArlOtroSi: [''],
-    //   formaPagoOtroSi: [''],
-    //   fechaPagoOtroSi: [''],
-    //   conceptoUnicoOtroSi: [''],
-    //   OtroSiPago1: [''],
-    //   OtroSiPago2: [''],
-    //   OtroSiPago3: [''],
-    //   OtroSiPago4: [''],
-    //   OtroSiPago5: [''],
-    //   OtroSiPago6: [''],
-    //   OtroSiporcentajePago1: [''],
-    //   OtroSiporcentajePago2: [''],
-    //   OtroSiporcentajePago3: [''],
-    //   OtroSiporcentajePago4: [''],
-    //   OtroSiporcentajePago5: [''],
-    //   OtroSiporcentajePago6: [''],
-    //   otroSiconceptoPago1: [''],
-    //   otroSiconceptoPago2: [''],
-    //   otroSiconceptoPago3: [''],
-    //   otroSiconceptoPago4: [''],
-    //   otroSiconceptoPago5: [''],
-    //   otroSiconceptoPago6: [''],
-    //   otrosSiporcentajeCeco1: [''],
-    //   garantiaOtroSi: [''],
-    //   porcentajeCumplimientoOtroSi: [''],
-    //   porcentajeAnticiposOtroSi: [''],
-    //   porcentajeSalariosOtroSi: [''],
-    //   porcentajeResponsabilidadOtroSi: [''],
-    //   porcentajeCalidadOtroSi: [''],
-    //   mesesCumplimientoOtroSi: [''],
-    //   mesesAnticiposOtroSi: [''],
-    //   mesesSalariosOtroSi: [''],
-    //   otroSimesesCalidad1: [''],
-    //   otroSimesesCalidad2: [''],
-    //   polizaVidaOtroSi: [''],
-    //   polizaVehiculosOtroSi: [''],
-    // })
     this.obtenerQueryParams();
   }
 
@@ -460,7 +402,7 @@ export class EditarOrdenComponent implements OnInit {
     this.servicio.obtenerConsecutivoInciail().then(
       (respuesta) => {
        this.config = Configuracion.fromJsonList(respuesta);
-       this.obtenerProveedores();
+      //  this.obtenerProveedores();
        this.obtenerCliente();
       }
     )
@@ -657,7 +599,7 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['regimen'].disable();
     this.editarOrden.controls['rut'].disable();
     this.editarOrden.controls['camara'].disable();
-    // this.editarOrden.controls['razonSocial'].disable();
+    this.editarOrden.controls['razonSocial'].disable();
     // this.editarOrden.controls['nitProveedor'].disable();
     // this.editarOrden.controls['ciudadProveedor'].disable();
     // this.editarOrden.controls['telProveedor'].disable();
@@ -667,7 +609,23 @@ export class EditarOrdenComponent implements OnInit {
 
   }
 
+  cargarDatosSelectPorDefecto() {
+    this.proveedorXdefecto = this.proveedor.filter(x => {
+     return x.nombre === this.orden[0].razonSocial
+    });
+    this.clienteXdefecto = this.cliente.filter(x => {
+     return x.cliente === this.orden[0].cliente
+    })
+  }
+  
+  // agregarClase() {
+  //   let element = document.getElementById('razonSocialProveedor');
+  //   element.className = 'SoloLectura'
+  // }
+
   valoresPorDefecto() {
+    // this.agregarClase();
+    this.cargarDatosSelectPorDefecto();
     this.editarOrden.controls['nroOrden'].setValue(this.orden[0].nroOrden);
     this.editarOrden.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
     console.log(this.editarOrden.controls['empresaSolicitante'].value)
@@ -680,7 +638,8 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['unidadNegocios'].setValue(this.orden[0].uNegocios);
     this.editarOrden.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
     this.editarOrden.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
-    this.editarOrden.controls['razonSocial'].setValue(this.orden[0].razonSocial);
+    this.editarOrden.controls['razonSocial'].setValue(this.proveedorXdefecto[0]);
+    console.log( this.editarOrden.controls['razonSocial'].value);
     this.editarOrden.controls['nitProveedor'].setValue(this.orden[0].nitProveedor);
     this.editarOrden.controls['ciudadProveedor'].setValue(this.orden[0].ciudadProveedor);
     this.editarOrden.controls['telProveedor'].setValue(this.orden[0].telProveedor);
@@ -691,6 +650,7 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['rut'].setValue(this.orden[0].rut);
     this.editarOrden.controls['camara'].setValue(this.orden[0].camara);
     if(this.esOtroSi === true) {
+      // this.proveedor = this.proveedorXdefecto[0];
       this.editarOrden.controls['descripcionServicios'].setValue('');
       this.editarOrden.controls['cliente'].setValue('');
       this.editarOrden.controls['job'].setValue('');
@@ -752,7 +712,7 @@ export class EditarOrdenComponent implements OnInit {
     }
     else {
       this.editarOrden.controls['descripcionServicios'].setValue(this.orden[0].descripcion);
-      this.editarOrden.controls['cliente'].setValue(this.orden[0].cliente);
+      this.editarOrden.controls['cliente'].setValue(this.clienteXdefecto[0]);
       this.editarOrden.controls['job'].setValue(this.orden[0].job);
       this.editarOrden.controls['precio'].setValue(this.orden[0].precio);
       this.editarOrden.controls['tieneIva'].setValue(this.orden[0].tieneIva);
