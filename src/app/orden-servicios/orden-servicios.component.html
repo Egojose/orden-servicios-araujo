@@ -148,6 +148,56 @@
               </div>
           </div>
           <br>
+          <ng-container id="contenedorTable" *ngIf="mostrarTablaCecos">
+            <div class="row">
+              <div class="col-md-3">
+                  <mat-form-field>
+                      <mat-label>CECO</mat-label>
+                      <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event)">
+                          <mat-option *ngFor="let ceco of areas" [value]="ceco">
+                            {{ceco.nombre}}                        
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field>
+                  <input matInput placeholder="Nro Ceco" formControlName="numeroCecoPorcentaje">
+                </mat-form-field>
+              </div>
+            
+              <div class="col-md-3">
+                <mat-form-field>
+                  <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1" type="number">
+                </mat-form-field>
+              </div>
+              
+              <div class="col-md-3">
+                <button class="btn btn-primary btn-block" type="button" (click)="agregarCecos()">Agregar</button>
+              </div>
+           
+            </div>
+            <br>
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="cabezeraTblUnidadNegocio">
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Nro CECO</th>
+                      <th scope="col">Porcentaje</th>
+                      <th scope="col">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let ceco of arrayCecos; let i = index">
+                      <td>{{ceco.ceco}}</td>
+                      <td>{{ceco.nroCeco}}</td>
+                      <td>{{ceco.porcentaje}}</td>
+                      <td><button type="button" class="btn btn-danger" (click)="borrarCecos(i)">Borrar</button></td>
+                    </tr>
+                  </tbody>
+            </table>
+          </ng-container>
+          <br>
           <h5 class="text-center">Datos del proveedor</h5>
           <div class="row">
             <div class="col-md-12">
@@ -635,56 +685,6 @@
                   </mat-radio-group>
               </div>
             </div> -->
-            <ng-container id="contenedorTable" *ngIf="mostrarTablaCecos">
-              <div class="row">
-                <div class="col-md-3">
-                    <mat-form-field>
-                        <mat-label>CECO</mat-label>
-                        <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event)">
-                            <mat-option *ngFor="let ceco of areas" [value]="ceco">
-                              {{ceco.nombre}}                        
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-3">
-                  <mat-form-field>
-                    <input matInput placeholder="Nro Ceco" formControlName="numeroCecoPorcentaje">
-                  </mat-form-field>
-                </div>
-              
-                <div class="col-md-3">
-                  <mat-form-field>
-                    <input matInput placeholder="Porcentaje de distribución" formControlName="porcentajeCeco1" type="number">
-                  </mat-form-field>
-                </div>
-                
-                <div class="col-md-3">
-                  <button class="btn btn-primary btn-block" type="button" (click)="agregarCecos()">Agregar</button>
-                </div>
-             
-              </div>
-              <br>
-              <table class="table table-bordered">
-                  <thead>
-                      <tr class="cabezeraTblUnidadNegocio">
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Nro CECO</th>
-                        <th scope="col">Porcentaje</th>
-                        <th scope="col">Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let ceco of arrayCecos; let i = index">
-                        <td>{{ceco.ceco}}</td>
-                        <td>{{ceco.nroCeco}}</td>
-                        <td>{{ceco.porcentaje}}</td>
-                        <td><button type="button" class="btn btn-danger" (click)="borrarCecos(i)">Borrar</button></td>
-                      </tr>
-                    </tbody>
-              </table>
-            </ng-container>
-            <br>
             <ng-container *ngIf="esConsultores">
             <div class="row">
               <div class="col-md-12">

@@ -97,6 +97,7 @@ export class ConsultarOrdenComponent implements OnInit {
   afiliar: boolean;
   verClausula: boolean = false;
   documentoClausula: any[];
+  otroSi: string = '';
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private spinner: NgxSpinnerService) { }
 
@@ -223,6 +224,10 @@ export class ConsultarOrdenComponent implements OnInit {
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
         this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url;
         this.cargarFirmaGerente = respuesta[0].FirmaGerenteAdministrativo.Url;
+
+        if(this.orden[0].esOtroSi === true) {
+          this.otroSi = '(Otro sí)'
+        }
 
         if(this.orden[0].aprobadoDirector) {
           this.mostrarFirmaDirector = true;
