@@ -276,7 +276,7 @@ export class ConsultarOrdenComponent implements OnInit {
   }
 
   descargarClausula() {
-    window.open('https://enovelsoluciones.sharepoint.com' + this.documentoClausula[0].File.ServerRelativeUrl, '_blank');
+    window.open('https://aribasas.sharepoint.com' + this.documentoClausula[0].File.ServerRelativeUrl, '_blank');
   }
 
   disableButtons():void {
