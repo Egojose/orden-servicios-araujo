@@ -149,6 +149,11 @@ export class BandejaServiciosComponent implements OnInit {
     this.router.navigate(['/editar-orden']);
   }
 
+  agregarOtroSi(id) {
+    sessionStorage.setItem('IdServicio', id);
+    this.router.navigate(['/editar-orden'], {queryParams: {otrosi: 'true'}})
+  }
+
   anularSolicitud(element) {
     this.idSolicitud = element.Id;
     this.isModalCTBShown = true;

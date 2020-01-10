@@ -1,5 +1,5 @@
 <ng-container *ngIf="esResponsableActual">
-    <h4 class="text-center">Aprobar orden de servicios</h4>
+    <h4 class="text-center">Aprobar orden de servicios {{otroSi}}</h4>
 </ng-container>
 <ng-container *ngIf="esSolicitante">
     <h4 class="text-center">Consultar mis órdenes</h4>
@@ -11,7 +11,7 @@
     <mat-accordion>
       <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
-          <mat-panel-title><strong>Información de la orden</strong></mat-panel-title>
+          <mat-panel-title><strong>Información de la orden {{otroSi}}</strong></mat-panel-title>
           <mat-panel-description>{{panelOpenState ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
         </mat-expansion-panel-header>
         <mat-card>          

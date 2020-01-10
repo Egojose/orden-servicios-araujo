@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef  } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { SPServicio } from "../servicios/sp-servicio";
 import { Unegocios } from '../dominio/unegocios';
@@ -9,7 +9,7 @@ import { Usuario } from '../dominio/usuario';
 import { Empleado } from '../dominio/empleado';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { Aprobadores } from '../dominio/aprobadores';
-import { EmailProperties } from '@pnp/sp';
+import { EmailProperties, ItemAddResult } from '@pnp/sp';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from "ngx-spinner";
 import { Sede } from '../dominio/sede';
@@ -17,15 +17,16 @@ import { CentroCosto } from '../dominio/centroCosto';
 import { Empresas } from '../dominio/empresas';
 import { Proveedores } from '../dominio/proveedores';
 import { ClienteJobs } from '../dominio/clienteJobs';
-
+import { ActivatedRoute } from "@angular/router";
 @Component({
   selector: 'app-editar-orden',
   templateUrl: './editar-orden.component.html',
   styleUrls: ['./editar-orden.component.css']
 })
 export class EditarOrdenComponent implements OnInit {
-
+  modalRef: BsModalRef;
   editarOrden: FormGroup;
+  otroSi: FormGroup;
   usuarioActual: Usuario;
   nombreUsuario: any;
   nombre: any;
@@ -45,7 +46,7 @@ export class EditarOrdenComponent implements OnInit {
   esAsociados: boolean;
   ivaCalculado: number;
   total: number;
-  garantia: boolean;
+  // garantia: boolean;
   pagoCECO: boolean;
   pagoUnico: boolean;
   pagoVarios: boolean;
@@ -62,28 +63,109 @@ export class EditarOrdenComponent implements OnInit {
   mostrarGarantia: boolean;
   arrayCecos: any = [];
   idOrden: number;
+  idOtroSi: number;
   idServicios: number;
   porcentajeAsumidoNum: number;
   sumaPorcentaje: number;
   personaNatural: boolean;
   afiliar: boolean;
   nroOrden: string;
+  deshabilitarCampos: boolean = false;
+  infoOtroSi: string = '';
+  esOtroSi: boolean = false;
+  mostrarDatosGarantia: boolean = false;
+  mostrarTablaCecos: boolean;
+  idDocumentoAdjunto: any;
+  adjuntoPropuesta: any;
+  readOtroSi: boolean = false;
+  proveedorXdefecto: any; 
+  clienteXdefecto: any;
 
 
 
   constructor(
-    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private router: Router, private spinner: NgxSpinnerService) { }
+    private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private router: Router, private spinner: NgxSpinnerService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.registrarControles();
     this.obtenerUsuarios();
     this.ObtenerUsuarioActual();
+    this.obtenerProveedores();
     this.obtenerConsecutivoInicial();
     this.editarOrden.controls['persona'].setValue('false');
     this.editarOrden.controls['diasPorMes'].setValue(30);
     this.editarOrden.controls['porcentajeCotizacion'].setValue('40%');
     this.editarOrden.controls['afiliacion'].setValue('false');
   }
+
+  obtenerQueryParams() {
+    let tieneParams = this.route.snapshot.queryParamMap.get('otrosi')
+    if((tieneParams !== undefined && tieneParams !== null) && tieneParams === 'true') {
+      this.infoOtroSi = ' (Otro sí)'
+      this.esOtroSi = true;
+      this.disableButtons();
+    }
+  }
+
+
+  // openModal(template: TemplateRef<any>) {
+  //   this.modalRef = this.modalService.show(
+  //     template, Object.assign({}, { class: 'gray modal-lg' })
+  //     );
+  // }
+
+  // agregarOtroSi() {
+  //   let descripcion = this.otroSi.get('descripcionServiciosOtroSi').value;
+  //   let cliente = this.otroSi.get('clienteOtroSi').value;
+  //   let job = this.otroSi.get('jobOtroSi').value;
+  //   let precio = this.otroSi.get('precioOtroSi').value;
+  //   let iva = this.otroSi.get('ivaOtroSi').value;
+  //   let total = this.otroSi.get('totalOtroSi').value;
+  //   let valorLetras = this.otroSi.get('valorLetrasOtroSi').value;
+  //   let fechaInicio = this.otroSi.get('fechaInicioOtroSi').value;
+  //   let fechaFin = this.otroSi.get('fechaFinalOtroSi').value;
+  //   let totalDias = this.otroSi.get('totalDiasOtroSi').value;
+  //   let personaNatural = this.otroSi.get('personaOtroSi').value;
+  //   let valorTotal = this.otroSi.get('valorTotalServicioOtroSi').value;
+  //   let nroDias = this.otroSi.get('nroDiasOtroSi').value;
+  //   let valorXdia = this.otroSi.get('valorPorDiaOtroSi').value;
+  //   let diasXmes = this.otroSi.get('diasPorMesOtroSi').value;
+  //   let valorXmes = this.otroSi.get('valorServicioPorMesOtroSi').value;
+  //   let baseCotizacion = this.otroSi.get('baseCotizacionOtroSi').value;
+  //   let requiereAfilicacion = this.otroSi.get('afiliacionOtroSi').value;
+  //   let nivelRiesgo = this.otroSi.get('nivelRiesgoOtroSi').value;
+  //   let porcentajeRiesgo = this.otroSi.get('porcentajeRiesgoOtroSi').value;
+  //   let pagoAfilicacion = this.otroSi.get('pagoAfiliacionOtroSi').value;
+  //   let comentariosArl = this.otroSi.get('comentariosArlOtroSi').value;
+  //   let fechaPago = this.otroSi.get('fechaPagoOtroSi').value;
+  //   let conceptoPago = this.otroSi.get('conceptoUnicoOtroSi').value;
+  //   let fechaPago1 = this.otroSi.get('OtroSiPago1').value;
+  //   let fechaPago2 = this.otroSi.get('OtroSiPago2').value;
+  //   let fechaPago3 = this.otroSi.get('OtroSiPago3').value;
+  //   let fechaPago4 = this.otroSi.get('OtroSiPago4').value;
+  //   let fechaPago5 = this.otroSi.get('OtroSiPago5').value;
+  //   let fechaPago6 = this.otroSi.get('OtroSiPago6').value;
+  //   let porcentajePago1 = this.otroSi.get('porcentajePago1').value;
+  //   let porcentajePago2 = this.otroSi.get('porcentajePago2').value;
+  //   let porcentajePago3 = this.otroSi.get('porcentajePago3').value;
+  //   let porcentajePago4 = this.otroSi.get('porcentajePago4').value;
+  //   let porcentajePago5 = this.otroSi.get('porcentajePago5').value;
+  //   let porcentajePago6 = this.otroSi.get('porcentajePago6').value;
+  //   let conceptoPago1 = this.otroSi.get('otroSiconceptoPago1').value;
+  //   let conceptoPago2 = this.otroSi.get('otroSiconceptoPago2').value;
+  //   let conceptoPago3 = this.otroSi.get('otroSiconceptoPago3').value;
+  //   let conceptoPago4 = this.otroSi.get('otroSiconceptoPago4').value;
+  //   let conceptoPago5 = this.otroSi.get('otroSiconceptoPago5').value;
+  //   let conceptoPago6 = this.otroSi.get('otroSiconceptoPago6').value;
+  //   let mesesCumplimiento = this.otroSi.get('mesesCumplimientoOtroSi').value;
+  //   let mesesAnticipos = this.otroSi.get('mesesAnticiposOtroSi').value;
+  //   let mesesSalarios = this.otroSi.get('mesesSalariosOtroSi').value;
+  //   let mesesCalidad1 = this.otroSi.get('otroSimesesCalidad1').value;
+  //   let mesesCalidad2 = this.otroSi.get('otroSimesesCalidad2').value;
+  //   let polizaVida = this.otroSi.get('polizaVidaOtroSi').value;
+  //   let polizaVehiculos = this.otroSi.get('polizaVehiculosOtroSi').value;
+  //   let idOrdenServicio = this.idServicios;
+  // }
 
   private registrarControles() {
     this.editarOrden = this.fb.group({
@@ -105,7 +187,7 @@ export class EditarOrdenComponent implements OnInit {
       direccionProveedor: ['', Validators.required],
       contactoProveedor: ['', Validators.required],
       emailRepresentante: ['', Validators.required],
-      regimen: ['', Validators.required],
+      regimen: [''],
       rut: [''],
       camara: [''],
       descripcionServicios: ['', Validators.required],
@@ -176,6 +258,8 @@ export class EditarOrdenComponent implements OnInit {
       conceptoPago5: [''],
       conceptoPago6: ['']
     })
+
+    this.obtenerQueryParams();
   }
 
   obtenerUsuarios() {
@@ -318,7 +402,7 @@ export class EditarOrdenComponent implements OnInit {
     this.servicio.obtenerConsecutivoInciail().then(
       (respuesta) => {
        this.config = Configuracion.fromJsonList(respuesta);
-       this.obtenerProveedores();
+      //  this.obtenerProveedores();
        this.obtenerCliente();
       }
     )
@@ -388,9 +472,9 @@ export class EditarOrdenComponent implements OnInit {
 
   garantiaChange($event) {
     if ($event.value === "true") {
-      this.garantia = true;
+      this.mostrarDatosGarantia = true;
     } else {
-      this.garantia = false;
+      this.mostrarDatosGarantia = false;
     }
   };
 
@@ -478,6 +562,8 @@ export class EditarOrdenComponent implements OnInit {
       }, 500);
   }
 
+
+
   calcularDias() {
     let fecha1 = this.editarOrden.get('fechaInicio').value;
     let fecha2 = this.editarOrden.get('fechaFinal').value;
@@ -508,9 +594,41 @@ export class EditarOrdenComponent implements OnInit {
     )
   }
 
+  disableButtons() {
+    this.readOtroSi = true;
+    this.editarOrden.controls['regimen'].disable();
+    this.editarOrden.controls['rut'].disable();
+    this.editarOrden.controls['camara'].disable();
+    this.editarOrden.controls['razonSocial'].disable();
+    // this.editarOrden.controls['nitProveedor'].disable();
+    // this.editarOrden.controls['ciudadProveedor'].disable();
+    // this.editarOrden.controls['telProveedor'].disable();
+    // this.editarOrden.controls['direccionProveedor'].disable();
+    // this.editarOrden.controls['contactoProveedor'].disable();
+    // this.editarOrden.controls['emailRepresentante'].disable();
+
+  }
+
+  cargarDatosSelectPorDefecto() {
+    this.proveedorXdefecto = this.proveedor.filter(x => {
+     return x.nombre === this.orden[0].razonSocial
+    });
+    this.clienteXdefecto = this.cliente.filter(x => {
+     return x.cliente === this.orden[0].cliente
+    })
+  }
+  
+  // agregarClase() {
+  //   let element = document.getElementById('razonSocialProveedor');
+  //   element.className = 'SoloLectura'
+  // }
+
   valoresPorDefecto() {
+    // this.agregarClase();
+    this.cargarDatosSelectPorDefecto();
     this.editarOrden.controls['nroOrden'].setValue(this.orden[0].nroOrden);
     this.editarOrden.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
+    console.log(this.editarOrden.controls['empresaSolicitante'].value)
     this.editarOrden.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
     this.editarOrden.controls['ciudadSolicitante'].setValue(this.orden[0].ciudadSolicitante);
     this.editarOrden.controls['telSolicitante'].setValue(this.orden[0].telSolicitante);
@@ -520,7 +638,8 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['unidadNegocios'].setValue(this.orden[0].uNegocios);
     this.editarOrden.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
     this.editarOrden.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
-    this.editarOrden.controls['razonSocial'].setValue(this.orden[0].razonSocial);
+    this.editarOrden.controls['razonSocial'].setValue(this.proveedorXdefecto[0]);
+    console.log( this.editarOrden.controls['razonSocial'].value);
     this.editarOrden.controls['nitProveedor'].setValue(this.orden[0].nitProveedor);
     this.editarOrden.controls['ciudadProveedor'].setValue(this.orden[0].ciudadProveedor);
     this.editarOrden.controls['telProveedor'].setValue(this.orden[0].telProveedor);
@@ -530,64 +649,127 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['regimen'].setValue(this.orden[0].regimen);
     this.editarOrden.controls['rut'].setValue(this.orden[0].rut);
     this.editarOrden.controls['camara'].setValue(this.orden[0].camara);
-    this.editarOrden.controls['descripcionServicios'].setValue(this.orden[0].descripcion);
-    this.editarOrden.controls['cliente'].setValue(this.orden[0].cliente);
-    this.editarOrden.controls['job'].setValue(this.orden[0].job);
-    this.editarOrden.controls['precio'].setValue(this.orden[0].precio);
-    this.editarOrden.controls['tieneIva'].setValue(this.orden[0].tieneIva);
-    this.editarOrden.controls['iva'].setValue(this.orden[0].iva);
-    this.editarOrden.controls['total'].setValue(this.orden[0].total);
-    this.editarOrden.controls['valorLetras'].setValue(this.orden[0].valorLetras);
-    this.editarOrden.controls['fechaInicio'].setValue(this.orden[0].fechaInicio);
-    this.editarOrden.controls['fechaFinal'].setValue(this.orden[0].fechaFin);
-    this.editarOrden.controls['totalDias'].setValue(this.orden[0].totalDias);
-    this.editarOrden.controls['formaPago'].setValue(this.orden[0].formaPago);
-    this.editarOrden.controls['fechaPago'].setValue(this.orden[0].fechaPago);
-    this.editarOrden.controls['Pago1'].setValue(this.orden[0].fecha1erPago);
-    this.editarOrden.controls['Pago2'].setValue(this.orden[0].fecha2doPago);
-    this.editarOrden.controls['Pago3'].setValue(this.orden[0].fecha3erPago);
-    this.editarOrden.controls['Pago4'].setValue(this.orden[0].fecha4toPago);
-    this.editarOrden.controls['Pago5'].setValue(this.orden[0].fecha5toPago);
-    this.editarOrden.controls['Pago6'].setValue(this.orden[0].fecha6toPago);
-    this.editarOrden.controls['porcentajePago1'].setValue(this.orden[0].porcentajePago1);
-    this.editarOrden.controls['porcentajePago2'].setValue(this.orden[0].porcentajePago2);
-    this.editarOrden.controls['porcentajePago3'].setValue(this.orden[0].porcentajePago3);
-    this.editarOrden.controls['porcentajePago4'].setValue(this.orden[0].porcentajePago4);
-    this.editarOrden.controls['porcentajePago5'].setValue(this.orden[0].porcentajePago5);
-    this.editarOrden.controls['porcentajePago6'].setValue(this.orden[0].porcentajePago6);
-    this.editarOrden.controls['conceptoUnico'].setValue(this.orden[0].conceptoPagoUnico);
-    this.editarOrden.controls['conceptoPago1'].setValue(this.orden[0].conceptoPago1);
-    this.editarOrden.controls['conceptoPago2'].setValue(this.orden[0].conceptoPago2);
-    this.editarOrden.controls['conceptoPago3'].setValue(this.orden[0].conceptoPago3);
-    this.editarOrden.controls['conceptoPago4'].setValue(this.orden[0].conceptoPago4);
-    this.editarOrden.controls['conceptoPago5'].setValue(this.orden[0].conceptoPago5);
-    this.editarOrden.controls['conceptoPago6'].setValue(this.orden[0].conceptoPago6);
-    this.editarOrden.controls['afiliacion'].setValue(this.orden[0].afiliacion);
-    this.editarOrden.controls['nivelRiesgo'].setValue(this.orden[0].NivelRiesgo);
-    this.editarOrden.controls['porcentajeRiesgo'].setValue(this.orden[0].porcentajeRiesgo);
-    this.editarOrden.controls['pagoAfiliacion'].setValue(this.orden[0].pagoAfiliacion);
-    this.editarOrden.controls['comentariosArl'].setValue(this.orden[0].comentarios);
-    this.editarOrden.controls['ceco1'].setValue(this.orden[0].cecoResponsable1);
-    this.editarOrden.controls['ceco2'].setValue(this.orden[0].cecoResponsable2);
-    this.editarOrden.controls['ceco3'].setValue(this.orden[0].cecoResponsable3);
-    this.editarOrden.controls['porcentajeCeco1'].setValue(this.orden[0].porcentajeResponsable1);
-    this.editarOrden.controls['porcentajeCeco2'].setValue(this.orden[0].porcentajeResponsable2);
-    this.editarOrden.controls['porcentajeCeco3'].setValue(this.orden[0].porcentajeResponsable3);
-    this.editarOrden.controls['garantia'].setValue(this.orden[0].garantia);
-    this.editarOrden.controls['porcentajeCumplimiento'].setValue(this.orden[0].porcentajeCumplimiento);
-    this.editarOrden.controls['mesesCumplimiento'].setValue(this.orden[0].mesesCumplimiento);
-    this.editarOrden.controls['porcentajeAnticipos'].setValue(this.orden[0].porcentajeManejoAnticipos);
-    this.editarOrden.controls['mesesAnticipos'].setValue(this.orden[0].mesesManejoAnticipos);
-    this.editarOrden.controls['porcentajeSalarios'].setValue(this.orden[0].porcentajePagoSalarios);
-    this.editarOrden.controls['mesesSalarios'].setValue(this.orden[0].aniosPagoSalarios);
-    this.editarOrden.controls['porcentajeResponsabilidad'].setValue(this.orden[0].porcentajeResposabilidadCivil);
-    this.editarOrden.controls['porcentajeCalidad'].setValue(this.orden[0].porcentajeCalidad);
-    this.editarOrden.controls['mesesCalidad1'].setValue(this.orden[0].validezCalidad);
-    this.editarOrden.controls['mesesCalidad2'].setValue(this.orden[0].extensionCalidad);
-    this.editarOrden.controls['polizaVida'].setValue(this.orden[0].polizaColectiva);
-    this.editarOrden.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
-    this.editarOrden.controls['distPago'].setValue(this.orden[0].distPago);
-    this.editarOrden.controls['porcentajeAsumido'].setValue(this.orden[0].porcentajeAsumido);
+    if(this.esOtroSi === true) {
+      // this.proveedor = this.proveedorXdefecto[0];
+      this.editarOrden.controls['descripcionServicios'].setValue('');
+      this.editarOrden.controls['cliente'].setValue('');
+      this.editarOrden.controls['job'].setValue('');
+      this.editarOrden.controls['precio'].setValue('');
+      this.editarOrden.controls['tieneIva'].setValue('');
+      this.editarOrden.controls['iva'].setValue('');
+      this.editarOrden.controls['total'].setValue('');
+      this.editarOrden.controls['valorLetras'].setValue('');
+      this.editarOrden.controls['fechaInicio'].setValue('');
+      this.editarOrden.controls['fechaFinal'].setValue('');
+      this.editarOrden.controls['totalDias'].setValue('');
+      this.editarOrden.controls['formaPago'].setValue('');
+      this.editarOrden.controls['fechaPago'].setValue('');
+      this.editarOrden.controls['Pago1'].setValue('');
+      this.editarOrden.controls['Pago2'].setValue('');
+      this.editarOrden.controls['Pago3'].setValue('');
+      this.editarOrden.controls['Pago4'].setValue('');
+      this.editarOrden.controls['Pago5'].setValue('');
+      this.editarOrden.controls['Pago6'].setValue('');
+      this.editarOrden.controls['porcentajePago1'].setValue('');
+      this.editarOrden.controls['porcentajePago2'].setValue('');
+      this.editarOrden.controls['porcentajePago3'].setValue('');
+      this.editarOrden.controls['porcentajePago4'].setValue('');
+      this.editarOrden.controls['porcentajePago5'].setValue('');
+      this.editarOrden.controls['porcentajePago6'].setValue('');
+      this.editarOrden.controls['conceptoUnico'].setValue('');
+      this.editarOrden.controls['conceptoPago1'].setValue('');
+      this.editarOrden.controls['conceptoPago2'].setValue('');
+      this.editarOrden.controls['conceptoPago3'].setValue('');
+      this.editarOrden.controls['conceptoPago4'].setValue('');
+      this.editarOrden.controls['conceptoPago5'].setValue('');
+      this.editarOrden.controls['conceptoPago6'].setValue('');
+      this.editarOrden.controls['afiliacion'].setValue('');
+      this.editarOrden.controls['nivelRiesgo'].setValue('');
+      this.editarOrden.controls['porcentajeRiesgo'].setValue('');
+      this.editarOrden.controls['pagoAfiliacion'].setValue('');
+      this.editarOrden.controls['comentariosArl'].setValue('');
+      this.editarOrden.controls['ceco1'].setValue('');
+      this.editarOrden.controls['ceco2'].setValue('');
+      this.editarOrden.controls['ceco3'].setValue('');
+      this.editarOrden.controls['porcentajeCeco1'].setValue('');
+      this.editarOrden.controls['porcentajeCeco2'].setValue('');
+      this.editarOrden.controls['porcentajeCeco3'].setValue('');
+      this.editarOrden.controls['garantia'].setValue('');
+      this.editarOrden.controls['porcentajeCumplimiento'].setValue('');
+      this.editarOrden.controls['mesesCumplimiento'].setValue('');
+      this.editarOrden.controls['porcentajeAnticipos'].setValue('');
+      this.editarOrden.controls['mesesAnticipos'].setValue('');
+      this.editarOrden.controls['porcentajeSalarios'].setValue('');
+      this.editarOrden.controls['mesesSalarios'].setValue('');
+      this.editarOrden.controls['porcentajeResponsabilidad'].setValue('');
+      this.editarOrden.controls['porcentajeCalidad'].setValue('');
+      this.editarOrden.controls['mesesCalidad1'].setValue('');
+      this.editarOrden.controls['mesesCalidad2'].setValue('');
+      this.editarOrden.controls['polizaVida'].setValue('');
+      this.editarOrden.controls['polizaVehiculos'].setValue('');
+      this.editarOrden.controls['distPago'].setValue('');
+      this.editarOrden.controls['porcentajeAsumido'].setValue('');
+    }
+    else {
+      this.editarOrden.controls['descripcionServicios'].setValue(this.orden[0].descripcion);
+      this.editarOrden.controls['cliente'].setValue(this.clienteXdefecto[0]);
+      this.editarOrden.controls['job'].setValue(this.orden[0].job);
+      this.editarOrden.controls['precio'].setValue(this.orden[0].precio);
+      this.editarOrden.controls['tieneIva'].setValue(this.orden[0].tieneIva);
+      this.editarOrden.controls['iva'].setValue(this.orden[0].iva);
+      this.editarOrden.controls['total'].setValue(this.orden[0].total);
+      this.editarOrden.controls['valorLetras'].setValue(this.orden[0].valorLetras);
+      this.editarOrden.controls['fechaInicio'].setValue(this.orden[0].fechaInicio);
+      this.editarOrden.controls['fechaFinal'].setValue(this.orden[0].fechaFin);
+      this.editarOrden.controls['totalDias'].setValue(this.orden[0].totalDias);
+      this.editarOrden.controls['formaPago'].setValue(this.orden[0].formaPago);
+      this.editarOrden.controls['fechaPago'].setValue(this.orden[0].fechaPago);
+      this.editarOrden.controls['Pago1'].setValue(this.orden[0].fecha1erPago);
+      this.editarOrden.controls['Pago2'].setValue(this.orden[0].fecha2doPago);
+      this.editarOrden.controls['Pago3'].setValue(this.orden[0].fecha3erPago);
+      this.editarOrden.controls['Pago4'].setValue(this.orden[0].fecha4toPago);
+      this.editarOrden.controls['Pago5'].setValue(this.orden[0].fecha5toPago);
+      this.editarOrden.controls['Pago6'].setValue(this.orden[0].fecha6toPago);
+      this.editarOrden.controls['porcentajePago1'].setValue(this.orden[0].porcentajePago1);
+      this.editarOrden.controls['porcentajePago2'].setValue(this.orden[0].porcentajePago2);
+      this.editarOrden.controls['porcentajePago3'].setValue(this.orden[0].porcentajePago3);
+      this.editarOrden.controls['porcentajePago4'].setValue(this.orden[0].porcentajePago4);
+      this.editarOrden.controls['porcentajePago5'].setValue(this.orden[0].porcentajePago5);
+      this.editarOrden.controls['porcentajePago6'].setValue(this.orden[0].porcentajePago6);
+      this.editarOrden.controls['conceptoUnico'].setValue(this.orden[0].conceptoPagoUnico);
+      this.editarOrden.controls['conceptoPago1'].setValue(this.orden[0].conceptoPago1);
+      this.editarOrden.controls['conceptoPago2'].setValue(this.orden[0].conceptoPago2);
+      this.editarOrden.controls['conceptoPago3'].setValue(this.orden[0].conceptoPago3);
+      this.editarOrden.controls['conceptoPago4'].setValue(this.orden[0].conceptoPago4);
+      this.editarOrden.controls['conceptoPago5'].setValue(this.orden[0].conceptoPago5);
+      this.editarOrden.controls['conceptoPago6'].setValue(this.orden[0].conceptoPago6);
+      this.editarOrden.controls['afiliacion'].setValue(this.orden[0].afiliacion);
+      this.editarOrden.controls['nivelRiesgo'].setValue(this.orden[0].NivelRiesgo);
+      this.editarOrden.controls['porcentajeRiesgo'].setValue(this.orden[0].porcentajeRiesgo);
+      this.editarOrden.controls['pagoAfiliacion'].setValue(this.orden[0].pagoAfiliacion);
+      this.editarOrden.controls['comentariosArl'].setValue(this.orden[0].comentarios);
+      this.editarOrden.controls['ceco1'].setValue(this.orden[0].cecoResponsable1);
+      this.editarOrden.controls['ceco2'].setValue(this.orden[0].cecoResponsable2);
+      this.editarOrden.controls['ceco3'].setValue(this.orden[0].cecoResponsable3);
+      this.editarOrden.controls['porcentajeCeco1'].setValue(this.orden[0].porcentajeResponsable1);
+      this.editarOrden.controls['porcentajeCeco2'].setValue(this.orden[0].porcentajeResponsable2);
+      this.editarOrden.controls['porcentajeCeco3'].setValue(this.orden[0].porcentajeResponsable3);
+      this.editarOrden.controls['garantia'].setValue(this.orden[0].garantia);
+      this.editarOrden.controls['porcentajeCumplimiento'].setValue(this.orden[0].porcentajeCumplimiento);
+      this.editarOrden.controls['mesesCumplimiento'].setValue(this.orden[0].mesesCumplimiento);
+      this.editarOrden.controls['porcentajeAnticipos'].setValue(this.orden[0].porcentajeManejoAnticipos);
+      this.editarOrden.controls['mesesAnticipos'].setValue(this.orden[0].mesesManejoAnticipos);
+      this.editarOrden.controls['porcentajeSalarios'].setValue(this.orden[0].porcentajePagoSalarios);
+      this.editarOrden.controls['mesesSalarios'].setValue(this.orden[0].aniosPagoSalarios);
+      this.editarOrden.controls['porcentajeResponsabilidad'].setValue(this.orden[0].porcentajeResposabilidadCivil);
+      this.editarOrden.controls['porcentajeCalidad'].setValue(this.orden[0].porcentajeCalidad);
+      this.editarOrden.controls['mesesCalidad1'].setValue(this.orden[0].validezCalidad);
+      this.editarOrden.controls['mesesCalidad2'].setValue(this.orden[0].extensionCalidad);
+      this.editarOrden.controls['polizaVida'].setValue(this.orden[0].polizaColectiva);
+      this.editarOrden.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
+      this.editarOrden.controls['distPago'].setValue(this.orden[0].distPago);
+      this.editarOrden.controls['porcentajeAsumido'].setValue(this.orden[0].porcentajeAsumido);
+    }
     this.NumeroOrden = this.orden[0].nroOrden;
     if (this.orden[0].ResponsableActual === this.usuarioActual.id) {
         this.esResponsableActual = true;
@@ -642,6 +824,20 @@ export class EditarOrdenComponent implements OnInit {
     }
     else {
       this.editarOrden.controls['afiliacion'].setValue('false');
+    }
+  }
+
+  mostrarTabla() {
+    let porcentaje = parseInt(this.editarOrden.get('porcentajeAsumido').value)
+    if(porcentaje < 100) {
+      this.mostrarTablaCecos = true;
+    }
+    else if(porcentaje > 100) {
+      this.MensajeAdvertencia('El porcentaje no debe ser superior a 100');
+      return false;
+    }
+    else {
+      this.mostrarTablaCecos = false;
     }
   }
 
@@ -717,6 +913,52 @@ export class EditarOrdenComponent implements OnInit {
     );
   }
 
+  adjuntarPropuesta($event) {
+    let adjunto = $event.target.files[0];
+    if (adjunto != null) {
+      this.adjuntoPropuesta = adjunto;
+      this.agregarPropuesta();
+    } else {
+      this.adjuntoPropuesta = null;
+    };
+  };
+
+  async agregarPropuesta() {
+    let obj = {
+      Title: this.adjuntoPropuesta.name,
+      // idOrdenServicioId: this.empleado[0].id
+    }
+    await this.servicio.AgregarPropuesta(this.adjuntoPropuesta.name, this.adjuntoPropuesta).then(
+      f => {
+        console.log(f);
+        f.file.getItem().then(item => {
+          console.log(item);
+          this.idDocumentoAdjunto = item.Id;
+          // this.actualizarMetadatosHV(obj, idDocumento);
+          // item.update(obj);               
+        })
+      }
+    ).catch(
+      (error) => {
+        console.log(error)
+        this.MensajeError('No se pudo cargar el archivo. Intente de nuevo')
+      }
+    );
+  };
+
+  actualizarMetadatosAdjuntoPropuestas(obj,idDocumento) {
+    this.servicio.ActualizarMetaDatosAdjuntoPropuestas(obj, idDocumento).then(
+      (res) => {
+        this.MensajeInfo('Se agregó la propuesta a la orden de servicio')
+      }
+    ).catch(
+      (error) => {
+        console.log(error);
+      }
+    )
+  }
+
+
   onSubmit() {
     this.spinner.show()
     this.validarPorcentaje();
@@ -730,17 +972,17 @@ export class EditarOrdenComponent implements OnInit {
     let id = parseInt(this.IdRegistroOS);
     let id1 = this.orden[0].id
     let nroOrden = this.editarOrden.get('nroOrden').value;
-    let empresaSolicitante = this.editarOrden.get('empresaSolicitante').value.nombre;
+    let empresaSolicitante = this.editarOrden.get('empresaSolicitante').value;
     let nitSolicitante = this.editarOrden.get('nitSolicitante').value;
-    let ciudadSolicitante = this.editarOrden.get('ciudadSolicitante').value.nombre;
+    let ciudadSolicitante = this.editarOrden.get('ciudadSolicitante').value;
     let telSolicitante = this.editarOrden.get('telSolicitante').value;
     let direccionSolicitante = this.editarOrden.get('direccionSolicitante').value;
-    let contactoSolicitante = this.editarOrden.get('contactoSolicitante').value.label;
+    let contactoSolicitante = this.editarOrden.get('contactoSolicitante').value;
     let emailSolicitante = this.editarOrden.get('emailSolicitante').value;
     let unidadNegocios = this.editarOrden.get('unidadNegocios').value;
-    let nombreCECO = this.editarOrden.get('nombreCECO').value.nombre;
+    let nombreCECO = this.editarOrden.get('nombreCECO').value;
     let numeroCECO = this.editarOrden.get('numeroCECO').value;
-    let razonSocial = this.editarOrden.get('razonSocial').value.nombre;
+    let razonSocial = this.editarOrden.get('razonSocial').value;
     let nitProveedor = this.editarOrden.get('nitProveedor').value;
     let ciudadProveedor = this.editarOrden.get('ciudadProveedor').value;
     let telProveedor = this.editarOrden.get('telProveedor').value;
@@ -785,7 +1027,6 @@ export class EditarOrdenComponent implements OnInit {
     let responsableActual = this.usuarioActual.IdJefeDirecto;
     let usuarioSolicitante = this.usuarioActual.id;
     let objOrden;
-    let objServicio;
     let porcentajeAsumido = this.editarOrden.get('porcentajeAsumido').value;
     let personaNatural = this.editarOrden.get('persona').value;
     let valorxdia = this.editarOrden.get('valorPorDia').value;
@@ -810,6 +1051,9 @@ export class EditarOrdenComponent implements OnInit {
     let conceptoPago4 = this.editarOrden.get('conceptoPago4').value;
     let conceptoPago5 = this.editarOrden.get('conceptoPago5').value;
     let conceptoPago6 = this.editarOrden.get('conceptoPago6').value;
+    let otroSi;
+    let objAdjuntoPropuesta;
+    let idPadre;
 
     porcentajePago1 === null ? porcentajePago1 = "" : porcentajePago1 = porcentajePago1;
     porcentajePago2 === null ? porcentajePago2 = "" : porcentajePago2 = porcentajePago2;
@@ -873,6 +1117,9 @@ export class EditarOrdenComponent implements OnInit {
     garantia === 'true' ? garantia = true : garantia = false;
     polizaVida === 'true' ? polizaVida = true : polizaVida = false;
     polizaVehiculos === "true" ? polizaVehiculos = true : polizaVehiculos = false;
+
+    this.esOtroSi ? otroSi = true : otroSi = false;
+    this.esOtroSi ? idPadre = id : idPadre = null 
 
     objOrden = {
       Title: empresaSolicitante,
@@ -955,35 +1202,41 @@ export class EditarOrdenComponent implements OnInit {
       ConceptoPago3: conceptoPago3,
       ConceptoPago4: conceptoPago4,
       ConceptoPago5: conceptoPago5,
-      ConceptoPago6: conceptoPago6
-    }
-
-    objServicio = {
-      TipoServicio: 'Orden de servicio',
-      CodigoServicioId: 4,
-      AutorId: usuarioSolicitante,
-      ResponsableActualId: responsableActual,
-      Estado: "Pendiente de aprobación gerente unidad de negocios",
-      idServicio: id
+      ConceptoPago6: conceptoPago6,
+      OtroSi: otroSi,
+      IdPadreId: idPadre
     }
 
     if (this.editarOrden.invalid) {
       this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
       this.spinner.hide();
     }
-        let cuerpo = '<p>Cordial saludo</p>' +
-        '<br>' +
-        '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado una nueva orden de servicio con el número <strong>' + this.editarOrden.get('nroOrden').value + '</strong> para su aprobación</p>' +
-        '<br>' +
-        '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
-        '<p>En caso de que el acceso no lo dirija a página por favor copie la siguiente url en el navegador:</p>' +
-        'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';
+
+    if(this.esOtroSi === false) {
+
+      let objServicio = {
+        TipoServicio: 'Orden de servicio',
+        CodigoServicioId: 4,
+        AutorId: usuarioSolicitante,
+        ResponsableActualId: responsableActual,
+        Estado: "Pendiente de aprobación gerente unidad de negocios",
+        idServicio: id
+      }
+
+     let cuerpo = '<p>Cordial saludo</p>' +
+      '<br>' +
+      '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado una nueva orden de servicio con el número <strong>' + this.editarOrden.get('nroOrden').value + '</strong> para su aprobación</p>' +
+      '<br>' +
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
+      '<p>En caso de que el acceso no lo dirija a página por favor copie la siguiente url en el navegador:</p>' +
+      'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';
 
       const emailProps: EmailProperties = {
         To: [this.usuarioActual.EmailJefeDirecto],
         Subject: "Notificación de orden de servicio",
         Body: cuerpo,
       };
+
       this.servicio.ActualizarOrden(id, objOrden).then(
         (respuesta) => {
           this.servicio.ObtenerServicio(id).then(
@@ -995,6 +1248,7 @@ export class EditarOrdenComponent implements OnInit {
                   this.servicio.EnviarNotificacion(emailProps).then(
                     (res) => {
                       this.MensajeInfo("Se ha enviado una notificación para aprobación");
+                      sessionStorage.clear();
                       this.spinner.hide();
                       setTimeout(
                         () => {
@@ -1009,6 +1263,76 @@ export class EditarOrdenComponent implements OnInit {
           )
         }
       )  
+    }
+    else {
+
+     let objServicio = {
+        TipoServicio: 'Orden de servicio',
+        CodigoServicioId: 4,
+        AutorId: usuarioSolicitante,
+        ResponsableActualId: responsableActual,
+        Estado: "Pendiente de aprobación gerente unidad de negocios",
+        idServicio: this.idOtroSi
+      }
+
+      let cuerpo = '<p>Cordial saludo</p>' +
+      '<br>' +
+      '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado un otro sí para la orden de servicio <strong>' + this.editarOrden.get('nroOrden').value + '</strong> que está pendiente de su aprobación</p>' +
+      '<br>' +
+      '<p>Para ver la orden haga clic <a href="https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios" target="_blank">aquí</a>.</p>' +
+      '<p>En caso de que el acceso no lo dirija a página por favor copie la siguiente url en el navegador:</p>' +
+      'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';
+
+
+      const emailProps: EmailProperties = {
+        To: [this.usuarioActual.EmailJefeDirecto],
+        Subject: "Notificación de orden de servicio",
+        Body: cuerpo,
+      };
+
+      this.servicio.AgregarOrden(objOrden).then(
+        (item: ItemAddResult) => {
+          this.idOtroSi = item.data.Id
+          objAdjuntoPropuesta = {
+            idOrdenServicioId: this.idOtroSi.toString()
+          }
+          if(this.idDocumentoAdjunto !== undefined) {
+            this.actualizarMetadatosAdjuntoPropuestas(objAdjuntoPropuesta, this.idDocumentoAdjunto);
+          }
+          // let idOrden = item.data.Id;
+          let numeroOrden = this.editarOrden.get('nroOrden').value
+
+          this.servicio.GuardarServicio(objServicio).then(
+            async (respuesta) => {
+              let ans = await this.guardarCecos();
+              this.servicio.EnviarNotificacion(emailProps).then(
+                (res) => {
+                  this.MensajeInfo("Se ha enviado una notificación para aprobación");
+                  sessionStorage.clear();
+                  this.spinner.hide();
+                  setTimeout(
+                    () => {
+                      window.location.href = 'https://aribasas.sharepoint.com/sites/Intranet';
+                      // this.spinnerService.hide();
+                    }, 2000);
+                }
+              )
+            }
+          )
+          this.MensajeExitoso('El proceso finalizó con éxito');
+          this.spinner.hide();
+          setTimeout(() => {
+            this.router.navigate(['/'])
+          }, 2000);
+        }
+      ).catch(
+        (err) => {
+          console.log(err);
+          this.MensajeError('Error al registrar la orden')
+          this.spinner.hide();
+        }
+      )
+    }  
   }
 
   async guardarCecos(): Promise<any> {

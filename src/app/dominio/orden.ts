@@ -100,7 +100,8 @@ export class Orden{
         public conceptoPago3: string,
         public conceptoPago4: string,
         public conceptoPago5: string,
-        public conceptoPago6: string
+        public conceptoPago6: string,
+        public esOtroSi: boolean
     ) {}
 
     public static fromJson(element: any) {
@@ -205,7 +206,8 @@ export class Orden{
             element.ConceptoPago3,
             element.ConceptoPago4,
             element.ConceptoPago5,
-            element.ConceptoPago6
+            element.ConceptoPago6,
+            element.OtroSi
         );  
     }
 

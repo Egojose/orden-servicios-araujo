@@ -1,10 +1,10 @@
-<h4 class="text-center">Editar orden de servicios</h4>
+<h4 class="text-center">Editar orden de servicios {{infoOtroSi}}</h4>
 <form action="" autocomplete="off" [formGroup]="editarOrden" (ngSubmit)="onSubmit()" class="main">
   <div class="container">
     <mat-accordion>
       <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
-          <mat-panel-title><strong>Información de la orden</strong></mat-panel-title>
+          <mat-panel-title><strong>Información de la orden {{infoOtroSi}}</strong></mat-panel-title>
           <mat-panel-description>{{panelOpenState ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
         </mat-expansion-panel-header>
         <mat-card>
@@ -77,7 +77,7 @@
             </div>
             <div class="col-md-4">
               <mat-form-field>
-                <input matInput placeholder="Porcentaje asumido" formControlName="porcentajeAsumido" type="number">
+                <input matInput placeholder="Porcentaje asumido" formControlName="porcentajeAsumido" type="number" (change)="mostrarTabla()">
               </mat-form-field>
               <mat-error>
               </mat-error>
@@ -87,15 +87,22 @@
           <h5 class="text-center">Datos del proveedor</h5>
           <div class="row">
             <div class="col-md-12">
-              <mat-form-field>
+              <ng-container>
+                <mat-form-field id="razonSocialProveedor">
                   <mat-label>Razón social</mat-label>
-                  <mat-select formControlName="razonSocial" (selectionChange)="datosProveedor($event)">
+                  <mat-select formControlName="razonSocial" (selectionChange)="datosProveedor($event)" class="lectura">
                       <mat-option *ngFor="let proveedor of proveedor" [value]="proveedor">
                         {{proveedor.nombre}}                        
                       </mat-option>
                   </mat-select>
                 <!-- <input matInput placeholder="Razón social" formControlName="razonSocial"> -->
               </mat-form-field>
+              </ng-container>
+              <!-- <ng-container *ngIf="esOtroSi">
+                <mat-form-field>
+                  <input matInput placeholder="Razón social" formControlName="razonSocial" readonly>
+                </mat-form-field>
+              </ng-container> -->
               <mat-error>
                   <span *ngIf="!editarOrden.get('razonSocial').valid && editarOrden.get('razonSocial').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
               </mat-error>
@@ -104,7 +111,7 @@
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="C.C/Nit" formControlName="nitProveedor">
+                <input matInput placeholder="C.C/Nit" formControlName="nitProveedor" [readonly]="readOtroSi">
               </mat-form-field>
               <mat-error>
                   <span *ngIf="!editarOrden.get('nitProveedor').valid && editarOrden.get('nitProveedor').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -112,7 +119,7 @@
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Ciudad" formControlName="ciudadProveedor">
+                <input matInput placeholder="Ciudad" formControlName="ciudadProveedor" [readonly]="readOtroSi">
               </mat-form-field>
               <mat-error>
                   <span *ngIf="!editarOrden.get('ciudadProveedor').valid && editarOrden.get('ciudadProveedor').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -122,7 +129,7 @@
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Teléfono" formControlName="telProveedor">
+                <input matInput placeholder="Teléfono" formControlName="telProveedor" [readonly]="readOtroSi">
               </mat-form-field>
               <mat-error>
                   <span *ngIf="!editarOrden.get('telProveedor').valid && editarOrden.get('telProveedor').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -130,7 +137,7 @@
             </div>
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Dirección" formControlName="direccionProveedor">
+                <input matInput placeholder="Dirección" formControlName="direccionProveedor" [readonly]="readOtroSi">
               </mat-form-field>
               <mat-error>
                   <span *ngIf="!editarOrden.get('direccionProveedor').valid && editarOrden.get('direccionProveedor').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -140,7 +147,7 @@
           <div class="row">
             <div class="col-md-6">
               <mat-form-field>
-                <input matInput placeholder="Contacto" formControlName="contactoProveedor">
+                <input matInput placeholder="Contacto" formControlName="contactoProveedor" [readonly]="readOtroSi">
               </mat-form-field>
               <mat-error>
                 <span *ngIf="!editarOrden.get('contactoProveedor').valid && editarOrden.get('contactoProveedor').touched"><small
@@ -156,7 +163,15 @@
                     class="form-text">Este campo debe estar diligenciado</small></span>
               </mat-error>
             </div>
-          </div>
+              <div class="col-md-6">
+                  <mat-form-field>
+                    <input matInput placeholder="Email" formControlName="emailRepresentante" [readonly]="readOtroSi">
+                  </mat-form-field>
+                  <mat-error>
+                      <span *ngIf="!editarOrden.get('emailRepresentante').valid && editarOrden.get('emailRepresentante').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+                  </mat-error>
+                </div>
+            </div>
           <div class="row">
             <div class="col-md-6">
                 <label for="Regimen" id="regimen">Regimen</label>
@@ -164,9 +179,9 @@
               <mat-radio-button value="Común">Común</mat-radio-button>
               <mat-radio-button value="Simplificado">Simplificado</mat-radio-button>
             </mat-radio-group>
-            <mat-error>
-                <span *ngIf="!editarOrden.get('regimen').valid && editarOrden.get('regimen').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
-            </mat-error>
+            <!-- <mat-error>
+                <span *ngIf="!editarOrden.get('regimen').valid"><small class="form-text">Este campo debe estar diligenciado</small></span>
+            </mat-error> -->
             </div>
             <div class="col-md-6">
               <section class="example-section">
@@ -185,6 +200,12 @@
                           <span *ngIf="!editarOrden.get('descripcionServicios').valid && editarOrden.get('descripcionServicios').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
                       </mat-error>
                   </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label for="Hoja de vida">Adjuntar propuesta</label>
+                <input type="file" name="adjuntoPropuesta" class="form-control" (change)="adjuntarPropuesta($event)">
               </div>
             </div>
             <div class="row">
@@ -553,7 +574,7 @@
                   </div>
                 </ng-container>
             <br>
-            <ng-container id="contenedorTable">
+            <ng-container id="contenedorTable" *ngIf="mostrarTablaCecos">
                 <div class="row">
                   <div class="col-md-3">
                       <mat-form-field>
@@ -641,7 +662,7 @@
             </div>
           </div>
             <br>
-            <ng-container *ngIf="garantia">
+            <ng-container *ngIf="mostrarDatosGarantia">
             <div class="row">
               <div class="col-md-6">
                 <h6 class="text-center"><b>Cumplimiento</b></h6>
@@ -688,9 +709,528 @@
     <br>
     <button type="submit" class="btn btn-success btn-lg">Guardar orden</button>
     <button type="button" class="btn btn-danger btn-lg" (click)="cancelar()">Cancelar</button>
+    <!-- <button type ="button" class="btn btn-primary btn-lg" (click)="openModal(otroSi)">Agregar otro sí</button> -->
   </div>
+  <br>
 </form>
 
+<form action="" autocomplete="off" [formGroup]="otroSi">
+<ng-template #otroSi>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Agregar otro sí</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="Descripción general del servicio">Descripción general del servicio</label>
+              <textarea class="form-control" rows="3" formControlName="descripcionServiciosOtroSi"></textarea>
+              <mat-error>
+                  <span *ngIf="!editarOrden.get('descripcionServicios').valid && editarOrden.get('descripcionServicios').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+              </mat-error>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field>
+            <mat-label>Cliente</mat-label>
+              <mat-select formControlName="clienteOtroSi" (selectionChange)="clientes($event)">
+                  <mat-option *ngFor="let cliente of cliente" [value]="cliente">
+                    {{cliente.cliente}}                        
+                  </mat-option>
+              </mat-select>
+          <!-- <input matInput placeholder="Cliente" formControlName="cliente"> -->
+        </mat-form-field>
+        <!-- <mat-error>
+            <span *ngIf="!editarOrden.get('cliente').valid && editarOrden.get('cliente').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+        </mat-error> -->
+      </div>
+      <div class="col-md-6">
+        <mat-form-field>
+          <input matInput placeholder="Nro Job" formControlName="jobOtroSi">
+        </mat-form-field>
+        <!-- <mat-error>
+            <span *ngIf="!editarOrden.get('job').valid && editarOrden.get('job').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+        </mat-error> -->
+      </div>
+    </div>
+    <br>
+    <h5 class="text-center">Información económica</h5>
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Precio" currencyMask
+          [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="precioOtroSi" (keyup)="changePrecio($event)">
+        </mat-form-field>
+        <mat-error>
+            <span *ngIf="!editarOrden.get('precio').valid && editarOrden.get('precio').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+        </mat-error>
+      </div>
+      <div class="col-md-1">
+        <section class="iva">
+          <mat-checkbox value="true" formControlName="tieneIvaOtroSi" (change)="changeIva($event)">IVA</mat-checkbox>
+        </section>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field>
+            <input matInput currencyMask [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="ivaOtroSi" readonly>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field>
+          <input matInput placeholder="Total" currencyMask
+          [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="totalOtroSi" readonly>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field>
+          <input matInput placeholder="Valor en letras" formControlName="valorLetrasOtroSi">
+        </mat-form-field>
+        <mat-error>
+            <span *ngIf="!editarOrden.get('valorLetras').valid && editarOrden.get('valorLetras').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+        </mat-error>
+      </div>
+    </div>
+    <br>
+    <h5 class="text-center">Plazo de ejecución</h5>
+      <div class="row">
+        <div class="col-md-4">
+            <mat-form-field>
+                <input matInput [matDatepicker]="picker" placeholder="Fecha de inicio" formControlName="fechaInicioOtroSi">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+          <mat-error>
+              <span *ngIf="!editarOrden.get('fechaInicio').valid && editarOrden.get('fechaInicio').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
+          </mat-error>
+        </div>
+        <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker2" placeholder="Fecha final" formControlName="fechaFinalOtroSi" (change)="changeFecha($event.target.value)">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+          <mat-error>
+            <span
+              *ngIf="!editarOrden.get('fechaFinal').valid && editarOrden.get('fechaFinal').touched"><small
+                class="form-text">Este campo debe estar diligenciado</small></span>
+          </mat-error>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input matInput placeholder="Total días del contrato" formControlName="totalDiasOtroSi" (click)="changeFecha()">
+          </mat-form-field>
+          <mat-error>
+            <span *ngIf="!editarOrden.get('totalDias').valid && editarOrden.get('totalDias').touched"><small
+                class="form-text">Este campo debe estar diligenciado</small></span>
+          </mat-error>
+        </div>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState2 = true"  (closed)="panelOpenState2 = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title><strong>CALCULO DE PAGO PARA CUMPLIMIENTO DE PAGOS A LA SEGURIDAD SOCIAL Y PENSIONES (solo personas naturales)</strong></mat-panel-title>
+            <mat-panel-description>{{panelOpenState1 ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-card>
+            <div class="row">
+              <div class="col-md-4 offset-4" >
+                <label for="Regimen" id="regimen">Es persona natural?</label>
+                  <mat-radio-group formControlName="personaOtroSi" (change)="personaChange($event)">
+                    <mat-radio-button value="true">Sí</mat-radio-button>
+                    <mat-radio-button value="false">No</mat-radio-button>
+                  </mat-radio-group>
+              </div>
+            </div>
+              <br>
+              <ng-container *ngIf="personaNatural">
+              <div class="row">
+                <div class="col-md-3">
+                  <mat-form-field>
+                    <input matInput currencyMask
+                      [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }"
+                      placeholder="Valor total del servicio" formControlName="valorTotalServicioOtroSi"
+                      (click)="agregarValorTotalServicio()" readonly>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                  <mat-form-field>
+                    <input matInput placeholder="Días de duración del servicio" formControlName="nroDiasOtroSi"
+                      (click)="nroDiasContrato()" readonly>
+                  </mat-form-field>
+                </div>
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput currencyMask
+                      [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" placeholder="Valor por día de servicio" formControlName="valorPorDiaOtroSi" (click)="valorPorDia()" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-3">
+                    <mat-form-field>
+                      <input matInput placeholder="Número de días/mes" formControlName="diasPorMesOtroSi">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <mat-form-field>
+                      <input matInput currencyMask
+                      [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" placeholder="Valor del servicio por mes" formControlName="valorServicioPorMesOtroSi" (click)="ValorPorMes()">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-4">
+                    <mat-form-field>
+                      <input matInput placeholder="Porcentaje mínimo de cotización" formControlName="porcentajeCotizacionOtroSi" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-4">
+                    <mat-form-field>
+                      <input matInput placeholder="Valor servicio base de cotización/mes" currencyMask
+                      [options]="{ prefix: ' ', thousands: '.', decimal: ',', align: 'left' , allowNegative: false, precision: 0 }" formControlName="baseCotizacionOtroSi" (click)="calcularBaseCotizacion()">
+                    </mat-form-field>
+                  </div>
+                </div>
+            </ng-container>
+          </mat-card>
+          <hr>
+          <mat-card>
+            <div class="row">
+              <div class="col-md-6 offset-3">
+                <label for="Regimen" id="regimen">Requiere afiliación a la ARL?</label>
+                <mat-radio-group formControlName="afiliacionOtroSi" (change)="afiliacionChange($event)">
+                  <mat-radio-button value="true">Sí</mat-radio-button>
+                  <mat-radio-button value="false">No</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+            <ng-container *ngIf="afiliar">
+              <div class="row">
+              <div class="col-md-6">
+                <mat-form-field>
+                    <mat-label>Nivel de riesgo</mat-label>
+                    <mat-select formControlName="nivelRiesgoOtroSi" (selectionChange)="porcentajeNivelRiesgo($event)">
+                        <mat-option value="I">I</mat-option>                       
+                        <mat-option value="II">II</mat-option>
+                        <mat-option value="III">III</mat-option>
+                        <mat-option value="IV">IV</mat-option>
+                        <mat-option value="V">V</mat-option>
+                    </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">
+                <mat-form-field>
+                  <input matInput placeholder="Porcentaje" formControlName="porcentajeRiesgoOtroSi">
+                </mat-form-field>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-8 offset-2">
+                  <label for="Regimen" id="regimen">Quién asume el pago de la ARL?</label>
+                  <mat-radio-group formControlName="pagoAfiliacionOtroSi">
+                    <mat-radio-button value="ARAUJO IBARRA">ARAUJO IBARRA</mat-radio-button>
+                    <mat-radio-button value="ASESOR">ASESOR</mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </div>
+            <div class="row">
+              <div class="col-md-12">
+                <mat-form-field>
+                  <textarea matInput placeholder="Comentarios" formControlName="comentariosArlOtroSi"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+            </ng-container>
+          </mat-card>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <br>
+      <h5 class="text-center">Forma de pago</h5>
+      <br>
+      <div class="row">
+        <div class="col-md-4 offset-4 text-center">
+          <mat-radio-group formControlName="formaPagoOtroSi" (change)="formaPago($event)">
+            <mat-radio-button value="Único">Único</mat-radio-button>
+            <mat-radio-button value="Varios">Varios</mat-radio-button>
+          </mat-radio-group>
+          <mat-error>
+            <span *ngIf="!editarOrden.get('formaPagoOtroSi').valid && editarOrden.get('formaPagoOtroSi').touched"><small
+                class="form-text">Este campo debe estar diligenciado</small></span>
+          </mat-error>
+        </div>
+      </div>
+      <ng-container *ngIf="pagoUnico">
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker3" placeholder="Fecha recibo de factura" formControlName="fechaPagoOtroSi">
+              <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+              <mat-datepicker #picker3></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field>
+              <input matInput placeholder="Concepto" formControlName="conceptoUnicoOtroSi">
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="pagoVarios">
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker4" placeholder="Fecha recibo de factura 1" formControlName="OtroSiPago1">
+              <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+              <mat-datepicker #picker4></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput placeholder="porcentaje" formControlName="OtroSiporcentajePago1">
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput placeholder="Concepto" formControlName="otroSiconceptoPago1">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker5" placeholder="Fecha recibo de factura 2" formControlName="OtroSiPago2">
+              <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
+              <mat-datepicker #picker5></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="porcentaje" formControlName="OtroSiporcentajePago2">
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Concepto" formControlName="otroSiconceptoPago2">
+              </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker6" placeholder="Fecha recibo de factura 3" formControlName="OtroSiPago3">
+              <mat-datepicker-toggle matSuffix [for]="picker6"></mat-datepicker-toggle>
+              <mat-datepicker #picker6></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="porcentaje" formControlName="OtroSiporcentajePago3">
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Concepto" formControlName="otroSiconceptoPago3">
+              </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker7" placeholder="Fecha recibo de factura 4" formControlName="OtroSiPago4">
+              <mat-datepicker-toggle matSuffix [for]="picker7"></mat-datepicker-toggle>
+              <mat-datepicker #picker7></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="porcentaje" formControlName="OtroSiporcentajePago4">
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Concepto" formControlName="otroSiconceptoPago4">
+              </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker8" placeholder="Fecha recibo de factura 5" formControlName="OtroSiPago5">
+              <mat-datepicker-toggle matSuffix [for]="picker8"></mat-datepicker-toggle>
+              <mat-datepicker #picker8></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="porcentaje" formControlName="OtroSiporcentajePago5">
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Concepto" formControlName="otroSiconceptoPago5">
+              </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker9" placeholder="Fecha recibo de factura 6" formControlName="OtroSiPago6">
+              <mat-datepicker-toggle matSuffix [for]="picker9"></mat-datepicker-toggle>
+              <mat-datepicker #picker9></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="porcentaje" formControlName="OtroSiporcentajePago6">
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field>
+                <input matInput placeholder="Concepto" formControlName="otroSiconceptoPago6">
+              </mat-form-field>
+            </div>
+        </div>
+      </ng-container>
+  <br>
+  <ng-container id="contenedorTable">
+    <div class="row">
+      <div class="col-md-3">
+          <mat-form-field>
+              <mat-label>CECO</mat-label>
+              <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event)">
+                  <mat-option *ngFor="let ceco of areas" [value]="ceco">
+                    {{ceco.nombre}}                        
+                  </mat-option>
+              </mat-select>
+          </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field>
+          <input matInput placeholder="Nro Ceco" formControlName="numeroCecoPorcentaje">
+        </mat-form-field>
+      </div>
+    
+      <div class="col-md-3">
+        <mat-form-field>
+          <input matInput placeholder="Porcentaje de distribución" formControlName="otrosSiporcentajeCeco1" type="number">
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-primary btn-block" type="button" (click)="agregarCecos()">Agregar</button>
+      </div>
+    </div>
+    <br>
+    <table class="table table-bordered">
+        <thead>
+            <tr class="cabezeraTblUnidadNegocio">
+              <th scope="col">Nombre</th>
+              <th scope="col">Nro CECO</th>
+              <th scope="col">Porcentaje</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ceco of arrayCecos; let i = index">
+              <td>{{ceco.ceco}}</td>
+              <td>{{ceco.nroCeco}}</td>
+              <td>{{ceco.porcentaje}}</td>
+              <td><button type="button" class="btn btn-danger" (click)="borrarCecos(i)">Borrar</button></td>
+            </tr>
+          </tbody>
+    </table>
+  </ng-container>
+<hr>
+<ng-container *ngIf="esConsultores">
+  <div class="row">
+    <div class="col-md-12">
+      <h6 class="text-center">
+          NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA CONSULTORES INTERNACIONALES S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
+      </h6>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="esAsociados">
+  <div class="row">
+    <div class="col-md-12">
+      <h6 class="text-center">
+          NOTA: Toda factura será cancelada 30 días a partir de la fecha de radicación en la oficina de ARAUJO IBARRA ASOCIADOS S.A.S y debe contener el numero de orden de servicios indicado en la parte superior.
+      </h6>
+    </div>
+  </div>
+</ng-container>
+<br>
+<mat-accordion>
+  <mat-expansion-panel (opened)="panelOpenState1 = true"  (closed)="panelOpenState1 = false">
+    <mat-expansion-panel-header>
+      <mat-panel-title><strong>Hitos de pago (radicación de facturas)</strong></mat-panel-title>
+      <mat-panel-description>{{panelOpenState1 ? 'Cerrar' : 'Click para desplegar'}}</mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-card>
+      <br>
+      <div class="row">
+        <div class="col-md-4 offset-4" >
+          <label for="Regimen" id="regimen">GARANTÍAS Y SEGUROS</label>
+            <mat-radio-group formControlName="garantiaOtroSi" (change)="garantiaChange($event)">
+              <mat-radio-button value="true">Sí</mat-radio-button>
+              <mat-radio-button value="false">No</mat-radio-button>
+            </mat-radio-group>
+        </div>
+      </div>
+        <br>
+        <ng-container *ngIf="garantia">
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="text-center"><b>Cumplimiento</b></h6>
+            <p><input type="text" class="text-center inputp" formControlName="porcentajeCumplimientoOtroSi"> % del valor del contrato, válido por la duración del mismo y  <input type="text" class="text-center inputp" formControlName="mesesCumplimientoOtroSi"> meses adicionales</p>
+          </div>
+          <div class="col-md-6">
+            <h6 class="text-center"><b>Manejo de anticipos</b></h6>
+            <p><input type="text" class="text-center inputp" formControlName="porcentajeAnticiposOtroSi">% del valor del anticipo, válido por la duración del contrato y  <input type="text" class="text-center inputp" formControlName="mesesAnticiposOtroSi"> meses adicionales</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="text-center"><b>Pago de salarios</b></h6>
+            <p><input type="text" class="text-center inputp" formControlName="porcentajeSalariosOtroSi">% del valor del contrato, válido por la duración del mismo y  <input type="text" class="text-center inputp" formControlName="mesesSalariosOtroSi"> años adicionales</p>
+          </div>
+          <div class="col-md-6">
+            <h6 class="text-center"><b>Responsabilidad civil extracontractual</b></h6>
+            <p><input type="text" class="text-center inputp" formControlName="porcentajeResponsabilidadOtroSi">% del valor del contrato, válido por la duración del contrato</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="text-center"><b>Calidad del servicio</b></h6>
+            <p><input type="text" class="text-center inputp" formControlName="porcentajeCalidadOtroSi">% del valor del contrato, válido por <input type="text" class="text-center inputp" formControlName="otroSimesesCalidad1"> meses a partir de la finalización del contrato y <input type="text" class="text-center inputp" formControlName="otroSimesesCalidad2"> meses más</p>
+          </div>
+          <div class="col-md-6">
+            <h6 class="text-center"><b>Otros</b></h6>
+            <label for="Regimen" id="regimen">Póliza colectiva de vida y accidentes</label>
+            <mat-radio-group formControlName="polizaVidaOtroSi">
+            <mat-radio-button value="true">Sí</mat-radio-button>
+            <mat-radio-button value="false">No</mat-radio-button>
+          </mat-radio-group>
+          <label for="Regimen" id="regimen">Póliza de vehículos</label>
+          <mat-radio-group formControlName="polizaVehiculosOtroSi">
+            <mat-radio-button value="true">Sí</mat-radio-button>
+            <mat-radio-button value="false">No</mat-radio-button>
+          </mat-radio-group>
+          </div>
+        </div>
+      </ng-container>
+    </mat-card>
+  </mat-expansion-panel>
+</mat-accordion>
+<br>
+</div>
+</ng-template>
+</form>
   <ngx-spinner
   bdOpacity = 0.9
   bdColor = "rgba(33,31,31,0.64)"
