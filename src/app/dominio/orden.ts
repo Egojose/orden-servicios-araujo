@@ -17,6 +17,7 @@ export class Orden{
         public telProveedor: string,
         public direccionProveedor: string,
         public contactoProveedor: string,
+        public emailProveedor: string,
         public regimen: string,
         public rut: boolean,
         public camara: boolean,
@@ -99,7 +100,8 @@ export class Orden{
         public conceptoPago3: string,
         public conceptoPago4: string,
         public conceptoPago5: string,
-        public conceptoPago6: string
+        public conceptoPago6: string,
+        public esOtroSi: boolean
     ) {}
 
     public static fromJson(element: any) {
@@ -121,6 +123,7 @@ export class Orden{
             element.TelProveedor,
             element.DireccionProveedor,
             element.ContactoProveedor,
+            element.EmailProveedor,
             element.Regimen,
             element.Rut,
             element.CamaraComercio,
@@ -203,7 +206,8 @@ export class Orden{
             element.ConceptoPago3,
             element.ConceptoPago4,
             element.ConceptoPago5,
-            element.ConceptoPago6
+            element.ConceptoPago6,
+            element.OtroSi
         );  
     }
 
