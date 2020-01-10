@@ -982,7 +982,7 @@ export class EditarOrdenComponent implements OnInit {
     let unidadNegocios = this.editarOrden.get('unidadNegocios').value;
     let nombreCECO = this.editarOrden.get('nombreCECO').value;
     let numeroCECO = this.editarOrden.get('numeroCECO').value;
-    let razonSocial = this.editarOrden.get('razonSocial').value;
+    let razonSocial = this.editarOrden.get('razonSocial').value.nombre;
     let nitProveedor = this.editarOrden.get('nitProveedor').value;
     let ciudadProveedor = this.editarOrden.get('ciudadProveedor').value;
     let telProveedor = this.editarOrden.get('telProveedor').value;

@@ -107,6 +107,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.registrarControles();
     // this.consultarOrden();
     this.ObtenerUsuarioActual();
+    this.obtenerClausula();
   }
 
   private registrarControles() {
