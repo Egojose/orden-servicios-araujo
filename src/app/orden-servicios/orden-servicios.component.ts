@@ -677,7 +677,7 @@ export class OrdenServiciosComponent implements OnInit {
     let conceptoPago5 = this.generarOrdenServicios.get('conceptoPago5').value;
     let conceptoPago6 = this.generarOrdenServicios.get('conceptoPago6').value;
    
-    await this.validarConsecutivo();
+   
 
     if (regimen === "") {
       this.MensajeAdvertencia('debe seleccionar el regimen');
@@ -824,6 +824,7 @@ export class OrdenServiciosComponent implements OnInit {
       this.spinner.hide();
     }
     else {
+      await this.validarConsecutivo();
       this.servicio.AgregarOrden(objOrden).then(
         (item: ItemAddResult) => {
           this.idOrden = item.data.Id
