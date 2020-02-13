@@ -308,7 +308,8 @@ export class OrdenServiciosComponent implements OnInit {
   obtenerUnegocios() {
     this.servicio.obtenerUnegocio().subscribe(
       (respuesta) => {
-        this.unegocios = Unegocios.fromJsonList(respuesta);
+        console.log(respuesta);
+        this.unegocios = Unegocios.fromJsonList(respuesta.sort((a, b)=> (a.Title > b.Title) ? 1 : -1));
       }
     )
   }
