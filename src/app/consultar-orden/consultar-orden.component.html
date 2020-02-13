@@ -1,4 +1,4 @@
-<h4 class="text-center">Consultar orden de servicios</h4>
+<h4 class="text-center">Consultar orden de servicios {{otroSi}}</h4>
 <form action="" autocomplete="off" [formGroup]="aprobarOrdenServicios" class="main" id="formatoExportar">
   <div class="container">
         <mat-card>
@@ -17,6 +17,11 @@
             <ng-container *ngIf="pagar">
               <div class="col-md-3">
                 <button type="button" class="btn btn-success btn-block" (click)="recibir()">Pagar</button>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="verClausula">
+              <div class="col-md-3">
+                <button type="button" class="btn btn-success btn-block" (click)="descargarClausula()">Ver cláusula</button>
               </div>
             </ng-container>
           </div>
@@ -79,10 +84,10 @@
               </mat-form-field>
             </div>
             <div class="col-md-4">
-              <mat-form-field>
-                <input matInput placeholder="Porcentaje asumido" formControlName="porcentajeAsumido" type="number" readonly>
-              </mat-form-field>
-            </div>
+                <mat-form-field>
+                  <input matInput placeholder="Porcentaje asumido" formControlName="porcentajeAsumido" type="number">
+                </mat-form-field>
+              </div>
           </div>
           <br>
           <h5 class="text-center">Datos del proveedor</h5>
@@ -231,7 +236,7 @@
                   <div class="row">
                     <div class="col-md-4 offset-4" >
                       <label for="Regimen" id="regimen">Es persona natural?</label>
-                        <mat-radio-group formControlName="persona">
+                        <mat-radio-group formControlName="persona" (change)="personaChange($event)">
                           <mat-radio-button value="true">Sí</mat-radio-button>
                           <mat-radio-button value="false">No</mat-radio-button>
                         </mat-radio-group>
@@ -292,7 +297,7 @@
                   <div class="row">
                     <div class="col-md-6 offset-3">
                       <label for="Regimen" id="regimen">Requiere afiliación a la ARL?</label>
-                      <mat-radio-group formControlName="afiliacion">
+                      <mat-radio-group formControlName="afiliacion" (change)="afiliacionChange($event)">
                         <mat-radio-button value="true">Sí</mat-radio-button>
                         <mat-radio-button value="false">No</mat-radio-button>
                       </mat-radio-group>
@@ -361,7 +366,7 @@
                 </div>
                 <div class="col-md-6">
                   <mat-form-field>
-                    <input matInput placeholder="Concepto" formControlName="conceptoUnico" readonly>
+                    <input matInput placeholder="Concepto" formControlName="conceptoUnico">
                   </mat-form-field>
                 </div>
               </div>
@@ -684,7 +689,7 @@
 </ng-container>
 
 <!-- vista impresión -->
-<!-- <ng-container *ngIf="expression">
+<ng-container *ngIf="expression">
 <form [formGroup]="aprobarOrdenServicios">
   <div class="container">
   <mat-card>
@@ -989,5 +994,5 @@
     </mat-card>
 </div>
 </form>
-</ng-container> -->
+</ng-container>
 

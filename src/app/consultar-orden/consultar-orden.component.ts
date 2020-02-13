@@ -95,6 +95,9 @@ export class ConsultarOrdenComponent implements OnInit {
   valorLetras;
   personaNatural: boolean;
   afiliar: boolean;
+  verClausula: boolean = false;
+  documentoClausula: any[];
+  otroSi: string = '';
 
   constructor(private exportar: ExportAsService, private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private modalService: BsModalService, private spinner: NgxSpinnerService) { }
 
@@ -104,6 +107,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.registrarControles();
     // this.consultarOrden();
     this.ObtenerUsuarioActual();
+    this.obtenerClausula();
   }
 
   private registrarControles() {
@@ -119,7 +123,6 @@ export class ConsultarOrdenComponent implements OnInit {
       unidadNegocios: [''],
       nombreCECO: [''],
       numeroCECO: [''],
-      porcentajeAsumido: [''],
       razonSocial: [''],
       nitProveedor: [''],
       ciudadProveedor: [''],
@@ -169,6 +172,7 @@ export class ConsultarOrdenComponent implements OnInit {
       polizaVida: [''],
       polizaVehiculos: [''],
       motivoRechazo: [''],
+      porcentajeAsumido: [''],
       valorTotalServicio: [''],
       persona: [''],
       nroDias: [''],
@@ -222,6 +226,10 @@ export class ConsultarOrdenComponent implements OnInit {
         this.cargarFirmajefe = respuesta[0].FirmaResponsableUnidadNegocios.Url;
         this.cargarFirmaGerente = respuesta[0].FirmaGerenteAdministrativo.Url;
 
+        if(this.orden[0].esOtroSi === true) {
+          this.otroSi = '(Otro sí)'
+        }
+
         if(this.orden[0].aprobadoDirector) {
           this.mostrarFirmaDirector = true;
           this.cargarFirmaDirector = respuesta[0].FirmaDirectorOperativo.Url;
@@ -235,6 +243,10 @@ export class ConsultarOrdenComponent implements OnInit {
         }
         if(this.orden[0].estado === 'Pendiente de radicar factura') {
           this.pagar = true;
+        }
+
+        if(this.orden[0].total >= 8000000) {
+          this.verClausula = true;
         }
         this.ordenNro = this.aprobarOrdenServicios.get('nroOrden').value;
         this.valoresPorDefecto();
@@ -253,6 +265,19 @@ export class ConsultarOrdenComponent implements OnInit {
         console.log(this.participacionCecos);
       }
     )
+  }
+
+  obtenerClausula() {
+    this.servicio.obtenerClausulas().then(
+      (respuesta) => {
+        this.documentoClausula = respuesta;
+        console.log(respuesta);
+      }
+    )
+  }
+
+  descargarClausula() {
+    window.open('https://enovelsoluciones.sharepoint.com' + this.documentoClausula[0].File.ServerRelativeUrl, '_blank');
   }
 
   disableButtons():void {
@@ -323,7 +348,6 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
     this.aprobarOrdenServicios.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
     this.aprobarOrdenServicios.controls['porcentajeAsumido'].setValue(this.orden[0].porcentajeAsumido);
-    this.aprobarOrdenServicios.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
     this.aprobarOrdenServicios.controls['razonSocial'].setValue(this.orden[0].razonSocial);
     this.aprobarOrdenServicios.controls['nitProveedor'].setValue(this.orden[0].nitProveedor);
     this.aprobarOrdenServicios.controls['ciudadProveedor'].setValue(this.orden[0].ciudadProveedor);
@@ -344,7 +368,6 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['fechaInicio'].setValue(this.orden[0].fechaInicio);
     this.aprobarOrdenServicios.controls['fechaFinal'].setValue(this.orden[0].fechaFin);
     this.aprobarOrdenServicios.controls['totalDias'].setValue(this.orden[0].totalDias);
-    this.aprobarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
     this.aprobarOrdenServicios.controls['formaPago'].setValue(this.orden[0].formaPago);
     this.aprobarOrdenServicios.controls['fechaPago'].setValue(this.orden[0].fechaPago);
     this.aprobarOrdenServicios.controls['Pago1'].setValue(this.orden[0].fecha1erPago);
@@ -371,6 +394,7 @@ export class ConsultarOrdenComponent implements OnInit {
     this.aprobarOrdenServicios.controls['nroDias'].setValue(this.orden[0].totalDias);
     this.aprobarOrdenServicios.controls['valorPorDia'].setValue(this.orden[0].valorxdia);
     this.aprobarOrdenServicios.controls['diasPorMes'].setValue(this.orden[0].diasxmes);
+    this.aprobarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
     this.aprobarOrdenServicios.controls['valorServicioPorMes'].setValue(this.orden[0].valorxmes);
     this.aprobarOrdenServicios.controls['baseCotizacion'].setValue(this.orden[0].valorBase);
     this.aprobarOrdenServicios.controls['afiliacion'].setValue(this.orden[0].afiliacion);
