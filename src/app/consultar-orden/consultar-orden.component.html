@@ -236,7 +236,7 @@
                   <div class="row">
                     <div class="col-md-4 offset-4" >
                       <label for="Regimen" id="regimen">Es persona natural?</label>
-                        <mat-radio-group formControlName="persona" (change)="personaChange($event)">
+                        <mat-radio-group formControlName="persona">
                           <mat-radio-button value="true">Sí</mat-radio-button>
                           <mat-radio-button value="false">No</mat-radio-button>
                         </mat-radio-group>
@@ -297,7 +297,7 @@
                   <div class="row">
                     <div class="col-md-6 offset-3">
                       <label for="Regimen" id="regimen">Requiere afiliación a la ARL?</label>
-                      <mat-radio-group formControlName="afiliacion" (change)="afiliacionChange($event)">
+                      <mat-radio-group formControlName="afiliacion">
                         <mat-radio-button value="true">Sí</mat-radio-button>
                         <mat-radio-button value="false">No</mat-radio-button>
                       </mat-radio-group>
@@ -689,7 +689,7 @@
 </ng-container>
 
 <!-- vista impresión -->
-<ng-container *ngIf="expression">
+<!-- <ng-container *ngIf="expression">
 <form [formGroup]="aprobarOrdenServicios">
   <div class="container">
   <mat-card>
@@ -994,5 +994,5 @@
     </mat-card>
 </div>
 </form>
-</ng-container>
+</ng-container> -->
 
