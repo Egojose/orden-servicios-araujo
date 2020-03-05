@@ -4,11 +4,11 @@
 
 export const environment = {
   production: false,
-  urlRaiz: 'https://enovelsoluciones.sharepoint.com',
-  urlWeb: 'https://enovelsoluciones.sharepoint.com/sites/IntranetAraujo/servicios',
-  urlWebGH: 'https://enovelsoluciones.sharepoint.com/sites/IntranetAraujo/Gestion-humana',
+  urlRaiz: 'https://aribasas.sharepoint.com',
+  urlWeb: 'https://aribasas.sharepoint.com/sites/Intranet/Servicios',
+  urlWebGH: 'https://aribasas.sharepoint.com/sites/Intranet/Gestion-humana',
   urlWebJobs: 'https://enovelsoluciones.sharepoint.com/sites/IntranetAraujo/Jobs',
-  urlReltativa: 'sites/IntranetAraujo/servicios',
+  urlReltativa: 'sites/Intranet/Servicios',
   listaOrdenes: 'OrdenServicios',
   listaConfiguracion: 'ConfiguracionOrdenServicio',
   listaUnegocios: 'UnidadNegocios',
