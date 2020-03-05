@@ -218,7 +218,7 @@ export class SPServicio {
     }
 
     obtenerClientesJobs() {
-        let respuesta = from(this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaCliente).select('*').items.get());
+        let respuesta = from(this.ObtenerConfiguracionJobs().web.lists.getByTitle(environment.ListaCliente).select('*').items.get());
         return respuesta;
     }
 
