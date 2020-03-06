@@ -246,7 +246,7 @@ export class OrdenServiciosComponent implements OnInit {
   obtenerProveedores() {
     this.servicio.obtenerProveedor().subscribe(
       (respuesta) => {
-        this.proveedor = Proveedores.fromJsonList(respuesta);
+        this.proveedor = Proveedores.fromJsonList(respuesta.sort((a, b)=> (a.Title > b.Title) ? 1 : -1));
       }
     )
   }
