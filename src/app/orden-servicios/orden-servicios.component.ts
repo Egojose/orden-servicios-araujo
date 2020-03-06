@@ -254,7 +254,7 @@ export class OrdenServiciosComponent implements OnInit {
   obtenerCliente() {
     this.servicio.obtenerClientesJobs().subscribe(
       (respuesta) => {
-        this.cliente = ClienteJobs.fromJsonList(respuesta);
+        this.cliente = ClienteJobs.fromJsonList(respuesta.sort((a, b)=> (a.NombreCliente > b.NombreCliente) ? 1 : -1));
       }
     )
   }
