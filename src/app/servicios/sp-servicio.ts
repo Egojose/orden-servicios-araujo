@@ -213,12 +213,12 @@ export class SPServicio {
     }
 
     obtenerProveedor() {
-        let respuesta = from(this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaProveedores).select("*").items.get());
+        let respuesta = from(this.ObtenerConfiguracion().web.lists.getByTitle(environment.ListaProveedores).select("*").items.getAll());
         return respuesta; 
     }
 
     obtenerClientesJobs() {
-        let respuesta = from(this.ObtenerConfiguracionJobs().web.lists.getByTitle(environment.ListaCliente).select('*').items.get());
+        let respuesta = from(this.ObtenerConfiguracionJobs().web.lists.getByTitle(environment.ListaCliente).select('*').items.getAll());
         return respuesta;
     }
 
