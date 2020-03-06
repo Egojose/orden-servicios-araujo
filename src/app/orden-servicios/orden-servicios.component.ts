@@ -246,7 +246,7 @@ export class OrdenServiciosComponent implements OnInit {
   obtenerProveedores() {
     this.servicio.obtenerProveedor().subscribe(
       (respuesta) => {
-        this.proveedor = Proveedores.fromJsonList(respuesta);
+        this.proveedor = Proveedores.fromJsonList(respuesta.sort((a, b)=> (a.Title > b.Title) ? 1 : -1));
       }
     )
   }
@@ -254,7 +254,7 @@ export class OrdenServiciosComponent implements OnInit {
   obtenerCliente() {
     this.servicio.obtenerClientesJobs().subscribe(
       (respuesta) => {
-        this.cliente = ClienteJobs.fromJsonList(respuesta);
+        this.cliente = ClienteJobs.fromJsonList(respuesta.sort((a, b)=> (a.NombreCliente > b.NombreCliente) ? 1 : -1));
       }
     )
   }
