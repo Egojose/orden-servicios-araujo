@@ -985,7 +985,7 @@ export class EditarOrdenComponent implements OnInit {
     let numeroCECO = this.editarOrden.get('numeroCECO').value;
     let razonSocial; 
     if(this.esOtroSi) {
-      razonSocial = this.editarOrden.get('razonSocial').value
+      razonSocial = this.editarOrden.get('razonSocial').value.nombre;
     }
     else {
       razonSocial = this.editarOrden.get('razonSocial').value.nombre;
@@ -1217,6 +1217,7 @@ export class EditarOrdenComponent implements OnInit {
     if (this.editarOrden.invalid) {
       this.MensajeAdvertencia('Hay campos requeridos sin diligenciar. Por favor verifique');
       this.spinner.hide();
+      return false;
     }
 
     if(this.esOtroSi === false) {
