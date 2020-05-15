@@ -1249,10 +1249,10 @@ export class EditarOrdenComponent implements OnInit {
       };
 
       this.servicio.ActualizarOrden(id, objOrden).then(
-        (respuesta) => {
-          this.servicio.ObtenerServicio(id).then(
-            (respuesta1) => {
-              this.servicio.ModificarServicio(objServicio, respuesta1[0].ID).then(
+        async (respuesta) => {
+          await this.servicio.ObtenerServicio(id).then(
+            async (respuesta1) => {
+              await this.servicio.ModificarServicio(objServicio, respuesta1[0].ID).then(
                 async (respuesta) => {
                   let ans = await this.guardarCecos();
                   this.MensajeExitoso('La orden se guardó con éxito');
