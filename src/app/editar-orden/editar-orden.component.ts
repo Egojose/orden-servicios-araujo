@@ -91,8 +91,8 @@ export class EditarOrdenComponent implements OnInit {
     this.registrarControles();
     this.obtenerUsuarios();
     this.ObtenerUsuarioActual();
-    this.obtenerProveedores();
     this.obtenerConsecutivoInicial();
+    this.obtenerProveedores();
     this.editarOrden.controls['persona'].setValue('false');
     this.editarOrden.controls['diasPorMes'].setValue(30);
     this.editarOrden.controls['porcentajeCotizacion'].setValue('40%');
@@ -329,6 +329,7 @@ export class EditarOrdenComponent implements OnInit {
     this.servicio.obtenerClientesJobs().subscribe(
       (respuesta) => {
         this.cliente = ClienteJobs.fromJsonList(respuesta);
+        console.log(this.cliente);
       }
     )
   }
@@ -617,6 +618,8 @@ export class EditarOrdenComponent implements OnInit {
     this.clienteXdefecto = this.cliente.filter(x => {
      return x.cliente === this.orden[0].cliente
     })
+    console.log(this.clienteXdefecto);
+    console.log(this.cliente)
   }
   
   // agregarClase() {
@@ -640,6 +643,7 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
     this.editarOrden.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
     this.editarOrden.controls['razonSocial'].setValue(this.proveedorXdefecto[0]);
+    this.editarOrden.controls['cliente'].setValue(this.clienteXdefecto[0].cliente);
     console.log( this.editarOrden.controls['razonSocial'].value);
     this.editarOrden.controls['nitProveedor'].setValue(this.orden[0].nitProveedor);
     this.editarOrden.controls['ciudadProveedor'].setValue(this.orden[0].ciudadProveedor);
@@ -653,8 +657,8 @@ export class EditarOrdenComponent implements OnInit {
     if(this.esOtroSi === true) {
       // this.proveedor = this.proveedorXdefecto[0];
       this.editarOrden.controls['descripcionServicios'].setValue('');
-      this.editarOrden.controls['cliente'].setValue('');
-      this.editarOrden.controls['job'].setValue('');
+      // this.editarOrden.controls['cliente'].setValue('');
+      // this.editarOrden.controls['job'].setValue('');
       this.editarOrden.controls['precio'].setValue('');
       this.editarOrden.controls['tieneIva'].setValue('');
       this.editarOrden.controls['iva'].setValue('');
@@ -1246,10 +1250,10 @@ export class EditarOrdenComponent implements OnInit {
       };
 
       this.servicio.ActualizarOrden(id, objOrden).then(
-        (respuesta) => {
-          this.servicio.ObtenerServicio(id).then(
-            (respuesta1) => {
-              this.servicio.ModificarServicio(objServicio, respuesta1[0].ID).then(
+        async (respuesta) => {
+          await this.servicio.ObtenerServicio(id).then(
+            async (respuesta1) => {
+              await this.servicio.ModificarServicio(objServicio, respuesta1[0].ID).then(
                 async (respuesta) => {
                   let ans = await this.guardarCecos();
                   this.MensajeExitoso('La orden se guardó con éxito');
