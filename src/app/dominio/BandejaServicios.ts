@@ -8,7 +8,8 @@ export class BandejaServicios{
         public Estado: string,
         public RazonSocial: string,
         public NroJob: string,
-        public aprobado: boolean
+        public aprobado: boolean,
+        public OtroSi: boolean,
     ) { }
 
     public static fromJson(element: any) {
@@ -21,7 +22,8 @@ export class BandejaServicios{
             element.Estado,
             element.RazonSocial,
             element.NroJob,
-            element.Aprobado
+            element.Aprobado,
+            element.OtroSi
         );
     }
 
