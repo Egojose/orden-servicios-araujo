@@ -130,11 +130,14 @@ export class BandejaServiciosComponent implements OnInit {
     );
   }
 
-  VerServicio(id, estado) {    
+  VerServicio(id, estado, otroSi) {    
     sessionStorage.setItem("IdServicio", id);
 
     if (estado === 'Aprobado' || estado === 'Pendiente de radicar factura') {
       this.router.navigate(["/consultar-orden"])
+    }
+    else if(estado === 'Rechazado' && otroSi === true) {
+      this.router.navigate(['/editar-orden'], {queryParams: {editarotrosi: 'true'}})
     }
     else if(estado === 'Rechazado') {
       this.router.navigate(["/editar-orden"])
