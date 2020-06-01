@@ -1360,7 +1360,7 @@ export class EditarOrdenComponent implements OnInit {
 
   async guardarCecos(): Promise<any> {
     let idRegistro;
-     this.esOtroSi || this.editarOtroSi ? idRegistro = this.idOtroSi : idRegistro = this.IdRegistroOS
+     this.esOtroSi ? idRegistro = this.idOtroSi : idRegistro = this.IdRegistroOS
     for (let index = 0; index < this.arrayCecos.length; index++) {
       const element = this.arrayCecos[index];
       let objCecos = {
