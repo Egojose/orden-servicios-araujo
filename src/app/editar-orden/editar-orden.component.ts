@@ -1359,13 +1359,15 @@ export class EditarOrdenComponent implements OnInit {
   }
 
   async guardarCecos(): Promise<any> {
+    let idRegistro;
+     this.esOtroSi ? idRegistro = this.idOtroSi : idRegistro = this.IdRegistroOS
     for (let index = 0; index < this.arrayCecos.length; index++) {
       const element = this.arrayCecos[index];
       let objCecos = {
         Ceco: element.nroCeco,
         Nombre: element.ceco,
         PorcentajeAsumido: element.porcentaje,
-        OrdenServicioId: parseInt(this.IdRegistroOS),
+        OrdenServicioId: parseInt(idRegistro),
         DirectorCecoId: element.director
       }
       let resultado = await this.enviarCecos(objCecos);
