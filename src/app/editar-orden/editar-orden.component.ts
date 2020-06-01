@@ -81,6 +81,7 @@ export class EditarOrdenComponent implements OnInit {
   readOtroSi: boolean = false;
   proveedorXdefecto: any; 
   clienteXdefecto: any;
+  editarOtroSi: boolean
 
 
 
@@ -90,9 +91,10 @@ export class EditarOrdenComponent implements OnInit {
   ngOnInit() {
     this.registrarControles();
     this.obtenerUsuarios();
+    this.obtenerProveedores();
+    this.obtenerCliente();
     this.ObtenerUsuarioActual();
     this.obtenerConsecutivoInicial();
-    this.obtenerProveedores();
     this.editarOrden.controls['persona'].setValue('false');
     this.editarOrden.controls['diasPorMes'].setValue(30);
     this.editarOrden.controls['porcentajeCotizacion'].setValue('40%');
@@ -101,11 +103,15 @@ export class EditarOrdenComponent implements OnInit {
 
   obtenerQueryParams() {
     let tieneParams = this.route.snapshot.queryParamMap.get('otrosi')
+    let editOtroSi = this.route.snapshot.queryParamMap.get('editarotrosi');
     if((tieneParams !== undefined && tieneParams !== null) && tieneParams === 'true') {
       this.infoOtroSi = ' (Otro sí)'
       this.esOtroSi = true;
       this.disableButtons();
     }
+    
+    (editOtroSi !== null && editOtroSi !== undefined) ? this.editarOtroSi = true: false;
+    (editOtroSi !== null && editOtroSi !== undefined) ? this.infoOtroSi = ' (Otro sí)': '';
   }
 
 
@@ -405,7 +411,7 @@ export class EditarOrdenComponent implements OnInit {
       (respuesta) => {
        this.config = Configuracion.fromJsonList(respuesta);
       //  this.obtenerProveedores();
-       this.obtenerCliente();
+      //  this.obtenerCliente();
       }
     )
   }; 
@@ -611,11 +617,11 @@ export class EditarOrdenComponent implements OnInit {
 
   }
 
-  cargarDatosSelectPorDefecto() {
-    this.proveedorXdefecto = this.proveedor.filter(x => {
+  async cargarDatosSelectPorDefecto() {
+     this.proveedorXdefecto = await this.proveedor.filter(x => {
      return x.nombre === this.orden[0].razonSocial
     });
-    this.clienteXdefecto = this.cliente.filter(x => {
+     this.clienteXdefecto = await this.cliente.filter(x => {
      return x.cliente === this.orden[0].cliente
     })
     console.log(this.clienteXdefecto);
@@ -627,12 +633,11 @@ export class EditarOrdenComponent implements OnInit {
   //   element.className = 'SoloLectura'
   // }
 
-  valoresPorDefecto() {
+  async valoresPorDefecto() {
     // this.agregarClase();
-    this.cargarDatosSelectPorDefecto();
+    await this.cargarDatosSelectPorDefecto();
     this.editarOrden.controls['nroOrden'].setValue(this.orden[0].nroOrden);
     this.editarOrden.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
-    console.log(this.editarOrden.controls['empresaSolicitante'].value)
     this.editarOrden.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
     this.editarOrden.controls['ciudadSolicitante'].setValue(this.orden[0].ciudadSolicitante);
     this.editarOrden.controls['telSolicitante'].setValue(this.orden[0].telSolicitante);
@@ -643,8 +648,8 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
     this.editarOrden.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
     this.editarOrden.controls['razonSocial'].setValue(this.proveedorXdefecto[0]);
-    this.editarOrden.controls['cliente'].setValue(this.clienteXdefecto[0].cliente);
-    console.log( this.editarOrden.controls['razonSocial'].value);
+    this.editarOrden.controls['cliente'].setValue(this.clienteXdefecto[0]);
+    this.editarOrden.controls['job'].setValue(this.orden[0].job);
     this.editarOrden.controls['nitProveedor'].setValue(this.orden[0].nitProveedor);
     this.editarOrden.controls['ciudadProveedor'].setValue(this.orden[0].ciudadProveedor);
     this.editarOrden.controls['telProveedor'].setValue(this.orden[0].telProveedor);
@@ -656,7 +661,8 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['camara'].setValue(this.orden[0].camara);
     if(this.esOtroSi === true) {
       // this.proveedor = this.proveedorXdefecto[0];
-      this.editarOrden.controls['descripcionServicios'].setValue('');
+      // this.editarOrden.controls['descripcionServicios'].setValue('');
+      // this.editarOrden.controls['cliente'].setValue(this.clienteXdefecto[0]);
       // this.editarOrden.controls['cliente'].setValue('');
       // this.editarOrden.controls['job'].setValue('');
       this.editarOrden.controls['precio'].setValue('');
@@ -718,7 +724,6 @@ export class EditarOrdenComponent implements OnInit {
     else {
       this.editarOrden.controls['descripcionServicios'].setValue(this.orden[0].descripcion);
       this.editarOrden.controls['cliente'].setValue(this.clienteXdefecto[0]);
-      this.editarOrden.controls['job'].setValue(this.orden[0].job);
       this.editarOrden.controls['precio'].setValue(this.orden[0].precio);
       this.editarOrden.controls['tieneIva'].setValue(this.orden[0].tieneIva);
       this.editarOrden.controls['iva'].setValue(this.orden[0].iva);
@@ -976,7 +981,14 @@ export class EditarOrdenComponent implements OnInit {
     }
     let id = parseInt(this.IdRegistroOS);
     let id1 = this.orden[0].id
-    let nroOrden = this.editarOrden.get('nroOrden').value;
+    let nroOrden;
+    if(this.esOtroSi || this.editarOtroSi) {
+      this.editarOrden.controls.nroOrden.value.length < 6 ? nroOrden = (this.editarOrden.get('nroOrden').value + ' (Otro sí)') : nroOrden = this.editarOrden.get('nroOrden').value;
+    }
+    else {
+      nroOrden = this.editarOrden.controls.nroOrden.value
+    }
+    // this.esOtroSi ? (nroOrden = this.editarOrden.get('nroOrden').value + ' (Otro sí)') : nroOrden = this.editarOrden.get('nroOrden').value
     let empresaSolicitante = this.editarOrden.get('empresaSolicitante').value;
     let nitSolicitante = this.editarOrden.get('nitSolicitante').value;
     let ciudadSolicitante = this.editarOrden.get('ciudadSolicitante').value;
@@ -1278,15 +1290,6 @@ export class EditarOrdenComponent implements OnInit {
     }
     else {
 
-     let objServicio = {
-        TipoServicio: 'Orden de servicio',
-        CodigoServicioId: 4,
-        AutorId: usuarioSolicitante,
-        ResponsableActualId: responsableActual,
-        Estado: "Pendiente de aprobación gerente unidad de negocios",
-        idServicio: this.idOtroSi
-      }
-
       let cuerpo = '<p>Cordial saludo</p>' +
       '<br>' +
       '<p>El usuario <strong>' + this.usuarioActual.nombre + '</strong> ha generado un otro sí para la orden de servicio <strong>' + this.editarOrden.get('nroOrden').value + '</strong> que está pendiente de su aprobación</p>' +
@@ -1303,7 +1306,7 @@ export class EditarOrdenComponent implements OnInit {
       };
 
       this.servicio.AgregarOrden(objOrden).then(
-        (item: ItemAddResult) => {
+        async (item: ItemAddResult) => {
           this.idOtroSi = item.data.Id
           objAdjuntoPropuesta = {
             idOrdenServicioId: this.idOtroSi.toString()
@@ -1314,7 +1317,16 @@ export class EditarOrdenComponent implements OnInit {
           // let idOrden = item.data.Id;
           let numeroOrden = this.editarOrden.get('nroOrden').value
 
-          this.servicio.GuardarServicio(objServicio).then(
+          let objServicio = {
+            TipoServicio: 'Orden de servicio',
+            CodigoServicioId: 4,
+            AutorId: usuarioSolicitante,
+            ResponsableActualId: responsableActual,
+            Estado: "Pendiente de aprobación gerente unidad de negocios",
+            idServicio: this.idOtroSi
+          }
+
+         await this.servicio.GuardarServicio(objServicio).then(
             async (respuesta) => {
               let ans = await this.guardarCecos();
               this.servicio.EnviarNotificacion(emailProps).then(
