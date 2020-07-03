@@ -1016,7 +1016,8 @@ export class EditarOrdenComponent implements OnInit {
     let rut = this.editarOrden.get('rut').value;
     let camara = this.editarOrden.get('camara').value;
     let descripcionServicios = this.editarOrden.get('descripcionServicios').value;
-    let cliente = this.editarOrden.get('cliente').value.cliente;
+    let cliente;
+    (this.editarOrden.get('cliente').value === '' || this.editarOrden.get('cliente').value === null || this.editarOrden.get('cliente').value === undefined) ? cliente = '' : cliente = this.editarOrden.get('cliente').value.cliente;
     let job = this.editarOrden.get('job').value;
     let precio = this.editarOrden.get('precio').value;
     let iva = this.editarOrden.get('iva').value;
