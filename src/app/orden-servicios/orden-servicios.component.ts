@@ -76,6 +76,7 @@ export class OrdenServiciosComponent implements OnInit {
     this.obtenerUnegocios();
     this.ObtenerUsuarioActual();
     this.obtenerConsecutivoInicial();
+    this.ObtenerProyectos();
     this.pagoUnico = false;
     this.pagoVarios = false;
     this.pagoCECO = false;
@@ -254,7 +255,16 @@ export class OrdenServiciosComponent implements OnInit {
   obtenerCliente() {
     this.servicio.obtenerClientesJobs().subscribe(
       (respuesta) => {
-        this.cliente = ClienteJobs.fromJsonList(respuesta.sort((a, b)=> (a.NombreCliente > b.NombreCliente) ? 1 : -1));
+        // this.cliente = ClienteJobs.fromJsonList(respuesta.sort((a, b)=> (a.NombreCliente > b.NombreCliente) ? 1 : -1));
+      }
+    )
+  }
+
+  ObtenerProyectos() {
+    this.servicio.obtenerProyectosJobs().subscribe(
+      (respuesta) => {
+        console.log(respuesta);
+        this.cliente = respuesta;
       }
     )
   }
@@ -284,9 +294,21 @@ export class OrdenServiciosComponent implements OnInit {
     )
   }
 
+  // clientes($event) {
+  //   let nit = $event.value.nit;
+  //   this.generarOrdenServicios.controls['job'].setValue(nit);
+  // }
+
   clientes($event) {
-    let nit = $event.value.nit;
-    this.generarOrdenServicios.controls['job'].setValue(nit);
+    let id = $event.value.ClienteId;
+    let cliente
+    this.servicio.obtenerClientesJobsXid(id).subscribe(
+      (respuesta) => {
+        cliente = ClienteJobs.fromJsonList(respuesta);
+        console.log(cliente);
+        this.generarOrdenServicios.controls['cliente'].setValue(cliente[0].cliente)
+      }
+    )
   }
 
   changeCeco($event) {
@@ -710,8 +732,9 @@ export class OrdenServiciosComponent implements OnInit {
     let rut = this.generarOrdenServicios.get('rut').value;
     let camara = this.generarOrdenServicios.get('camara').value;
     let descripcionServicios = this.generarOrdenServicios.get('descripcionServicios').value;
-    let cliente = this.generarOrdenServicios.get('cliente').value.cliente;
-    let job = this.generarOrdenServicios.get('job').value;
+    let cliente = this.generarOrdenServicios.get('cliente').value;
+    let job;
+    (this.generarOrdenServicios.controls.job.value !== null && this.generarOrdenServicios.controls.job.value !== '' && this.generarOrdenServicios.controls.job.value !== undefined) ? job = this.generarOrdenServicios.get('job').value.NumeroJob : job = '';
     let precio = this.generarOrdenServicios.get('precio').value;
     let iva = this.generarOrdenServicios.get('iva').value;
     let total = this.generarOrdenServicios.get('total').value;
