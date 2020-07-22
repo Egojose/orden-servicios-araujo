@@ -17,5 +17,6 @@ export const environment = {
   ListaCecos: 'ParticipacionCecoOS',
   ListaProveedores: 'Proveedores',
   ListaCliente: 'Cliente',
-  ListaOtroSi: 'OtroSiOrdenServicios'
+  ListaOtroSi: 'OtroSiOrdenServicios',
+  ListaProyectos: 'Proyectos',
 };
