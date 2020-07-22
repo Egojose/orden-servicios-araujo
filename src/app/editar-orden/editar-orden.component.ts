@@ -41,7 +41,8 @@ export class EditarOrdenComponent implements OnInit {
   empresa: Empresas [] = [];
   orden: Orden[] = [];
   proveedor: Proveedores[] = [];
-  cliente: ClienteJobs[] = [];
+  cliente = [];
+  // cliente: ClienteJobs[] = [];
   esConsultores: boolean;
   esAsociados: boolean;
   ivaCalculado: number;
@@ -92,9 +93,10 @@ export class EditarOrdenComponent implements OnInit {
     this.registrarControles();
     this.obtenerUsuarios();
     this.obtenerProveedores();
-    this.obtenerCliente();
+    // this.obtenerCliente();
     this.ObtenerUsuarioActual();
     this.obtenerConsecutivoInicial();
+    this.ObtenerProyectos();
     this.editarOrden.controls['persona'].setValue('false');
     this.editarOrden.controls['diasPorMes'].setValue(30);
     this.editarOrden.controls['porcentajeCotizacion'].setValue('40%');
@@ -331,11 +333,20 @@ export class EditarOrdenComponent implements OnInit {
     )
   }
 
-  obtenerCliente() {
-    this.servicio.obtenerClientesJobs().subscribe(
+  // obtenerCliente() {
+  //   this.servicio.obtenerClientesJobs().subscribe(
+  //     (respuesta) => {
+  //       this.cliente = ClienteJobs.fromJsonList(respuesta);
+  //       console.log(this.cliente);
+  //     }
+  //   )
+  // }
+
+  ObtenerProyectos() {
+    this.servicio.obtenerProyectosJobs().subscribe(
       (respuesta) => {
-        this.cliente = ClienteJobs.fromJsonList(respuesta);
-        console.log(this.cliente);
+        console.log(respuesta);
+        this.cliente = respuesta;
       }
     )
   }
@@ -365,9 +376,21 @@ export class EditarOrdenComponent implements OnInit {
     )
   };
 
+  // clientes($event) {
+  //   let nit = $event.value.nit;
+  //   this.editarOrden.controls['job'].setValue(nit);
+  // }
+
   clientes($event) {
-    let nit = $event.value.nit;
-    this.editarOrden.controls['job'].setValue(nit);
+    let id = $event.value.ClienteId;
+    let cliente
+    this.servicio.obtenerClientesJobsXid(id).subscribe(
+      (respuesta) => {
+        cliente = ClienteJobs.fromJsonList(respuesta);
+        console.log(cliente);
+        this.editarOrden.controls['cliente'].setValue(cliente[0].cliente)
+      }
+    )
   }
 
   validarPorcentaje() {
@@ -622,7 +645,7 @@ export class EditarOrdenComponent implements OnInit {
      return x.nombre === this.orden[0].razonSocial
     });
      this.clienteXdefecto = await this.cliente.filter(x => {
-     return x.cliente === this.orden[0].cliente
+     return x.NumeroJob === this.orden[0].job
     })
     console.log(this.clienteXdefecto);
     console.log(this.cliente)
@@ -648,8 +671,9 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
     this.editarOrden.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
     this.editarOrden.controls['razonSocial'].setValue(this.proveedorXdefecto[0]);
-    this.editarOrden.controls['cliente'].setValue(this.clienteXdefecto[0]);
-    this.editarOrden.controls['job'].setValue(this.orden[0].job);
+    this.editarOrden.controls['cliente'].setValue(this.orden[0].cliente);
+    console.log(this.orden[0].cliente);
+    this.editarOrden.controls['job'].setValue(this.clienteXdefecto[0]);
     this.editarOrden.controls['nitProveedor'].setValue(this.orden[0].nitProveedor);
     this.editarOrden.controls['ciudadProveedor'].setValue(this.orden[0].ciudadProveedor);
     this.editarOrden.controls['telProveedor'].setValue(this.orden[0].telProveedor);
@@ -723,7 +747,7 @@ export class EditarOrdenComponent implements OnInit {
     }
     else {
       this.editarOrden.controls['descripcionServicios'].setValue(this.orden[0].descripcion);
-      this.editarOrden.controls['cliente'].setValue(this.clienteXdefecto[0]);
+      // this.editarOrden.controls['cliente'].setValue(this.orden[0].cliente);
       this.editarOrden.controls['precio'].setValue(this.orden[0].precio);
       this.editarOrden.controls['tieneIva'].setValue(this.orden[0].tieneIva);
       this.editarOrden.controls['iva'].setValue(this.orden[0].iva);
@@ -779,6 +803,7 @@ export class EditarOrdenComponent implements OnInit {
       this.editarOrden.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
       this.editarOrden.controls['distPago'].setValue(this.orden[0].distPago);
       this.editarOrden.controls['porcentajeAsumido'].setValue(this.orden[0].porcentajeAsumido);
+      (parseInt(this.editarOrden.controls['porcentajeAsumido'].value) > 0 && parseInt(this.editarOrden.controls['porcentajeAsumido'].value) < 100) ? this.mostrarTablaCecos = true : this.mostrarTablaCecos = false;
     }
     this.NumeroOrden = this.orden[0].nroOrden;
     if (this.orden[0].ResponsableActual === this.usuarioActual.id) {
@@ -1016,9 +1041,9 @@ export class EditarOrdenComponent implements OnInit {
     let rut = this.editarOrden.get('rut').value;
     let camara = this.editarOrden.get('camara').value;
     let descripcionServicios = this.editarOrden.get('descripcionServicios').value;
-    let cliente;
-    (this.editarOrden.get('cliente').value === '' || this.editarOrden.get('cliente').value === null || this.editarOrden.get('cliente').value === undefined) ? cliente = '' : cliente = this.editarOrden.get('cliente').value.cliente;
-    let job = this.editarOrden.get('job').value;
+    let cliente = this.editarOrden.get('cliente').value;
+    let job;
+    (this.editarOrden.get('job').value === '' || this.editarOrden.get('job').value === null || this.editarOrden.get('job').value === undefined) ? job = '' : job = this.editarOrden.get('job').value.NumeroJob;
     let precio = this.editarOrden.get('precio').value;
     let iva = this.editarOrden.get('iva').value;
     let total = this.editarOrden.get('total').value;
