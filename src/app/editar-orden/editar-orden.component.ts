@@ -802,6 +802,7 @@ export class EditarOrdenComponent implements OnInit {
       this.editarOrden.controls['polizaVehiculos'].setValue(this.orden[0].polizaVehiculos);
       this.editarOrden.controls['distPago'].setValue(this.orden[0].distPago);
       this.editarOrden.controls['porcentajeAsumido'].setValue(this.orden[0].porcentajeAsumido);
+      (parseInt(this.editarOrden.controls['porcentajeAsumido'].value) > 0 && parseInt(this.editarOrden.controls['porcentajeAsumido'].value) < 100) ? this.mostrarTablaCecos = true : this.mostrarTablaCecos = false;
     }
     this.NumeroOrden = this.orden[0].nroOrden;
     if (this.orden[0].ResponsableActual === this.usuarioActual.id) {
