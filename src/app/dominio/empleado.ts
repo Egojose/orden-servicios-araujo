@@ -34,6 +34,7 @@ export class Empleado {
         public numeroContactoEmergencia: string,
         public grupoSanguineo: string,
         public urlHojaDeVida: any,
+        public unidadNegocio: string
 
     ) {}
 
@@ -73,7 +74,8 @@ export class Empleado {
             element.FechaSalida,
             element.NumeroContactoEmergencia,
             element.GrupoSanguineo,
-            element.UrlHojaDeVida
+            element.UrlHojaDeVida,
+            element.UnidadNegocio
         )
     }
 
