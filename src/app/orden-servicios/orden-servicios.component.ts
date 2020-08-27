@@ -34,7 +34,8 @@ export class OrdenServiciosComponent implements OnInit {
   pagoUnico: boolean;
   pagoVarios: boolean;
   garantia: boolean;
-  unegocios: Unegocios[] = [];
+  unegocios = [];
+  // unegocios: Unegocios[] = [];
   config: Configuracion[] = [];
   empresa: Empresas[] = [];
   proveedor: Proveedores[] = [];
@@ -66,17 +67,18 @@ export class OrdenServiciosComponent implements OnInit {
   adjuntoPropuesta: any;
   idDocumentoAdjunto: any;
   documentoClausula: any[];
-
+  disabled: boolean;
+  nombreUnidad: any;
   constructor(
     private servicio: SPServicio, private fb: FormBuilder, private toastr: ToastrManager, private router: Router, private spinner: NgxSpinnerService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.ObtenerUsuarioActual();
     this.registrarControles();
     this.obtenerUsuarios();
-    this.obtenerUnegocios();
-    this.ObtenerUsuarioActual();
     this.obtenerConsecutivoInicial();
     this.ObtenerProyectos();
+    // await this.obtenerUnegocios();
     this.pagoUnico = false;
     this.pagoVarios = false;
     this.pagoCECO = false;
@@ -187,16 +189,16 @@ export class OrdenServiciosComponent implements OnInit {
       });
   };
 
-  ObtenerUsuarioActual() {
+  async ObtenerUsuarioActual() {
     this.servicio.ObtenerUsuarioActual().subscribe(
-      (respuesta) => {
+      async (respuesta) => {
         this.usuarioActual = new Usuario(respuesta.Title, respuesta.Email, respuesta.Id);
         this.nombreUsuario = this.usuarioActual.nombre;
         this.idUsuario = this.usuarioActual.id;
         sessionStorage.setItem('usuario', JSON.stringify(this.usuarioActual));
         this.obtenerInfoEmpleado();
         this.obtenerSedes();
-        this.servicio.obtenerJefe(this.usuarioActual.id).then(
+        await this.servicio.obtenerJefe(this.usuarioActual.id).then(
           (respuesta) => {
             if (respuesta[0].JefeId !== null) {
               console.log(respuesta[0]);
@@ -224,6 +226,8 @@ export class OrdenServiciosComponent implements OnInit {
       (respuesta) => {
         this.empleadoEditar = Empleado.fromJsonList(respuesta);
         this.jefe = this.empleadoEditar[0].jefeEmail;
+        console.log(this.empleadoEditar);
+        this.obtenerUnegocios();
       }
     )
   }
@@ -317,8 +321,9 @@ export class OrdenServiciosComponent implements OnInit {
   }
 
   changeCecoPorcentaje($event) {
-    let numeroCeco = $event.value.ceco
-    this.generarOrdenServicios.controls['numeroCecoPorcentaje'].setValue(numeroCeco);
+    console.log($event);
+    let numeroCeco = $event
+    this.generarOrdenServicios.controls['numeroCecoPorcentaje'].setValue(numeroCeco.Ceco);
   }
 
   changeContacto($event) {
@@ -331,9 +336,27 @@ export class OrdenServiciosComponent implements OnInit {
     this.servicio.obtenerUnegocio().subscribe(
       (respuesta) => {
         console.log(respuesta);
-        this.unegocios = Unegocios.fromJsonList(respuesta.sort((a, b)=> (a.Title > b.Title) ? 1 : -1));
+        this.unegocios = respuesta.sort((a, b)=> (a.Title > b.Title) ? 1 : -1) //Unegocios.fromJsonList(respuesta.sort((a, b)=> (a.Title > b.Title) ? 1 : -1));
+        console.log(this.unegocios);
+        this.valoresXdefecto(parseInt(this.empleadoEditar[0].unidadNegocio))
       }
     )
+  }
+
+  changeUnidadNegocio($event) {
+    console.log($event);
+    this.generarOrdenServicios.controls['nombreCECO'].setValue($event.Director);
+    this.generarOrdenServicios.controls['numeroCECO'].setValue($event.Ceco);
+  }
+
+  valoresXdefecto(idUnidad) {
+    this.disabled = true;
+    let unidad: Object;
+    unidad = this.unegocios.filter((x) => x.Id === idUnidad)
+    console.log(unidad[0]);
+    this.generarOrdenServicios.controls['unidadNegocios'].setValue(unidad[0]);
+    this.generarOrdenServicios.controls['nombreCECO'].setValue(unidad[0].Director);
+    this.generarOrdenServicios.controls['numeroCECO'].setValue(unidad[0].Ceco);
   }
 
   obtenerConsecutivoInicial() {
@@ -423,7 +446,7 @@ export class OrdenServiciosComponent implements OnInit {
         this.MensajeAdvertencia('El porcentaje no debe superar el 100%');
         return false;
       }
-      this.arrayCecos.push({ ceco: this.generarOrdenServicios.get('ceco1').value.nombre, nroCeco: this.generarOrdenServicios.get('numeroCecoPorcentaje').value, porcentaje: this.generarOrdenServicios.get('porcentajeCeco1').value, director: this.generarOrdenServicios.get('ceco1').value.directorId });
+      this.arrayCecos.push({ ceco: this.generarOrdenServicios.get('ceco1').value.Director.Title, nroCeco: this.generarOrdenServicios.get('numeroCecoPorcentaje').value, porcentaje: this.generarOrdenServicios.get('porcentajeCeco1').value, director: this.generarOrdenServicios.get('ceco1').value.Director.ID });
       this.generarOrdenServicios.controls['ceco1'].setValue("");
       this.generarOrdenServicios.controls['numeroCecoPorcentaje'].setValue("");
       this.generarOrdenServicios.controls['porcentajeCeco1'].setValue("");
@@ -764,7 +787,8 @@ export class OrdenServiciosComponent implements OnInit {
     let polizaVida = this.generarOrdenServicios.get('polizaVida').value;
     let polizaVehiculos = this.generarOrdenServicios.get('polizaVehiculos').value;
     let tieneIva = this.generarOrdenServicios.get('tieneIva').value;
-    let responsableActual = this.usuarioActual.IdJefeDirecto;
+    let responsableActual = this.generarOrdenServicios.controls['nombreCECO'].value.ID
+    // let responsableActual = this.usuarioActual.IdJefeDirecto;
     // let responsableActual = this.empleadoEditar[0].jefe;
     let usuarioSolicitante = this.usuarioActual.id;
     let objOrden;
@@ -976,7 +1000,7 @@ export class OrdenServiciosComponent implements OnInit {
             'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';
 
           const emailProps: EmailProperties = {
-            To: [this.usuarioActual.EmailJefeDirecto],
+            To: [this.generarOrdenServicios.controls['nombreCECO'].value.EMail], //this.usuarioActual.EmailJefeDirecto
             Subject: "Notificación de orden de servicio",
             Body: cuerpo,
           };

@@ -88,10 +88,10 @@
             <div class="row">
               <div class="col-md-3">
                   <mat-form-field>
-                      <mat-label>CECO</mat-label>
-                      <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event)">
-                          <mat-option *ngFor="let ceco of areas" [value]="ceco">
-                            {{ceco.nombre}}                        
+                      <mat-label>Director unidad de negocio</mat-label>
+                      <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event.value)">
+                          <mat-option *ngFor="let ceco of unegocios" [value]="ceco.Director">
+                            <b>{{ceco.Director.Title}}</b> - {{ceco.Title}}                        
                           </mat-option>
                       </mat-select>
                   </mat-form-field>
