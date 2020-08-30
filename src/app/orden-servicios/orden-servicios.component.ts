@@ -741,7 +741,7 @@ export class OrdenServiciosComponent implements OnInit {
     let direccionSolicitante = this.generarOrdenServicios.get('direccionSolicitante').value;
     let contactoSolicitante = this.generarOrdenServicios.get('contactoSolicitante').value.label;
     let emailSolicitante = this.generarOrdenServicios.get('emailSolicitante').value;
-    let unidadNegocios = this.generarOrdenServicios.get('unidadNegocios').value;
+    let unidadNegocios = this.generarOrdenServicios.get('unidadNegocios').value.Title;
     let nombreCECO = this.generarOrdenServicios.get('nombreCECO').value.nombre;
     let numeroCECO = this.generarOrdenServicios.get('numeroCECO').value;
     let razonSocial = this.generarOrdenServicios.get('razonSocial').value.nombre;
