@@ -81,7 +81,9 @@ export class EditarOrdenComponent implements OnInit {
   readOtroSi: boolean = false;
   proveedorXdefecto: any; 
   clienteXdefecto: any;
-  editarOtroSi: boolean
+  editarOtroSi: boolean;
+  unidadNegocio = [];
+  responsableUnegocio = [];
 
 
 
@@ -670,6 +672,9 @@ export class EditarOrdenComponent implements OnInit {
   async valoresPorDefecto() {
     // this.agregarClase();
     await this.cargarDatosSelectPorDefecto();
+    this.unidadNegocio = this.unegocios.filter((x) => x.Title === this.orden[0].uNegocios);
+    this.responsableUnegocio = this.unidadNegocio[0].Director;
+    console.log(this.responsableUnegocio);
     this.editarOrden.controls['nroOrden'].setValue(this.orden[0].nroOrden);
     this.editarOrden.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
     this.editarOrden.controls['nitSolicitante'].setValue(this.orden[0].nitSolicitante);
