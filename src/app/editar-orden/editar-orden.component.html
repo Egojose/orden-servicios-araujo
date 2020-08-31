@@ -90,7 +90,7 @@
                   <mat-form-field>
                       <mat-label>Director unidad de negocio</mat-label>
                       <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event.value)">
-                          <mat-option *ngFor="let ceco of unegocios" [value]="ceco.Director">
+                          <mat-option *ngFor="let ceco of unegocios" [value]="ceco">
                             <b>{{ceco.Director.Title}}</b> - {{ceco.Title}}                        
                           </mat-option>
                       </mat-select>

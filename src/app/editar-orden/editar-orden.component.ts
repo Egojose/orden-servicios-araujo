@@ -94,11 +94,11 @@ export class EditarOrdenComponent implements OnInit {
     this.registrarControles();
     this.obtenerUsuarios();
     this.obtenerProveedores();
+    this.obtenerUnegocios();
     // this.obtenerCliente();
     this.ObtenerUsuarioActual();
     this.obtenerConsecutivoInicial();
     this.ObtenerProyectos();
-    this.obtenerUnegocios();
     this.editarOrden.controls['persona'].setValue('false');
     this.editarOrden.controls['diasPorMes'].setValue(30);
     this.editarOrden.controls['porcentajeCotizacion'].setValue('40%');
@@ -358,7 +358,7 @@ export class EditarOrdenComponent implements OnInit {
       (respuesta) => {
         console.log(respuesta);
         this.unegocios = respuesta.sort((a, b)=> (a.Title > b.Title) ? 1 : -1) //Unegocios.fromJsonList(respuesta.sort((a, b)=> (a.Title > b.Title) ? 1 : -1));
-        console.log(this.unegocios);
+        console.log(this.unegocios + '1');
         // this.valoresXdefecto(parseInt(this.empleadoEditar[0].unidadNegocio))
       }
     )
@@ -670,10 +670,11 @@ export class EditarOrdenComponent implements OnInit {
   // }
 
   async valoresPorDefecto() {
+    console.log('2')
     // this.agregarClase();
     await this.cargarDatosSelectPorDefecto();
     this.unidadNegocio = this.unegocios.filter((x) => x.Title === this.orden[0].uNegocios);
-    this.responsableUnegocio = this.unidadNegocio[0].Director;
+    this.responsableUnegocio = this.unidadNegocio;
     console.log(this.responsableUnegocio);
     this.editarOrden.controls['nroOrden'].setValue(this.orden[0].nroOrden);
     this.editarOrden.controls['empresaSolicitante'].setValue(this.orden[0].empresaSolicitante);
@@ -684,7 +685,7 @@ export class EditarOrdenComponent implements OnInit {
     this.editarOrden.controls['contactoSolicitante'].setValue(this.orden[0].contactoSolicitante);
     this.editarOrden.controls['emailSolicitante'].setValue(this.orden[0].emailSolicitante);
     this.editarOrden.controls['unidadNegocios'].setValue(this.orden[0].uNegocios);
-    this.editarOrden.controls['nombreCECO'].setValue(this.orden[0].nombreCECO);
+    this.editarOrden.controls['nombreCECO'].setValue(this.unidadNegocio[0].Director.Title);
     this.editarOrden.controls['numeroCECO'].setValue(this.orden[0].numeroCECO);
     this.editarOrden.controls['razonSocial'].setValue(this.proveedorXdefecto[0]);
     this.editarOrden.controls['cliente'].setValue(this.orden[0].cliente);
@@ -893,6 +894,7 @@ export class EditarOrdenComponent implements OnInit {
   }
 
   changeCecoPorcentaje($event) {
+    console.log($event)
     let numeroCeco = $event.Ceco
     this.editarOrden.controls['numeroCecoPorcentaje'].setValue(numeroCeco);
   }
@@ -1014,7 +1016,7 @@ export class EditarOrdenComponent implements OnInit {
     this.spinner.show()
     this.validarPorcentaje();
     this.validarCalculosPersonaNatural();
-    let responsable = this.unegocios.filter((x) => x.Title === this.editarOrden.controls.nombreCECO.value)
+    let responsable = this.unidadNegocio[0].Director.ID
     if (this.sumaPorcentaje + this.porcentajeAsumidoNum !== 100) {
       this.spinner.hide();
       this.MensajeAdvertencia('El total de porcentajes debe ser equivalente al 100%');
@@ -1090,7 +1092,7 @@ export class EditarOrdenComponent implements OnInit {
     let polizaVida = this.editarOrden.get('polizaVida').value;
     let polizaVehiculos = this.editarOrden.get('polizaVehiculos').value;
     let tieneIva = this.editarOrden.get('tieneIva').value;
-    let responsableActual = responsable[0].Director.ID
+    let responsableActual = responsable;
     //this.usuarioActual.IdJefeDirecto;
     let usuarioSolicitante = this.usuarioActual.id;
     let objOrden;
@@ -1300,7 +1302,7 @@ export class EditarOrdenComponent implements OnInit {
       'https://aribasas.sharepoint.com/sites/apps/SiteAssets/orden-servicio/index.aspx/bandeja-servicios';
 
       const emailProps: EmailProperties = {
-        To: [responsable[0].Director.EMail],   //this.usuarioActual.EmailJefeDirecto
+        To: [this.unidadNegocio[0].Director.EMail],   //this.usuarioActual.EmailJefeDirecto
         Subject: "Notificación de orden de servicio",
         Body: cuerpo,
       };
@@ -1344,7 +1346,7 @@ export class EditarOrdenComponent implements OnInit {
 
 
       const emailProps: EmailProperties = {
-        To: [this.usuarioActual.EmailJefeDirecto],
+        To: [this.unidadNegocio[0].Director.EMail],
         Subject: "Notificación de orden de servicio",
         Body: cuerpo,
       };
