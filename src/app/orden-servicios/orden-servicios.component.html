@@ -104,9 +104,9 @@
             <div class="col-md-12">
               <mat-form-field>
                 <mat-label>Unidad de negocios</mat-label>
-                <mat-select formControlName="unidadNegocios">
-                    <mat-option *ngFor="let unegocios of unegocios" [value]="unegocios.nombre">
-                      {{unegocios.nombre}}                        
+                <mat-select formControlName="unidadNegocios" (selectionChange)="changeUnidadNegocio($event.value)">
+                    <mat-option *ngFor="let unegocios of unegocios" [value]="unegocios">
+                      {{unegocios.Title}}                       
                     </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -119,9 +119,9 @@
             <div class="col-md-4">
               <mat-form-field>
                   <mat-label>Responsable</mat-label>
-                  <mat-select formControlName="nombreCECO" (selectionChange)="changeCeco($event)">
-                      <mat-option *ngFor="let area of areas" [value]="area">
-                        {{area.nombre}}                        
+                  <mat-select formControlName="nombreCECO" (selectionChange)="changeCeco($event)" [disabled]="disabled">
+                      <mat-option *ngFor="let unegocios of unegocios" [value]="unegocios.Director">
+                        {{unegocios.Director.Title}}                        
                       </mat-option>
                   </mat-select>
                 <!-- <input matInput placeholder="Área" formControlName="nombreCECO"> -->
@@ -132,7 +132,7 @@
             </div>
             <div class="col-md-4">
               <mat-form-field>
-                <input matInput placeholder="Número CECO" formControlName="numeroCECO">
+                <input matInput placeholder="Número CECO" formControlName="numeroCECO" readonly>
               </mat-form-field>
               <mat-error>
                   <span *ngIf="!generarOrdenServicios.get('numeroCECO').valid && generarOrdenServicios.get('numeroCECO').touched"><small class="form-text">Este campo debe estar diligenciado</small></span>
@@ -152,10 +152,10 @@
             <div class="row">
               <div class="col-md-3">
                   <mat-form-field>
-                      <mat-label>CECO</mat-label>
-                      <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event)">
-                          <mat-option *ngFor="let ceco of areas" [value]="ceco">
-                            {{ceco.nombre}}                        
+                      <mat-label>Director unidad de negocio</mat-label>
+                      <mat-select formControlName="ceco1" (selectionChange)="changeCecoPorcentaje($event.value)">
+                          <mat-option *ngFor="let unegocio of unegocios" [value]="unegocio">
+                            <b>{{unegocio.Director.Title}}</b> - {{unegocio.Title}}                      
                           </mat-option>
                       </mat-select>
                   </mat-form-field>
