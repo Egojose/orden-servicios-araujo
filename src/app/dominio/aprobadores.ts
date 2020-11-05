@@ -7,7 +7,7 @@ export class Aprobadores{
         return new Aprobadores(
             element.GerenteAdministrativoId,
             element.DirectorOperativoId,
-            element.AuxiliarContabilidad
+            element.AuxContable
         );
     }
 

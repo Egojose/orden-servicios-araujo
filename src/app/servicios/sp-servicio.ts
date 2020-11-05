@@ -159,8 +159,10 @@ export class SPServicio {
         return respuesta;
     }
 
-    obtenerAprobadores() {
-        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaAprobadores).items.select("*","GerenteAdministrativo/ID","GerenteAdministrativo/Title", "GerenteAdministrativo/EMail","DirectorOperativo/ID","DirectorOperativo/Title","DirectorOperativo/EMail","AuxiliarContabilidad/Title", "AuxiliarContabilidad/ID", "AuxiliarContabilidad/EMail").expand("GerenteAdministrativo", "DirectorOperativo", "AuxiliarContabilidad").getAll();
+    obtenerAprobadores(empresa) {
+        let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaAprobadores).items
+        .select("*","GerenteAdministrativo/ID","GerenteAdministrativo/Title", "GerenteAdministrativo/EMail","DirectorOperativo/ID","DirectorOperativo/Title","DirectorOperativo/EMail","AuxContable/Title", "AuxContable/ID", "AuxContable/EMail")
+        .expand("GerenteAdministrativo", "DirectorOperativo", "AuxContable").filter("Empresa eq '"+empresa+"'").getAll();
         return respuesta;
     }
 
