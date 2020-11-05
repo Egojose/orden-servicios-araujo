@@ -159,7 +159,7 @@ export class SPServicio {
         return respuesta;
     }
 
-    obtenerAprobadores(empresa) {
+    obtenerAprobadores(empresa: string) {
         let respuesta = this.ObtenerConfiguracion().web.lists.getByTitle(environment.listaAprobadores).items
         .select("*","GerenteAdministrativo/ID","GerenteAdministrativo/Title", "GerenteAdministrativo/EMail","DirectorOperativo/ID","DirectorOperativo/Title","DirectorOperativo/EMail","AuxContable/Title", "AuxContable/ID", "AuxContable/EMail")
         .expand("GerenteAdministrativo", "DirectorOperativo", "AuxContable").filter("Empresa eq '"+empresa+"'").getAll();
