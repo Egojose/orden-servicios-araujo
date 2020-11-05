@@ -13,7 +13,7 @@ export const environment = {
   listaConfiguracion: 'ConfiguracionOrdenServicio',
   listaUnegocios: 'UnidadNegocios',
   ListaEmpleados: 'EmpleadosNueva',
-  listaAprobadores: 'AprobadoresOrdenServicio',
+  listaAprobadores: 'UsuariosAprobadores',
   ListaServicios: 'Servicios',
   ListaEmpresas: 'EmpresasAraujoIbarra',
   ListaCeco: 'CentroCostos',
