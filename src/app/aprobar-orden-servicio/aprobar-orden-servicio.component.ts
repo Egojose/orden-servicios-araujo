@@ -98,6 +98,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
   documentoPropuesta: Documento[] = [];
   mostrarBtn: boolean = true;
   otroSi: string = '';
+  empresa: string;
 
 
   constructor(
@@ -232,6 +233,8 @@ export class AprobarOrdenServicioComponent implements OnInit {
       (respuesta) => {
         this.empleadoEditar = Empleado.fromJsonList(respuesta);
         this.jefe = respuesta[0].JefeId
+        this.empresa = this.empleadoEditar[0].empresa;
+        console.log(this.empresa)
       }
     )
   }
@@ -338,14 +341,14 @@ export class AprobarOrdenServicioComponent implements OnInit {
   }
 
   obtenerDatosAprobadores() {
-    this.servicio.obtenerAprobadores().then(
+    this.servicio.obtenerAprobadores(this.empresa).then(
       (respuesta) => {
        this.emailGerenteAdministrativo = respuesta[0].GerenteAdministrativo.EMail;
        this.emailDirectorOperativo = respuesta[0].DirectorOperativo.EMail;
-       this.emailAuxiliarContabilidad = respuesta[0].AuxiliarContabilidad.EMail;
+       this.emailAuxiliarContabilidad = respuesta[0].AuxContable.EMail;
        this.responsableGerenteAdminisitrativo = respuesta[0].GerenteAdministrativo.ID;
        this.responsableDirectorOperativo = respuesta[0].DirectorOperativo.ID;
-       this.responsableAuxContabilidad = respuesta[0].AuxiliarContabilidad.ID;
+       this.responsableAuxContabilidad = respuesta[0].AuxContable.ID;
       }
     )
   }
