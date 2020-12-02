@@ -114,7 +114,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
     this.usuarioRechaza = false;
     this.mostrarBotonesAprobarRechazar = true;
     this.registrarControles();        
-    this.obtenerDatosAprobadores();
+    // this.obtenerDatosAprobadores();
     this.aprobarOrdenServicios.controls['porcentajeCotizacion'].setValue('40%');
   }
 
@@ -233,8 +233,6 @@ export class AprobarOrdenServicioComponent implements OnInit {
       (respuesta) => {
         this.empleadoEditar = Empleado.fromJsonList(respuesta);
         this.jefe = respuesta[0].JefeId
-        this.empresa = this.empleadoEditar[0].empresa;
-        console.log(this.empresa)
       }
     )
   }
@@ -246,6 +244,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.orden = Orden.fromJsonList(respuesta);
         this.emailSolicitante = respuesta[0].UsuarioSolicitante.EMail;
         this.solicitante = this.orden[0].usuarioSolicitante;
+        this.empresa = this.orden[0].empresaSolicitante
         if(this.orden[0].esOtroSi === true) {
           this.otroSi = '(Otro sí)'
         }
@@ -266,6 +265,7 @@ export class AprobarOrdenServicioComponent implements OnInit {
         this.obtenerParametroAprobacion();
         this.obtenerParticipacionCecos();
         this.obtenerDocumentos();
+        this.obtenerDatosAprobadores();
       }
     )
   }
